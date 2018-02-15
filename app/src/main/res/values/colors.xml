@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3bd774</color>
+    <color name="colorPrimaryDark">#00a446</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="colorPrimaryFields">#3cff80</color>
+    <color name="colorStatusBarFields">#62ed8d</color>
+    <color name="Background_Fields">#f3f8ee</color>
+    <color name="FieldsBottomBarColor">#fdfffa</color>
+    <color name="FieldsMenuItemNotSelected">#525051</color>
+
+    <color name="FSQStrawberry">#E6092C</color>
+    <color name="FSQMacCheese">#FF6701</color>
+    <color name="FSQOrange">#FF9600</color>
+    <color name="FSQBanana">#FFC800</color>
+    <color name="FSQLime">#C5DE35</color>
+    <color name="FSQGuacamole">#73CF42</color>
+    <color name="FSQKale">#00B551</color>
+</resources>
