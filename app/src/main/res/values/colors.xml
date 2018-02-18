@@ -12,8 +12,8 @@
     <color name="FSQStrawberry">#E6092C</color>
     <color name="FSQMacCheese">#FF6701</color>
     <color name="FSQOrange">#FF9600</color>
-    <color name="FSQBanana">#FFC800</color>
+    <color name="FSQBanana">#ffc800</color>
     <color name="FSQLime">#C5DE35</color>
     <color name="FSQGuacamole">#73CF42</color>
-    <color name="FSQKale">#00B551</color>
+    <color name="FSQKale">#00b551</color>
 </resources>

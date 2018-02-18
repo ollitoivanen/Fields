@@ -17,7 +17,7 @@
             android:value="AIzaSyA_hHmSEbDgLAD4aWne7_4pklPV7XsXQDg" />
 
         <activity
-            android:name=".ExploreActivity"
+            android:name=".BaseActivity"
             android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,7 +28,7 @@
 
 
 
-        <activity android:name=".BaseActivity" />
+        <activity android:name=".ExploreActivity" />
         <activity android:name=".DetailFieldActivity"/>
     </application>
 

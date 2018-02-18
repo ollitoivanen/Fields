@@ -70,6 +70,8 @@ public class ExploreActivity extends Activity {
         clientID = getResources().getString(R.string.foursquare_api_client_id);
         clientSecret = getResources().getString(R.string.foursquare_client_secret);
 
+        //TODO solve the problem in this, compare with the original code
+
 
 
         // Checks for location permissions at runtime (required for API >= 23)
@@ -119,15 +121,16 @@ public class ExploreActivity extends Activity {
                                     public void onFailure(Call<FoursquareJSON> call, Throwable t) {
                                         Toast.makeText(getApplicationContext(), "Can't connect to Foursquare's servers!", Toast.LENGTH_LONG).show();
                                         finish();
+
                                     }
                                 });
                             } else {
                                 Toast.makeText(getApplicationContext(), "Can't determine your current location!", Toast.LENGTH_LONG).show();
                                 finish();
-
+                                //TODO add screen so app doesn't crash when location is null
                             }
                         }
                     });
-        }
+        }//Todo add location prompt
     }
 }
