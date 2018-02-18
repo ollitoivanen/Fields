@@ -11,9 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by ollitoivanen on 11.2.2018.
- */
+
 //PlacePickerAdapter represents the adapter for attaching venue data to the RecyclerView within
  //PlacePickerActivity.  This adapter will handle a list of incoming FoursquareResults and parse them
 // into the view.
@@ -42,10 +40,10 @@ public class PlacePickerAdapter extends RecyclerView.Adapter<PlacePickerAdapter.
             v.setOnClickListener(this);
 
             // Gets the appropriate view for each venue detail
-            name = (TextView)v.findViewById(R.id.placePickerItemName);
-            address = (TextView)v.findViewById(R.id.placePickerItemAddress);
-            rating = (TextView)v.findViewById(R.id.placePickerItemRating);
-            distance = (TextView)v.findViewById(R.id.placePickerItemDistance);
+            name = v.findViewById(R.id.placePickerItemName);
+            address = v.findViewById(R.id.placePickerItemAddress);
+            rating = v.findViewById(R.id.placePickerItemRating);
+            distance = v.findViewById(R.id.placePickerItemDistance);
         }
 
         @Override
@@ -54,7 +52,7 @@ public class PlacePickerAdapter extends RecyclerView.Adapter<PlacePickerAdapter.
             // Creates an intent to direct the user to a map view
             Context context = name.getContext();
             Intent i = new Intent(context, DetailFieldActivity.class);
-
+            //TODO change the click from map to fields details
             // Passes the crucial venue details onto the map view
             i.putExtra("name", name.getText());
             i.putExtra("ID", id);
