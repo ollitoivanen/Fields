@@ -16,7 +16,8 @@ public interface FoursquareService {
     Call<FoursquareJSON> searchFields(@Query("client_id") String clientID,
                                       @Query("client_secret") String clientSecret,
                                       @Query("ll") String ll,
-                                      @Query("llAcc") double llAcc);
+                                      @Query("llAcc") double llAcc,
+                                      @Query("categoryId") String categoryId);
 
 
 }

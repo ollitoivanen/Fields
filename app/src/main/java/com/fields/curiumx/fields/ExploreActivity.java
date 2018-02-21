@@ -28,17 +28,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ExploreActivity extends Activity
-        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class ExploreActivity extends Activity {
 
 
 
-GoogleApiClient mGoogleApiClient;
-
-    // The client object for connecting to the Google API
 
 
-TextView snapToPlace;
+FusedLocationProviderClient fusedLocationProviderClient;
+
+
+
 
 
     // The RecyclerView and associated objects for displaying the nearby fields
@@ -63,7 +62,8 @@ TextView snapToPlace;
         setContentView(R.layout.activity_explore);
 
         placePicker = findViewById(R.id.fieldsList);
-        
+
+
         //Build the adapter, takes context and List of foursquareResults as parameters
         placePicker.setHasFixedSize(true);
         //View contents cannot affect Adapter size
@@ -74,30 +74,25 @@ TextView snapToPlace;
         placePicker.addItemDecoration(new DividerItemDecoration(placePicker.getContext(), placePickerManager.getOrientation()));
         //style for the RecyclerView
 
-// Creates a connection to the Google API for location services
-
 
         // Gets the stored Foursquare API client ID and client secret from XML
         clientID = getResources().getString(R.string.foursquare_api_client_id);
         clientSecret = getResources().getString(R.string.foursquare_client_secret);
 
-        // Creates a connection to the Google API for location services
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
 
         //TODO solve the problem in this, compare with the original code
 
-public void onConnected(Bundle connectionHint){
+
         // Checks for location permissions at runtime (required for API >= 23)
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-
-            // Makes a Google API request for the user's last known location
-            Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            fusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location lastLocation) {
+                            // Got last known location. In some rare situations this can be null.
 
 
                             if (lastLocation != null) {
@@ -116,16 +111,13 @@ public void onConnected(Bundle connectionHint){
                                 FoursquareService foursquare = retrofit.create(FoursquareService.class);
 
 
-
-
-
                                 // Calls the Foursquare API to explore nearby fields
                                 Call<FoursquareJSON> fieldsCall = foursquare.searchFields(
                                         clientID,
                                         clientSecret,
                                         ll,
-                                        llAcc
-                                );
+                                        llAcc,
+                                        categoryId);
 
                                 fieldsCall.enqueue(new Callback<FoursquareJSON>() {
                                     @Override
@@ -133,6 +125,7 @@ public void onConnected(Bundle connectionHint){
 
                                         // Gets the venue object from the JSON response
                                         FoursquareJSON fjson = response.body();
+
                                         FoursquareResponse fr = fjson.response;
                                         FoursquareGroup fg = fr.group;
                                         List<FoursquareResults> frs = fg.results;
@@ -157,7 +150,9 @@ public void onConnected(Bundle connectionHint){
                                 //TODO add screen so app doesn't crash when location is null
                             }
                         }
-                    }
+                    });
+        }
+    }
             //Todo add location prompt
 
 
@@ -166,22 +161,12 @@ public void onConnected(Bundle connectionHint){
     protected void onResume() {
         super.onResume();
 
-mGoogleApiClient.connect();    }
-
+    }
     @Override
     protected void onPause() {
         super.onPause();
 
-        // Disconnects from the Google API
-        mGoogleApiClient.disconnect();
     }
-        @Override
-    public void onConnectionSuspended(int i) {}
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getApplicationContext(), "Mr. Jitters can't connect to Google's servers!", Toast.LENGTH_LONG).show();
-        finish();
-    }
 
 }
