@@ -63,9 +63,7 @@ TextView snapToPlace;
         setContentView(R.layout.activity_explore);
 
         placePicker = findViewById(R.id.fieldsList);
-        snapToPlace = findViewById(R.id.snapToPlace);
-
-
+        
         //Build the adapter, takes context and List of foursquareResults as parameters
         placePicker.setHasFixedSize(true);
         //View contents cannot affect Adapter size
@@ -118,32 +116,7 @@ public void onConnected(Bundle connectionHint){
                                 FoursquareService foursquare = retrofit.create(FoursquareService.class);
 
 
-                                // Calls the Foursquare API to snap the user's location to a Foursquare venue
-                                Call<FoursquareJSON> stpCall = foursquare.snapToPlace(
-                                        clientID,
-                                        clientSecret,
-                                        ll,
-                                        llAcc);
-                                stpCall.enqueue(new Callback<FoursquareJSON>() {
-                                    @Override
-                                    public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
 
-                                        // Gets the venue object from the JSON response
-                                        FoursquareJSON fjson = response.body();
-                                        FoursquareResponse fr = fjson.response;
-                                        List<FoursquareVenue> frs = fr.venues;
-                                        FoursquareVenue fv = frs.get(0);
-
-                                        // Notifies the user of their current location
-                                        snapToPlace.setText("You're at " + fv.name + ". Here's some ☕ nearby.");
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<FoursquareJSON> call, Throwable t) {
-                                        Toast.makeText(getApplicationContext(), "Mr. Jitters can't connect to Foursquare's servers!", Toast.LENGTH_LONG).show();
-                                        finish();
-                                    }
-                                });
 
 
                                 // Calls the Foursquare API to explore nearby fields
