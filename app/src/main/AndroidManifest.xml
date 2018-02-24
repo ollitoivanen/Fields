@@ -29,9 +29,7 @@
             </intent-filter>
         </activity>
 
-
-
-        <activity android:name=".ExploreActivity" />
+        <activity android:name=".ExploreActivity"/>
         <activity android:name=".DetailFieldActivity"/>
     </application>
 

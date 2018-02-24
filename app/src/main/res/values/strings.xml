@@ -10,6 +10,8 @@
     <string name="title_profile">Profile</string>
     <string name="title_notifications">Notifications</string>
     <string name="abs_title">Fields</string>
+    <string name="empty_text">No Fields close to your location!</string>
+    <string name="popup_prompt_location">Location is required to find the closest Fields to you!</string>
 
     <string name="selected_place">Last selected place:</string>
     <string name="place_details">

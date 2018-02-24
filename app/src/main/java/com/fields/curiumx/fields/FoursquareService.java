@@ -17,7 +17,9 @@ public interface FoursquareService {
                                       @Query("client_secret") String clientSecret,
                                       @Query("ll") String ll,
                                       @Query("llAcc") double llAcc,
-                                      @Query("categoryId") String categoryId);
+                                      @Query("categoryId") String categoryId,
+                                      @Query("radius") int radius,
+                                      @Query("limit")int limit);
 
 
 }

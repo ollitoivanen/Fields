@@ -15,4 +15,19 @@
         android:layout_height="match_parent"
         android:clipToPadding="false" />
 
+
+
+    <TextView
+        android:id="@+id/emptyText2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/empty_text"
+        android:gravity="center"
+        android:drawable="@drawable/ic_satellite_black_24dp" />
+
+
+
+
 </LinearLayout>
+
+

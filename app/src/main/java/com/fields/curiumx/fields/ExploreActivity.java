@@ -1,26 +1,33 @@
 package com.fields.curiumx.fields;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.provider.Settings;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.TextClock;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApi;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-
-import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,15 +37,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ExploreActivity extends Activity {
 
+    FusedLocationProviderClient fusedLocationProviderClient;
 
 
-
-
-FusedLocationProviderClient fusedLocationProviderClient;
-
-
-
-
+   TextView emptyText2;
 
     // The RecyclerView and associated objects for displaying the nearby fields
     RecyclerView placePicker;
@@ -53,6 +55,21 @@ FusedLocationProviderClient fusedLocationProviderClient;
     private String clientSecret;
 
     String categoryId = "4cce455aebf7b749d5e191f5";
+    int radius = 100000;
+    int limit = 20;
+    int REQUEST_FINE_LOCATION;
+
+    private LayoutInflater layoutInflater;
+    private PopupWindow popupWindow;
+    private LinearLayout exploreActivity;
+
+
+    public void requestPermissions(){
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                REQUEST_FINE_LOCATION);
+    }
+
 
 
 
@@ -62,6 +79,9 @@ FusedLocationProviderClient fusedLocationProviderClient;
         setContentView(R.layout.activity_explore);
 
         placePicker = findViewById(R.id.fieldsList);
+
+        emptyText2 = findViewById(R.id.emptyText2);
+
 
 
         //Build the adapter, takes context and List of foursquareResults as parameters
@@ -81,12 +101,32 @@ FusedLocationProviderClient fusedLocationProviderClient;
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+            if (placePickerAdapter == null){
+                placePicker.setVisibility(View.GONE);
+                emptyText2.setVisibility(View.VISIBLE);
+            }else{
+                placePicker.setVisibility(View.VISIBLE);
+                emptyText2.setVisibility(View.GONE);
+                //TODO remove text when location is not allowed and popup is showed
+            }
 
-        //TODO solve the problem in this, compare with the original code
 
+        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        exploreActivity = findViewById(R.id.activity_explore);
+        ConstraintLayout popUp = findViewById(R.id.popup);
+        ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.location_prompt_popup, popUp );
+        popupWindow = new PopupWindow(container, 400, 400, true);
 
         // Checks for location permissions at runtime (required for API >= 23)
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            exploreActivity.post(new Runnable() {
+                @Override
+                public void run() {
+                    popupWindow.showAtLocation(exploreActivity, Gravity.CENTER, 500, 500);
+                }
+            });
+        }else{
 
             fusedLocationProviderClient.getLastLocation()
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -117,7 +157,9 @@ FusedLocationProviderClient fusedLocationProviderClient;
                                         clientSecret,
                                         ll,
                                         llAcc,
-                                        categoryId);
+                                        categoryId,
+                                        radius,
+                                        limit);
 
                                 fieldsCall.enqueue(new Callback<FoursquareJSON>() {
                                     @Override
@@ -129,7 +171,6 @@ FusedLocationProviderClient fusedLocationProviderClient;
                                         FoursquareResponse fr = fjson.response;
                                         FoursquareGroup fg = fr.group;
                                         List<FoursquareResults> frs = fg.results;
-                                        //TODO try to use the snap to place as it uses the veues frs that isnt declared qithout it
 
                                         // Displays the results in the RecyclerView
                                         placePickerAdapter = new PlacePickerAdapter(getApplicationContext(), frs);
@@ -145,15 +186,13 @@ FusedLocationProviderClient fusedLocationProviderClient;
                                     }
                                 });
                             } else {
-                                Toast.makeText(getApplicationContext(), "Can't determine your current location!", Toast.LENGTH_LONG).show();
-                                finish();
-                                //TODO add screen so app doesn't crash when location is null
+
                             }
                         }
                     });
-        }
+            }
     }
-            //Todo add location prompt
+
 
 
 
