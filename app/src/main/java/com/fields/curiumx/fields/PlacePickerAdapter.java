@@ -22,7 +22,7 @@ public class PlacePickerAdapter extends RecyclerView.Adapter<PlacePickerAdapter.
     private Context context;
 
     // The list of results from the Foursquare API
-    private List<FoursquareResults> results;
+     List<FoursquareResults> results;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
