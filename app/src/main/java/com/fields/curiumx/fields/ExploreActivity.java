@@ -2,7 +2,6 @@ package com.fields.curiumx.fields;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -13,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +54,7 @@ public class ExploreActivity extends Activity {
     //The client ID and client secret for authenticating with the Foursquare API
 
     String categoryId = "4cce455aebf7b749d5e191f5";
-    int radius = 10;
+    int radius = 10000;
     int limit = 20;
     //Parameters used to modify Foursquare results
 
@@ -67,19 +65,102 @@ public class ExploreActivity extends Activity {
     LinearLayout exploreActivity;
     //Fields used to make location popup
 
+
+     public void gettingLocation(){
+         fusedLocationProviderClient.getLastLocation()
+                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                     @Override
+                     public void onSuccess(Location lastLocation) {
+                         // Got last known location. In some rare situations this can be null.
+
+
+                         if (lastLocation != null) {
+                             // Logic to handle location object
+
+                             // The user's current latitude, longitude, and location accuracy
+                             String ll = lastLocation.getLatitude() + "," + lastLocation.getLongitude();
+                             double llAcc = lastLocation.getAccuracy();
+
+
+                             // Builds Retrofit and FoursquareService objects for calling the Foursquare API and parsing with GSON
+                             Retrofit retrofit = new Retrofit.Builder()
+                                     .baseUrl(foursquareBaseURL)
+                                     .addConverterFactory(GsonConverterFactory.create())
+                                     .build();
+                             FoursquareService foursquare = retrofit.create(FoursquareService.class);
+
+
+                             // Calls the Foursquare API to explore nearby fields
+                             Call<FoursquareJSON> fieldsCall = foursquare.searchFields(
+                                     clientID,
+                                     clientSecret,
+                                     ll,
+                                     llAcc,
+                                     categoryId,
+                                     radius,
+                                     limit);
+
+                             fieldsCall.enqueue(new Callback<FoursquareJSON>() {
+                                 @Override
+                                 public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
+
+                                     // Gets the venue object from the JSON response
+                                     FoursquareJSON fjson = response.body();
+
+                                     FoursquareResponse fr = fjson.response;
+                                     FoursquareGroup fg = fr.group;
+                                     List<FoursquareResults> frs = fg.results;
+
+                                     // Displays the results in the RecyclerView
+                                     placePickerAdapter = new PlacePickerAdapter(getApplicationContext(), frs);
+                                     placePicker.setAdapter(placePickerAdapter);
+
+                                 }
+
+                                 @Override
+                                 public void onFailure(Call<FoursquareJSON> call, Throwable t) {
+                                     Toast.makeText(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG).show();
+                                     finish();
+
+                                 }
+                             });
+                         } else {
+                             //TODO prompt user to turn on location
+                             Toast.makeText(getApplicationContext(), "Mr. Jitters can't determine your current location!", Toast.LENGTH_LONG).show();
+                             finish();
+                         }
+                     }
+                 });
+
+     }
+
     public void requestPermissions() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 REQUEST_FINE_LOCATION);
     }
 
+    //This method is used to find out what user chose in the location prompt and execute according to it
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == REQUEST_FINE_LOCATION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-    //TODO on button click remove the pop up and show the location prompt
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+                gettingLocation();
 
+            } else {
 
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+                Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+            }
 
-
-
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,73 +205,7 @@ public class ExploreActivity extends Activity {
 
         // Checks for location permissions at runtime (required for API >= 23)
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            fusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location lastLocation) {
-                            // Got last known location. In some rare situations this can be null.
-
-
-                            if (lastLocation != null) {
-                                // Logic to handle location object
-
-                                // The user's current latitude, longitude, and location accuracy
-                                String ll = lastLocation.getLatitude() + "," + lastLocation.getLongitude();
-                                double llAcc = lastLocation.getAccuracy();
-
-
-                                // Builds Retrofit and FoursquareService objects for calling the Foursquare API and parsing with GSON
-                                Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl(foursquareBaseURL)
-                                        .addConverterFactory(GsonConverterFactory.create())
-                                        .build();
-                                FoursquareService foursquare = retrofit.create(FoursquareService.class);
-
-
-                                // Calls the Foursquare API to explore nearby fields
-                                Call<FoursquareJSON> fieldsCall = foursquare.searchFields(
-                                        clientID,
-                                        clientSecret,
-                                        ll,
-                                        llAcc,
-                                        categoryId,
-                                        radius,
-                                        limit);
-
-                                fieldsCall.enqueue(new Callback<FoursquareJSON>() {
-                                    @Override
-                                    public void onResponse(Call<FoursquareJSON> call, Response<FoursquareJSON> response) {
-
-                                        // Gets the venue object from the JSON response
-                                        FoursquareJSON fjson = response.body();
-
-                                        FoursquareResponse fr = fjson.response;
-                                        FoursquareGroup fg = fr.group;
-                                        List<FoursquareResults> frs = fg.results;
-
-                                        // Displays the results in the RecyclerView
-                                        placePickerAdapter = new PlacePickerAdapter(getApplicationContext(), frs);
-                                        placePicker.setAdapter(placePickerAdapter);
-
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<FoursquareJSON> call, Throwable t) {
-                                        Toast.makeText(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG).show();
-                                        finish();
-
-                                    }
-                                });
-                            } else {
-                                //TODO prompt user to turn on location
-                                Toast.makeText(getApplicationContext(), "Mr. Jitters can't determine your current location!", Toast.LENGTH_LONG).show();
-                                finish();
-                            }
-                        }
-                    });
-
-
+            gettingLocation();
 
 
 
