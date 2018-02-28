@@ -2,11 +2,13 @@ package com.fields.curiumx.fields;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -21,9 +23,18 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,14 +70,23 @@ public class ExploreActivity extends Activity {
     //Parameters used to modify Foursquare results
 
     int REQUEST_FINE_LOCATION;
+    int REQUEST_CHECK_SETTINGS;
 
     LayoutInflater layoutInflater;
     PopupWindow popupWindow;
     LinearLayout exploreActivity;
     //Fields used to make location popup
 
+    LocationRequest mLocationRequest;
 
-     public void gettingLocation(){
+
+
+
+
+
+
+
+    public void gettingLocation(){
          fusedLocationProviderClient.getLastLocation()
                  .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                      @Override
@@ -125,10 +145,10 @@ public class ExploreActivity extends Activity {
                                  }
                              });
                          } else {
-                             //TODO prompt user to turn on location
+
                              Toast.makeText(getApplicationContext(), "Mr. Jitters can't determine your current location!", Toast.LENGTH_LONG).show();
-                             finish();
-                         }
+
+                      }
                      }
                  });
 
@@ -167,6 +187,7 @@ public class ExploreActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
 
+
         placePicker = findViewById(R.id.fieldsList);
 
         emptyText = findViewById(R.id.emptyText);
@@ -191,8 +212,6 @@ public class ExploreActivity extends Activity {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
 
-
-
         //Popup items
         layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         exploreActivity = findViewById(R.id.activity_explore);
@@ -208,30 +227,35 @@ public class ExploreActivity extends Activity {
             gettingLocation();
 
 
-
-        }else{
+        } else {
 
             exploreActivity.post(new Runnable() {
-            @Override
-            public void run() {
-                popupWindow.showAtLocation(exploreActivity, Gravity.CENTER_HORIZONTAL, 0, 0);
-                Button okButton = container.findViewById(R.id.okButton);
-                okButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        requestPermissions();
-                        popupWindow.dismiss();
-                    }
-                    //TODO show message to accept the location in settings
-                });
+                @Override
+                public void run() {
+                    popupWindow.showAtLocation(exploreActivity, Gravity.CENTER_HORIZONTAL, 0, 0);
+                    Button okButton = container.findViewById(R.id.okButton);
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            requestPermissions();
+                            popupWindow.dismiss();
+                        }
+                        //TODO show message to accept the location in settings
+                    });
 
-            }
-        });
+                }
+            });
 
 
         }
 
-            }
+    }
+
+
+
+
+
+
 
 
     @Override
