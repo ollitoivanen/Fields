@@ -3,18 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.fields.curiumx.fields.ExploreActivity"
     android:orientation="vertical"
-    android:id="@+id/activity_explore">
+    android:id="@+id/activity_explore"
+    >
 
 
-
-<com.fields.curiumx.fields.EmptyRecyclerView
+    <com.fields.curiumx.fields.EmptyRecyclerView
         android:id="@+id/fieldsList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false" />
+        android:layout_height="wrap_content"
+        android:clipToPadding="true"
+
+        />
 
 
 
