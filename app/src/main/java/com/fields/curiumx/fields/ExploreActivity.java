@@ -2,8 +2,10 @@ package com.fields.curiumx.fields;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -14,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,8 +47,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ExploreActivity extends Activity {
 
+
     FusedLocationProviderClient fusedLocationProviderClient;
     //Location provider client
+
 
     TextView emptyText;
     //Text displayed when adapter size is null, or no Fields are nearby
@@ -70,17 +75,17 @@ public class ExploreActivity extends Activity {
     //Parameters used to modify Foursquare results
 
     int REQUEST_FINE_LOCATION;
-    int REQUEST_CHECK_SETTINGS;
+
+    Context context;
 
     LayoutInflater layoutInflater;
     PopupWindow popupWindow;
     LinearLayout exploreActivity;
     //Fields used to make location popup
 
-    LocationRequest mLocationRequest;
 
 
-
+    
 
 
 
@@ -188,9 +193,15 @@ public class ExploreActivity extends Activity {
         setContentView(R.layout.activity_explore);
 
 
+
+
+
         placePicker = findViewById(R.id.fieldsList);
 
         emptyText = findViewById(R.id.emptyText);
+
+
+
 
 
         //Build the adapter, takes context and List of foursquareResults as parameters
@@ -200,9 +211,13 @@ public class ExploreActivity extends Activity {
         //context used to access resources. RecyclerViews must have layoutManager which controls the View's style
         placePicker.setLayoutManager(placePickerManager);
         //set the placePickerManager as placePicker's layoutManager
-        placePicker.addItemDecoration(new DividerItemDecoration(placePicker.getContext(), placePickerManager.getOrientation()));
         //style for the RecyclerView
         placePicker.setEmptyView(emptyText);
+
+
+
+
+
 
 
         // Gets the stored Foursquare API client ID and client secret from XML
