@@ -13,6 +13,7 @@
     <string name="empty_text">No Fields close to your location!</string>
     <string name="popup_prompt_location">Location is required to find the Fields closest to you! Please accept the permission for the app to work properly.</string>
     <string name="popup_prompt_location_button">OK</string>
+    <string name="logoutText">Log out</string>
 
     <string name="selected_place">Last selected place:</string>
     <string name="place_details">
@@ -27,5 +28,19 @@
         <br/>
         Website: %5$s
     ]]>
+    </string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
     </string>
 </resources>

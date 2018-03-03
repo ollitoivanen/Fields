@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "111402678546",
+    "firebase_url": "https://dynamic-aurora-191905.firebaseio.com",
+    "project_id": "dynamic-aurora-191905",
+    "storage_bucket": "dynamic-aurora-191905.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111402678546:android:dbd3b8b7bf33f0d7",
+        "android_client_info": {
+          "package_name": "com.fields.curiumx.fields"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "111402678546-cvht1f6rj022lvdv9vd2fvh7grakfd3b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fields.curiumx.fields",
+            "certificate_hash": "b6a22ae4d1442f56e707f1a0271a1680d46b0c6d"
+          }
+        },
+        {
+          "client_id": "111402678546-1k7vrtcjh7trcbg9hr15m75tjt8i5l6b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3-HdmGkdTVAjMSPsTwXlWKIQO_Cq7QCg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "111402678546-1k7vrtcjh7trcbg9hr15m75tjt8i5l6b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.Button;
+
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -16,10 +18,25 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class BaseActivity extends FragmentActivity {
 
+
+
+
+
+    Button logoutButton;
+    FirebaseAuth mAuth;
+    FirebaseAuth.AuthStateListener mAuthListener;
+
+
+
+
+
+
+    private static final int RC_SIGN_IN = 123;
 
     int REQUEST_CHECK_SETTINGS;
     LocationRequest mLocationRequest;
@@ -29,23 +46,54 @@ public class BaseActivity extends FragmentActivity {
         setContentView(R.layout.activity_base);
         createLocationRequest();
         changeLocation();
+
+
+        logoutButton = findViewById(R.id.logoutButton);
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null){
+                    startActivity(new Intent(BaseActivity.this, LoginActivity.class));
+                }
+            }
+        };
+        logoutButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+            }
+        });
+
+
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+
 
     public void onProfileClick(View view) {
 
-        if (getSupportFragmentManager().findFragmentByTag("profileFragment") == null) {
+
 
             android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, new ProfileFragment(), "profileFragment")
                     .addToBackStack(null)
                     .commit();
         }
-    }
+
 
 
     public void onFeedClick(View view){
 
-        if(getSupportFragmentManager().findFragmentByTag("feedFragment")==null){
+
 
             android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, new FeedFragment(), "feedFragment")
@@ -53,7 +101,7 @@ public class BaseActivity extends FragmentActivity {
                     .commit();
         }
 
-    }
+
 
     public void onExploreClick(View view) {
         Intent intent = new Intent(this, ExploreActivity.class);
