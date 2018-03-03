@@ -11,8 +11,10 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.transition.Transition;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
@@ -37,6 +39,9 @@ public class BaseActivity extends Activity {
         createLocationRequest();
         changeLocation();
     }
+
+
+
 
     public void onExploreClick(View view) {
         Intent intent = new Intent(this, ExploreActivity.class);

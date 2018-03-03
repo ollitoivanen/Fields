@@ -25,6 +25,7 @@ public class PlacePickerAdapter extends EmptyRecyclerView.Adapter<PlacePickerAda
     // The list of results from the Foursquare API
      List<FoursquareResults> results;
 
+
     public static class ViewHolder extends EmptyRecyclerView.ViewHolder implements View.OnClickListener {
 
         // The venue fields to display
@@ -56,8 +57,10 @@ public class PlacePickerAdapter extends EmptyRecyclerView.Adapter<PlacePickerAda
             i.putExtra("latitude", latitude);
             i.putExtra("longitude", longitude);
 
+
             // Transitions to the map view.
             context.startActivity(i);
+
         }
     }
 

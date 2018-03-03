@@ -30,8 +30,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".DetailFieldActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ExploreActivity"/>
+        </activity>
         <activity android:name=".ExploreActivity"/>
-        <activity android:name=".DetailFieldActivity"/>
     </application>
 
 </manifest>

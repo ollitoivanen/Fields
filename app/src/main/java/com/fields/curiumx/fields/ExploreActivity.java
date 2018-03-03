@@ -2,6 +2,8 @@ package com.fields.curiumx.fields;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -214,12 +216,6 @@ public class ExploreActivity extends Activity {
         //style for the RecyclerView
         placePicker.setEmptyView(emptyText);
 
-
-
-
-
-
-
         // Gets the stored Foursquare API client ID and client secret from XML
         clientID = getResources().getString(R.string.foursquare_api_client_id);
         clientSecret = getResources().getString(R.string.foursquare_client_secret);
@@ -264,26 +260,13 @@ public class ExploreActivity extends Activity {
 
         }
 
+
     }
 
-
-
-
-
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
 }
+
+
 
 
 
