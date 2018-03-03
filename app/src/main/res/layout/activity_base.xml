@@ -11,7 +11,7 @@
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="449dp"
+        android:layout_height="451dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -32,16 +32,18 @@
         android:clickable="true"
         android:focusable="true">
 
-    <Button
+    <ImageButton
         android:id="@+id/feed_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@drawable/button_custom"
-        />
+        android:onClick="onFeedClick"
 
-    <Button
+        android:src="@drawable/home_icon" />
+
+    <ImageButton
         android:id="@+id/explore_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="0dp"
@@ -49,16 +51,19 @@
         android:layout_weight="1"
         android:background="@color/colorPrimary"
         android:elevation="5dp"
+        android:onClick="onExploreClick"
+        android:scaleType="fitCenter"
+        android:padding="7dp"
+        android:src="@drawable/location_icon" />
 
-        android:onClick="onExploreClick"/>
-
-    <Button
+    <ImageButton
         android:id="@+id/profile_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@drawable/button_custom"
-        android:onClick="onProfileClick"/>
+        android:onClick="onProfileClick"
+        android:src="@drawable/person_icon" />
 </LinearLayout>
 </android.support.constraint.ConstraintLayout>
