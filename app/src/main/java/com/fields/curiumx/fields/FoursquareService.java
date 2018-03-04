@@ -22,4 +22,8 @@ public interface FoursquareService {
                                       @Query("limit")int limit);
 
 
+
+
+
+
 }
