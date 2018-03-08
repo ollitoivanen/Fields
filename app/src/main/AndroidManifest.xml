@@ -26,8 +26,8 @@
             android:value="AIzaSyA_hHmSEbDgLAD4aWne7_4pklPV7XsXQDg" />
 
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_main">
+            android:name=".SignUpActivity"
+            android:label="@string/sign_up">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,7 +40,11 @@
                 android:value=".ExploreActivity" />
         </activity>
         <activity android:name=".ExploreActivity" />
-        <activity android:name=".BaseActivity"></activity>
+        <activity android:name=".BaseActivity" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/sign_in"></activity>
+        <activity android:name=".ForgotPasswordActivity"></activity>
     </application>
 
 </manifest>

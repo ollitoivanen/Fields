@@ -45,10 +45,8 @@
     </string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
-
-
-
-
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
 
 </resources>
 

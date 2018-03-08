@@ -2,56 +2,64 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/login_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fields.curiumx.fields.LoginActivity">
+    tools:context="com.fields.curiumx.fields.SignUpActivity"
+    android:id="@+id/signUpActivity">
 
     <EditText
-        android:id="@+id/emailSignIn"
+        android:id="@+id/emailSignUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
         android:hint="Email"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:inputType="textEmailAddress"/>
 
     <EditText
-        android:id="@+id/passwordSignIn"
+        android:id="@+id/passwordSignUp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
+        app:layout_constraintTop_toBottomOf="@id/emailSignUp"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/emailSignIn"/>
+        />
 
-<Button
-    android:id="@+id/signInButton"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Sign In"
-    app:layout_constraintTop_toBottomOf="@id/passwordSignIn"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    android:backgroundTint="@color/colorPrimary"
+    <Button
+        android:id="@+id/signUpButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
-    />
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Sign Up"
+        app:layout_constraintBottom_toTopOf="@id/or"
+        app:layout_constraintTop_toBottomOf="@id/passwordSignUp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+
+
+
+        tools:layout_editor_absoluteX="10dp" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/googleSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/or"
+        />
+
 
     <TextView
-        android:text="Don't have account yet? Sign Up"
-        android:id="@+id/signUpTextView"
+        android:id="@+id/signInTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Already have an account? Sign in"
         android:gravity="center"
-        android:layout_marginBottom="10dp"/>
+        android:layout_margin="10dp"/>
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/googleSignInButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/or"
-        android:layout_margin="10dp">
-
-    </com.google.android.gms.common.SignInButton>
 
     <FrameLayout
         android:id="@+id/or"
@@ -59,10 +67,9 @@
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="20dp"
         tools:layout_editor_absoluteY="169dp"
-        app:layout_constraintTop_toBottomOf="@id/signInButton"
+        app:layout_constraintTop_toBottomOf="@id/signUpButton"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_margin="10dp"
-        >
+        android:layout_margin="10dp">
 
 
 
@@ -83,12 +90,4 @@
             android:text="OR" />
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/forgotPassword"
-        android:text="Forgot password?"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/signUpTextView"
-        android:layout_margin="30dp"
-        android:gravity="center"/>
 </android.support.constraint.ConstraintLayout>

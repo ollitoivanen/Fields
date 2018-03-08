@@ -8,6 +8,7 @@
     <color name="Background_Fields">#f6f9f3</color>
     <color name="FieldsBottomBarColor">#fdfffa</color>
     <color name="FieldsMenuItemNotSelected">#525051</color>
+    <color name="DividerColor">#FFE8E8E8</color>
 
     <color name="FSQStrawberry">#E6092C</color>
     <color name="FSQMacCheese">#FF6701</color>
