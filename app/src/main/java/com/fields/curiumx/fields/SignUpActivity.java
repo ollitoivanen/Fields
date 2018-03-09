@@ -3,6 +3,7 @@ package com.fields.curiumx.fields;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
@@ -38,6 +39,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
     GoogleSignInClient mGoogleSignInClient;
     private final static int RC_SIGN_IN = 2;
     FirebaseAuth.AuthStateListener mAuthListener;
+    String name;
 
 
 
@@ -139,7 +141,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
         }
 
         if (password.length() < 6) {
-            passwordSignUp.setError("Minimum lenght of password should be 6");
+            passwordSignUp.setError("Minimum length of password should be 6");
             passwordSignUp.requestFocus();
             return;
         }
@@ -148,20 +150,13 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "User registered succesfully", Toast.LENGTH_SHORT)
+                    Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT)
                             .show();
-                    startActivity(new Intent(SignUpActivity.this, BaseActivity.class));
+                    startActivity(new Intent(SignUpActivity.this, WelcomeActivity.class));
 
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    user.sendEmailVerification()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, "Email sent.");
-                                    }
-                                }
-                            });
+
+
+
 
                 } else {
 
@@ -213,6 +208,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(SignUpActivity.this, "Sign in successful", Toast.LENGTH_LONG)
                                     .show();
+
 
                             //updateUI(user);
                         } else {

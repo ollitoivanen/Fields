@@ -54,7 +54,6 @@ public class LoginActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onStart() {
         super.onStart();
-
         mAuth.addAuthStateListener(mAuthListener);
     }
 

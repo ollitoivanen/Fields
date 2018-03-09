@@ -3,11 +3,13 @@ package com.fields.curiumx.fields;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
@@ -19,6 +21,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class BaseActivity extends FragmentActivity {
@@ -36,7 +39,8 @@ public class BaseActivity extends FragmentActivity {
 
 
 
-    private static final int RC_SIGN_IN = 123;
+
+
 
     int REQUEST_CHECK_SETTINGS;
     LocationRequest mLocationRequest;
@@ -48,33 +52,41 @@ public class BaseActivity extends FragmentActivity {
         changeLocation();
 
 
-        logoutButton = findViewById(R.id.logoutButton);
-        mAuth = FirebaseAuth.getInstance();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() == null){
-                    startActivity(new Intent(BaseActivity.this, LoginActivity.class));
+
+
+
+            logoutButton = findViewById(R.id.logoutButton);
+            mAuth = FirebaseAuth.getInstance();
+
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    if (firebaseAuth.getCurrentUser() == null) {
+                        startActivity(new Intent(BaseActivity.this, LoginActivity.class));
+                    }
                 }
-            }
-        };
-        logoutButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-            }
-        });
+            };
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAuth.signOut();
+                }
+            });
 
 
-    }
+        }
+
 
 
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        if (mAuth.getCurrentUser() == null) {
+            finish();
+            startActivity(new Intent(this, SignUpActivity.class));
+            mAuth.addAuthStateListener(mAuthListener);
+        }
     }
 
 
@@ -83,10 +95,7 @@ public class BaseActivity extends FragmentActivity {
 
 
 
-            android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, new ProfileFragment(), "profileFragment")
-                    .addToBackStack(null)
-                    .commit();
+
         }
 
 
@@ -95,10 +104,7 @@ public class BaseActivity extends FragmentActivity {
 
 
 
-            android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, new FeedFragment(), "feedFragment")
-                    .addToBackStack(null)
-                    .commit();
+
         }
 
 

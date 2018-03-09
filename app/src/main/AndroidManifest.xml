@@ -43,8 +43,9 @@
         <activity android:name=".BaseActivity" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/sign_in"></activity>
-        <activity android:name=".ForgotPasswordActivity"></activity>
+            android:label="@string/sign_in" />
+        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".WelcomeActivity"></activity>
     </application>
 
 </manifest>
