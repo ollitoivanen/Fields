@@ -1,12 +1,11 @@
 package com.fields.curiumx.fields;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,89 +23,61 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
-public class BaseActivity extends FragmentActivity {
-
-
-
-
+public class FeedActivity extends Activity {
 
     Button logoutButton;
     FirebaseAuth mAuth;
-    FirebaseAuth.AuthStateListener mAuthListener;
-
-
-
-
-
-
-
-
-
     int REQUEST_CHECK_SETTINGS;
     LocationRequest mLocationRequest;
+    FirebaseAuth.AuthStateListener mAuthListener;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(mAuthListener);
+
+        if (mAuth.getCurrentUser()== null){
+            finish();
+            startActivity(new Intent(FeedActivity.this, SignUpActivity.class));
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         createLocationRequest();
         changeLocation();
+        mAuth = FirebaseAuth.getInstance();
 
 
+if (mAuth.getCurrentUser() != null) {
 
 
-
-
-            logoutButton = findViewById(R.id.logoutButton);
-            mAuth = FirebaseAuth.getInstance();
-
-            mAuthListener = new FirebaseAuth.AuthStateListener() {
-                @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    if (firebaseAuth.getCurrentUser() == null) {
-                        startActivity(new Intent(BaseActivity.this, LoginActivity.class));
-                    }
+    FirebaseUser user = mAuth.getCurrentUser();
+    TextView nameTest = findViewById(R.id.nameTest);
+    nameTest.setText(user.getDisplayName());
+}
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null){
+                    finish();
+                    startActivity(new Intent(FeedActivity.this, SignUpActivity.class));
                 }
-            };
-            logoutButton.setOnClickListener(new View.OnClickListener() {
+            }
+        };
+
+        logoutButton = findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mAuth.signOut();
+
                 }
             });
-
-
-        }
-
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mAuth.getCurrentUser() == null) {
-            finish();
-            startActivity(new Intent(this, SignUpActivity.class));
-            mAuth.addAuthStateListener(mAuthListener);
-        }
     }
-
-
-
-    public void onProfileClick(View view) {
-
-
-
-
-        }
-
-
-
-    public void onFeedClick(View view){
-
-
-
-
-        }
-
 
 
     public void onExploreClick(View view) {
@@ -148,7 +119,7 @@ public class BaseActivity extends FragmentActivity {
                         // Show the dialog by calling startResolutionForResult(),
                         // and check the result in onActivityResult().
                         ResolvableApiException resolvable = (ResolvableApiException) e;
-                        resolvable.startResolutionForResult(BaseActivity.this,
+                        resolvable.startResolutionForResult(FeedActivity.this,
                                 REQUEST_CHECK_SETTINGS);
                     } catch (IntentSender.SendIntentException sendEx) {
                         // Ignore the error.

@@ -3,7 +3,6 @@ package com.fields.curiumx.fields;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -142,17 +141,21 @@ user = mAuth.getCurrentUser();
                     .setPhotoUri(Uri.parse(profileImageUrl))
                     .build();
 
+
+
             user.updateProfile(profile)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(WelcomeActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(WelcomeActivity.this, BaseActivity.class));
+                                startActivity(new Intent(WelcomeActivity.this, FeedActivity.class));
                             }
                         }
                     });
         }
+
+
     }
 
 

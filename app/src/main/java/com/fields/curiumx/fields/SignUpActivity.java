@@ -3,7 +3,6 @@ package com.fields.curiumx.fields;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
@@ -29,40 +28,31 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import static android.content.ContentValues.TAG;
 
 public class SignUpActivity extends Activity implements View.OnClickListener{
 
-    private FirebaseAuth mAuth;
-    EditText emailSignUp, passwordSignUp;
+    FirebaseAuth mAuth;
+    EditText emailSignUp, passwordSignUp, username;
     GoogleSignInClient mGoogleSignInClient;
     private final static int RC_SIGN_IN = 2;
     FirebaseAuth.AuthStateListener mAuthListener;
-    String name;
-
-
-
 
     @Override
     protected void onStart() {
         super.onStart();
-
+        mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(mAuthListener);
-    }
 
-    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
-        // Find the TextView that is inside of the SignInButton and set its text
-        for (int i = 0; i < signInButton.getChildCount(); i++) {
-            View v = signInButton.getChildAt(i);
 
-            if (v instanceof TextView) {
-                TextView tv = (TextView) v;
-                tv.setText(buttonText);
-                return;
-            }
+        if (mAuth.getCurrentUser() != null){
+            finish();
+            startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
         }
     }
+
 
 
     @Override
@@ -74,6 +64,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
 
         emailSignUp = findViewById(R.id.emailSignUp);
         emailSignUp.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        username = findViewById(R.id.username);
         passwordSignUp = findViewById(R.id.passwordSignUp);
         Button signUpButton = findViewById(R.id.signUpButton);
         TextView signInTextView = findViewById(R.id.signInTextView);
@@ -84,36 +75,19 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null){
-                    startActivity(new Intent(SignUpActivity.this, BaseActivity.class));
+                    startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
                 }
-
             }
         };
 
-        googleSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
-        });
-
+        googleSignInButton.setOnClickListener(this);
         signUpButton.setOnClickListener(this);
-        signInTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
-            }
-        });
-
-        mAuth = FirebaseAuth.getInstance();
-
-
+        signInTextView.setOnClickListener(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
@@ -121,6 +95,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
     public void registerUser() {
         String email = emailSignUp.getText().toString().trim();
         String password = passwordSignUp.getText().toString().trim();
+        String usernamee =  username.getText().toString().trim();
 
         if (email.isEmpty()) {
             emailSignUp.setError("Email is required");
@@ -146,18 +121,30 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
             return;
         }
 
+        if (usernamee.isEmpty()){
+            username.setError("Username is required");
+            username.requestFocus();
+            return;
+        }
+
+
+
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT)
                             .show();
-                    startActivity(new Intent(SignUpActivity.this, WelcomeActivity.class));
+                    String displayName = username.getText().toString();
+                    FirebaseUser user = mAuth.getCurrentUser();
+
+                    UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(displayName)
+                            .build();
+                    user.updateProfile(profile);
 
 
-
-
-
+                    startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
                 } else {
 
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -168,7 +155,6 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                     }
                 }
             }
-
         });
     }
 
@@ -208,22 +194,14 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(SignUpActivity.this, "Sign in successful", Toast.LENGTH_LONG)
                                     .show();
-
-
-                            //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.signUpActivity), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
-
-                        // ...
                     }
                 });
     }
-
-
 
     @Override
     public void onClick(View view) {
@@ -234,8 +212,27 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                 registerUser();
                 break;
 
+            case R.id.googleSignIn:
+                signIn();
+                break;
 
+            case R.id.signInTextView:
+                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
         }
-
     }
+
+    //Set the text of Google sign in button
+    protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
+        // Find the TextView that is inside of the SignInButton and set its text
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
+
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(buttonText);
+                return;
+            }
+        }
+    }
+    //Set the text of Google sign in button
 }

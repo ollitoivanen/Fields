@@ -5,7 +5,7 @@
     android:id="@+id/login_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fields.curiumx.fields.LoginActivity">
+    tools:context="com.fields.curiumx.fields.SignInActivity">
 
     <EditText
         android:id="@+id/emailSignIn"
