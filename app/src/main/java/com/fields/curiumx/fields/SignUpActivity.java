@@ -135,6 +135,8 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT)
                             .show();
+                    mAuth = FirebaseAuth.getInstance();
+
                     String displayName = username.getText().toString();
                     FirebaseUser user = mAuth.getCurrentUser();
 

@@ -45,7 +45,7 @@
             android:name=".SignInActivity"
             android:label="@string/sign_in" />
         <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".WelcomeActivity"></activity>
+        <activity android:name=".ProfileActivity"></activity>
     </application>
 
 </manifest>

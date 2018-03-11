@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -24,6 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 public class FeedActivity extends Activity {
+
+    ImageButton feedButton;
 
     Button logoutButton;
     FirebaseAuth mAuth;
@@ -46,19 +51,23 @@ public class FeedActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+        setContentView(R.layout.activity_feed);
         createLocationRequest();
         changeLocation();
         mAuth = FirebaseAuth.getInstance();
+        feedButton = findViewById(R.id.feed_button);
+        feedButton.setImageDrawable(getResources().getDrawable(R.drawable.home_green));
 
 
-if (mAuth.getCurrentUser() != null) {
 
+        if (mAuth.getCurrentUser() != null) {
+            FirebaseUser user = mAuth.getCurrentUser();
 
-    FirebaseUser user = mAuth.getCurrentUser();
-    TextView nameTest = findViewById(R.id.nameTest);
-    nameTest.setText(user.getDisplayName());
-}
+            if (user.getDisplayName() != null) {
+                TextView nameTest = findViewById(R.id.nameTest);
+                nameTest.setText(user.getDisplayName());
+            }
+        }
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -83,6 +92,10 @@ if (mAuth.getCurrentUser() != null) {
     public void onExploreClick(View view) {
         Intent intent = new Intent(this, ExploreActivity.class);
         startActivity(intent);
+    }
+
+    public void onFeedClick(View view){
+        recreate();
     }
 
     protected void createLocationRequest() {
@@ -127,6 +140,16 @@ if (mAuth.getCurrentUser() != null) {
                 }
             }
         });
+
+    }
+
+    public void onProfileClick(View view){
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, ProfileActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
+
 
     }
 
