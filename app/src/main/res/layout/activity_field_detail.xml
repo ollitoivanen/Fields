@@ -16,6 +16,7 @@
         android:layout_height="wrap_content" />
 
     <ImageButton
+        android:id="@+id/imTrainingHereButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/location_icon"
@@ -23,6 +24,19 @@
         style="?android:attr/borderlessButtonStyle"
         android:background="@color/colorPrimary"
 
+        />
+    <Button
+        android:id="@+id/imTrainingHereNoMoreButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/imTrainingHereButton"
+        android:text="I'm here no more"/>
+
+    <TextView
+        android:id="@+id/amountOfPeople"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/imTrainingHereNoMoreButton"
         />
 
 </android.support.constraint.ConstraintLayout>

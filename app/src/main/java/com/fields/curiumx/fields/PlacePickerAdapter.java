@@ -35,6 +35,9 @@ public class PlacePickerAdapter extends EmptyRecyclerView.Adapter<PlacePickerAda
         double latitude;
         double longitude;
 
+
+
+
         public ViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
@@ -90,6 +93,7 @@ public class PlacePickerAdapter extends EmptyRecyclerView.Adapter<PlacePickerAda
         holder.id = results.get(position).venue.id;
         holder.latitude = results.get(position).venue.location.lat;
         holder.longitude = results.get(position).venue.location.lng;
+
     }
 
     @Override

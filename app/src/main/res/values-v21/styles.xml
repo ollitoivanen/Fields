@@ -30,6 +30,8 @@
         <item name="android:colorAccent">@color/FieldsMenuItemNotSelected</item>
         <item name="android:colorBackground">@color/Background_Fields</item>
 
+        <item name="android:windowContentTransitions">true</item>
+
 
     </style>
 

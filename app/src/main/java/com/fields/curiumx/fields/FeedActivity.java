@@ -1,13 +1,17 @@
 package com.fields.curiumx.fields;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
@@ -19,93 +23,79 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
-public class BaseActivity extends FragmentActivity {
+public class FeedActivity extends Activity {
 
-
-
-
+    ImageButton feedButton;
 
     Button logoutButton;
     FirebaseAuth mAuth;
-    FirebaseAuth.AuthStateListener mAuthListener;
-
-
-
-
-
-
-    private static final int RC_SIGN_IN = 123;
-
     int REQUEST_CHECK_SETTINGS;
     LocationRequest mLocationRequest;
+    FirebaseAuth.AuthStateListener mAuthListener;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(mAuthListener);
+
+        if (mAuth.getCurrentUser()== null){
+            finish();
+            startActivity(new Intent(FeedActivity.this, SignUpActivity.class));
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+        setContentView(R.layout.activity_feed);
         createLocationRequest();
         changeLocation();
-
-
-        logoutButton = findViewById(R.id.logoutButton);
         mAuth = FirebaseAuth.getInstance();
+        feedButton = findViewById(R.id.feed_button);
+        feedButton.setImageDrawable(getResources().getDrawable(R.drawable.home_green));
 
+
+
+        if (mAuth.getCurrentUser() != null) {
+            FirebaseUser user = mAuth.getCurrentUser();
+
+            if (user.getDisplayName() != null) {
+                TextView nameTest = findViewById(R.id.nameTest);
+                nameTest.setText(user.getDisplayName());
+            }
+        }
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() == null){
-                    startActivity(new Intent(BaseActivity.this, LoginActivity.class));
+                    finish();
+                    startActivity(new Intent(FeedActivity.this, SignUpActivity.class));
                 }
             }
         };
-        logoutButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-            }
-        });
 
+        logoutButton = findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAuth.signOut();
 
+                }
+            });
     }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-
-
-    public void onProfileClick(View view) {
-
-
-
-            android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, new ProfileFragment(), "profileFragment")
-                    .addToBackStack(null)
-                    .commit();
-        }
-
-
-
-    public void onFeedClick(View view){
-
-
-
-            android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, new FeedFragment(), "feedFragment")
-                    .addToBackStack(null)
-                    .commit();
-        }
-
 
 
     public void onExploreClick(View view) {
         Intent intent = new Intent(this, ExploreActivity.class);
         startActivity(intent);
+    }
+
+    public void onFeedClick(View view){
+        recreate();
     }
 
     protected void createLocationRequest() {
@@ -142,7 +132,7 @@ public class BaseActivity extends FragmentActivity {
                         // Show the dialog by calling startResolutionForResult(),
                         // and check the result in onActivityResult().
                         ResolvableApiException resolvable = (ResolvableApiException) e;
-                        resolvable.startResolutionForResult(BaseActivity.this,
+                        resolvable.startResolutionForResult(FeedActivity.this,
                                 REQUEST_CHECK_SETTINGS);
                     } catch (IntentSender.SendIntentException sendEx) {
                         // Ignore the error.
@@ -150,6 +140,16 @@ public class BaseActivity extends FragmentActivity {
                 }
             }
         });
+
+    }
+
+    public void onProfileClick(View view){
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, ProfileActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
+
 
     }
 
