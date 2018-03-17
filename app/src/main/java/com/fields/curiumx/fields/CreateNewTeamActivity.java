@@ -58,8 +58,7 @@ public class CreateNewTeamActivity extends Activity {
             return;
         }
         
-        Map<String, Object> data1 = new HashMap<>();
-        data1.put("Country", teamCountryText);
+        TeamMap data1 = new TeamMap(teamNameText, teamCountryText);
         db.collection("Teams").document(teamNameText).set(data1);
 
         Map<String, Object> data = new HashMap<>();
