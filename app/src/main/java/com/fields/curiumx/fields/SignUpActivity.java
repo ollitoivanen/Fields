@@ -29,6 +29,10 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
@@ -39,6 +43,8 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
     GoogleSignInClient mGoogleSignInClient;
     private final static int RC_SIGN_IN = 2;
     FirebaseAuth.AuthStateListener mAuthListener;
+    String teamName = null;
+
 
     @Override
     protected void onStart() {
@@ -136,9 +142,19 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                     Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT)
                             .show();
                     mAuth = FirebaseAuth.getInstance();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+
 
                     String displayName = username.getText().toString();
                     FirebaseUser user = mAuth.getCurrentUser();
+                    String uid = user.getUid();
+                    Map<String, Object> data = new HashMap<>();
+                    //REmove
+                    data.put("User's team", "testing");
+                    db.collection("Users").document(uid).set(data);
+                    //REMOVE
 
                     UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                             .setDisplayName(displayName)

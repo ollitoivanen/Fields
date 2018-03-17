@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
@@ -35,6 +36,7 @@ public class FeedActivity extends Activity {
     int REQUEST_CHECK_SETTINGS;
     LocationRequest mLocationRequest;
     FirebaseAuth.AuthStateListener mAuthListener;
+    TextView teamCardView;
 
     @Override
     protected void onStart() {
@@ -57,6 +59,14 @@ public class FeedActivity extends Activity {
         mAuth = FirebaseAuth.getInstance();
         feedButton = findViewById(R.id.feed_button);
         feedButton.setImageDrawable(getResources().getDrawable(R.drawable.home_green));
+
+        teamCardView = findViewById(R.id.team);
+        teamCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FeedActivity.this, TeamActivity.class));
+            }
+        });
 
 
 
