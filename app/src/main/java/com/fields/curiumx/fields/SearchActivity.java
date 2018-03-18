@@ -1,6 +1,7 @@
 package com.fields.curiumx.fields;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,23 +42,26 @@ public class SearchActivity extends Activity {
     LinearLayoutManager linearLayoutManager;
 
     @BindView(R.id.teamRecycler)
-    RecyclerView teamRecycler;
+    EmptyRecyclerView teamRecycler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         init();
-        findTeam();
 
         search = findViewById(R.id.search);
         textView = findViewById(R.id.textViews);
+
+        teamRecycler.setEmptyView(textView);
 
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return true;
+                    findTeam();
+                adapter.startListening();
+                return false;
             }
 
             @Override
@@ -67,16 +71,36 @@ public class SearchActivity extends Activity {
         });
     }
 
-    private void init(){
+
+
+
+
+
+
+    public void init(){
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         teamRecycler.setLayoutManager(linearLayoutManager);
         db = FirebaseFirestore.getInstance();
     }
 
+    public class teamHolder extends EmptyRecyclerView.ViewHolder {
+        @BindView(R.id.name)
+        TextView textName;
+        @BindView(R.id.country)
+        TextView textCountry;
 
-    private void findTeam(){
+        public teamHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
 
-        Query query = db.collection("Teams");
+
+    public void findTeam(){
+        text = search.getQuery().toString();
+
+
+        Query query = db.collection("Teams").whereEqualTo("teamNameText", text);
 
         FirestoreRecyclerOptions<TeamMap> response = new FirestoreRecyclerOptions.Builder<TeamMap>()
                 .setQuery(query, TeamMap.class)
@@ -84,9 +108,19 @@ public class SearchActivity extends Activity {
 
         adapter = new FirestoreRecyclerAdapter<TeamMap, teamHolder>(response) {
             @Override
-            public void onBindViewHolder(teamHolder holder, int position, TeamMap model) {
+            public void onBindViewHolder(teamHolder holder, int position, final TeamMap model) {
                 holder.textName.setText(model.getTeamNameText());
                 holder.textCountry.setText(model.getTeamCountryText());
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), DetailTeamActivity.class);
+                        intent.putExtra("name", model.getTeamNameText());
+                        intent.putExtra("country", model.getTeamCountryText());
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override
@@ -108,17 +142,14 @@ public class SearchActivity extends Activity {
 
 
 
-    public class teamHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.name)
-        TextView textName;
-       @BindView(R.id.country)
-       TextView textCountry;
 
-        public teamHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
+
 
 
 

@@ -4,32 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fields.curiumx.fields.SearchActivity">
+    tools:context="com.fields.curiumx.fields.DetailTeamActivity">
 
-    <SearchView
-        android:id="@+id/search"
+    <TextView
+        android:id="@+id/teamName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <TextView
-        android:id="@+id/textViews"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
-        android:gravity="center"
-        android:text="No results found"
-        />
-
-    <com.fields.curiumx.fields.EmptyRecyclerView
-        android:id="@+id/teamRecycler"
+        android:id="@+id/teamCountry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/search"
-        >
-
-    </com.fields.curiumx.fields.EmptyRecyclerView>
-
-
+        app:layout_constraintTop_toBottomOf="@id/teamName"/>
 
 </android.support.constraint.ConstraintLayout>
