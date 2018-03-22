@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -44,6 +45,8 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
     private final static int RC_SIGN_IN = 2;
     FirebaseAuth.AuthStateListener mAuthListener;
     String teamName = null;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
 
     @Override
@@ -142,7 +145,6 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                     Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT)
                             .show();
                     mAuth = FirebaseAuth.getInstance();
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
 
@@ -151,10 +153,8 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                     FirebaseUser user = mAuth.getCurrentUser();
                     String uid = user.getUid();
                     Map<String, Object> data = new HashMap<>();
-                    //REmove
-                    data.put("User's team", "testing");
+                    data.put("User's team", null);
                     db.collection("Users").document(uid).set(data);
-                    //REMOVE
 
                     UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                             .setDisplayName(displayName)
@@ -210,6 +210,20 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            final String uid = user.getUid();
+                            db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (!task.getResult().exists()){
+                                        Map<String, Object> data1 = new HashMap<>();
+                                        //REmove
+                                        data1.put("User's team", null);
+                                        db.collection("Users").document(uid).set(data1);
+                                        //REMOVE need tesitng!!! or remove completly
+                                    }
+                                }
+                            });
+
                             Toast.makeText(SignUpActivity.this, "Sign in successful", Toast.LENGTH_LONG)
                                     .show();
                         } else {

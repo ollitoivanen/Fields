@@ -12,6 +12,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -24,6 +26,7 @@ public class CreateNewTeamActivity extends Activity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
+
 
 
     @Override
@@ -41,10 +44,12 @@ public class CreateNewTeamActivity extends Activity {
         });
     }
 
+
+
     public void saveTeam(){
-        String teamNameText = teamName.getText().toString();
-        String teamCountryText = teamCountry.getText().toString();
-        String username = user.getDisplayName();
+        final String teamNameText = teamName.getText().toString();
+        final String teamCountryText = teamCountry.getText().toString();
+        final String username = user.getDisplayName();
 
         if (teamNameText.isEmpty()){
             teamName.setError("Team name is required");
@@ -57,30 +62,50 @@ public class CreateNewTeamActivity extends Activity {
             teamCountry.requestFocus();
             return;
         }
-        
-        TeamMap data1 = new TeamMap(teamNameText, teamCountryText);
-        db.collection("Teams").document(teamNameText).set(data1);
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("username", username);
-        db.collection("Teams").document(teamNameText).collection("TeamUsers").document(uid).set(data);
-
-
-
-        Map<String, Object> data2 = new HashMap<>();
-        data2.put("User's team", teamNameText);
-
-        db.collection("Users").document(uid).set(data2).addOnCompleteListener(new OnCompleteListener<Void>() {
+        //Check if team with the same name already exists
+        db.collection("Teams").document(teamNameText).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.getResult().exists()){
+                    teamName.setError("Team with same name already exists");
+                    teamName.requestFocus();
+
+                }else{
+                    //If team with same name doesn't exist, save it
+                    db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+
+
+                            //Check if user is already in a team
+                            if (documentSnapshot.get("User's team") == null){
+                                TeamMap data1 = new TeamMap(teamNameText, teamCountryText);
+                                db.collection("Teams").document(teamNameText).set(data1);
+
+                                Map<String, Object> data = new HashMap<>();
+                                data.put("username", username);
+
+                                db.collection("Teams").document(teamNameText).collection("TeamUsers").document(uid).set(data);
+                                Map<String, Object> data2 = new HashMap<>();
+                                data2.put("User's team", teamNameText);
+
+                                db.collection("Users").document(uid).set(data2).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()){
+                                            Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                            }else{
+                                Toast.makeText(getApplicationContext(), "You are already in a team", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }
             }
         });
-
-
-
-
     }
 }

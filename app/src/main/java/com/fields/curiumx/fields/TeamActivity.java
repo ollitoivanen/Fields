@@ -17,6 +17,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,8 @@ public class TeamActivity extends Activity {
     Button createNewTeamButton;
     Button joinTeamButton;
     TextView createTeamText;
+    TextView teamTextName;
+    TextView teamTextCountry;
 
 
 
@@ -36,11 +39,13 @@ public class TeamActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users").document(uid);
         createNewTeamButton = findViewById(R.id.createNewTeamButton);
         joinTeamButton = findViewById(R.id.joinTeamButton);
         createTeamText = findViewById(R.id.createTeamText);
+        teamTextName = findViewById(R.id.teamName12);
+        teamTextCountry = findViewById(R.id.teamName13);
 
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -66,12 +71,36 @@ public class TeamActivity extends Activity {
                            startActivity(new Intent(TeamActivity.this, SearchActivity.class));
                        }
                    });
-                }
+                }else {
+                   String testt = documentSnapshot.get("User's team").toString();
+
+                   db.collection("Teams").whereEqualTo("teamNameText", testt).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                       @Override
+                       public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                           QuerySnapshot querySnapshot = task.getResult();
+                           DocumentSnapshot documentSnapshot1 = querySnapshot.getDocuments().get(0);
+                           String nameBoi = documentSnapshot1.get("teamNameText").toString();
+                           String countryBoi = documentSnapshot1.get("teamCountryText").toString();
+                           teamTextName.setText(nameBoi);
+                           teamTextCountry.setText(countryBoi);
+                           //Show users team in the TeamActivity, needs to be optimized
+                       }
+                   });
+
+                       }
             }
         });
 
 
 
+
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
     }
 }

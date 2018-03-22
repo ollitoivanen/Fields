@@ -53,7 +53,6 @@ public class PlacePickerAdapter extends EmptyRecyclerView.Adapter<PlacePickerAda
             // Creates an intent to direct the user to a map view
             Context context = name.getContext();
             Intent i = new Intent(context, DetailFieldActivity.class);
-            //TODO change the click from map to fields details
             // Passes the crucial venue details onto the map view
             i.putExtra("name", name.getText());
             i.putExtra("ID", id);

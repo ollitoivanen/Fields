@@ -28,14 +28,29 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+
+import javax.xml.datatype.Duration;
+
 import static android.content.ContentValues.TAG;
 
 public class ProfileActivity extends Activity {
     ImageButton profileButton;
     TextView testCurrentField;
+    TextView username;
+    TextView usersTeam;
     DocumentReference reference;
     String currentField;
+    String UserName;
+    String UserTeam;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    long placeHolder;
+    String placeHolder2;
 
 
     @Override
@@ -47,28 +62,95 @@ public class ProfileActivity extends Activity {
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
 
         testCurrentField = findViewById(R.id.testCurrentField);
+        username = findViewById(R.id.userName);
+        usersTeam = findViewById(R.id.usersTeam);
+        final Date currentTime = Calendar.getInstance().getTime();
+        final String stringCurrentTime = currentTime.toString();
+
+
+
 
 
         String uid = user.getUid();
+        UserName = user.getDisplayName();
+        username.setText(UserName);
         reference = FirebaseFirestore.getInstance().collection("Users").document(uid);
 
-        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+        Runnable runnable = new Runnable() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if (documentSnapshot != null && documentSnapshot.exists()){
-                        currentField = documentSnapshot.getData().toString();
-                        testCurrentField.setText(currentField);
-                        Log.d(TAG, "document:" + documentSnapshot.getData());
-                    }else {
-                        Log.d(TAG, "no such file");
+
+            public void run() {
+                reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            final DocumentSnapshot documentSnapshot = task.getResult();
+
+
+                            if (documentSnapshot.get("Current Field name")!=null){
+
+                                Map<String,Object> map = documentSnapshot.getData();
+                                Date checkDate = (Date) map.get("timestamp");
+                                Date currentTime = Calendar.getInstance().getTime();
+                                long diff = currentTime.getTime() - checkDate.getTime();
+                                long seconds = diff/1000;
+                                long minutes = seconds/60;
+                                long hours = minutes/60;
+                                long days = hours/24;
+
+                                if (hours < 1){
+                                    placeHolder = minutes;
+                                    placeHolder2 = placeHolder + " " + "minutes";
+                                } else if (days < 1){
+                                    placeHolder = hours;
+                                    placeHolder2 = placeHolder + " " + "hours";
+                                }else {
+                                    placeHolder = days;
+                                    placeHolder2 = placeHolder2 + " " + "days";
+                                }
+
+                                testCurrentField.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        String venueID = documentSnapshot.get("Current Field ID").toString();
+
+                                        Intent intent = new Intent(ProfileActivity.this, DetailFieldActivity.class);
+                                        intent.putExtra("ID", venueID);
+                                        intent.putExtra("name", currentField);
+                                        startActivity(intent);
+                                    }
+                                });
+
+
+
+
+
+
+
+                                currentField = documentSnapshot.get("Current Field name").toString();
+                                testCurrentField.setText("Last seen at:"+  " " + currentField + "," + " " + placeHolder2 + " " + "ago");
+                            }else{
+                                testCurrentField.setText("Not at any field");
+                            }
+
+                            if (documentSnapshot.get("User's team")!=null){
+                                UserTeam = documentSnapshot.get("User's team").toString();
+                                usersTeam.setText(UserTeam);
+
+
+                            }else {
+                                usersTeam.setText("Not at any team");
+                            }
+                        }else {
+                            Log.d(TAG, "no such file");
+                        }
+
                     }
-                }else {
-                    Log.d(TAG, "get failed with" + task.getException());
-                }
+                });
             }
-        });
+        };
+runnable.run();
 
 
 

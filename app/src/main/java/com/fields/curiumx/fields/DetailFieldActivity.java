@@ -23,12 +23,17 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.joda.time.DateTimeUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,8 +61,6 @@ public class DetailFieldActivity extends Activity {
     int size;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -67,8 +70,6 @@ public class DetailFieldActivity extends Activity {
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         imTrainingHereButton = findViewById(R.id.imTrainingHereButton);
-        imTrainingHereNoMore = findViewById(R.id.imTrainingHereNoMoreButton);
-        imTrainingHereNoMore.setVisibility(View.GONE);
 
         amountOfPeople = findViewById(R.id.amountOfPeople);
 
@@ -78,48 +79,18 @@ public class DetailFieldActivity extends Activity {
         setTitle(venueName);
         TextView fieldName = findViewById(R.id.fieldName);
         fieldName.setText(venueName);
-        peopleHereColRef = db.collection("Fields").document(venueID).collection("People Here");
-        reference = db.collection("Fields").document(venueID);
 
 
 
 
-        peopleHereColRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                                 @Override
-                                                 public void onEvent(QuerySnapshot value, FirebaseFirestoreException e) {
-                                                      Log.d(TAG, "gg" + value.size());
-                                                      amountOfPeople.setText(String.valueOf(value.size()));
-
-                                                 }
-                                             });
-
-
-
-        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("Users").whereEqualTo("Current Field ID", venueID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (!task.getResult().exists()) {
-                    Map<String, Object> initialData = new HashMap<>();
-                    initialData.put(FIELD_NAME, venueName);
-                    reference.set(initialData);
-
-
-                }
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                amountOfPeople.setText(String.valueOf(task.getResult().size()));
             }
         });
-
-        peopleHereColRef.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().exists()) {
-                    imTrainingHereNoMore.setVisibility(View.VISIBLE);
-                } else {
-                    imTrainingHereNoMore.setVisibility(View.GONE);
-                }
-            }
-        });
-
     }
+
 
     @Override
     protected void onStart() {
@@ -130,15 +101,29 @@ public class DetailFieldActivity extends Activity {
                 onButtonPressImHere();
             }
         });
-
-        imTrainingHereNoMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onButtonPressImHereNoMore();
-            }
-        });
     }
 
+    public void onButtonPressImHere() {
+
+        db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                    if (!documentSnapshot.get("Current Field ID").toString().equals(venueID)) {
+                        //It WORKS!!!!!!
+
+
+                        db.collection("Users").document(uid).update("Current Field ID", venueID);
+                        db.collection("Users").document(uid).update("Current Field name", venueName);
+                        db.collection("Users").document(uid).update("timestamp", FieldValue.serverTimestamp());
+
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "You are already at this field. Check out first.", Toast.LENGTH_LONG).show();
+                    }
+                }
+        });
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -149,36 +134,4 @@ public class DetailFieldActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    public void onButtonPressImHere() {
-
-peopleHereColRef.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-    @Override
-    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-        if (!task.getResult().exists()){
-            Map<String, Object> data = new HashMap<>();
-            data.put("testing", 0);
-            data.put("name", user.getDisplayName());
-            peopleHereColRef.document(uid).set(data);
-            imTrainingHereNoMore.setVisibility(View.VISIBLE);
-        }else {
-            Toast.makeText(getApplicationContext(), "You are already here", Toast.LENGTH_SHORT).show();
-        }
-    }
-});
-    }
-
-    public void onButtonPressImHereNoMore(){
-        peopleHereColRef.document(uid).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(getApplicationContext(), "You are not training here anymore", Toast.LENGTH_SHORT).show();
-                imTrainingHereNoMore.setVisibility(View.GONE);
-            }
-        });
-
-    }
-    }
-
-
-
+}
