@@ -16,7 +16,8 @@
         android:src="@drawable/field_photo3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
 
     <LinearLayout
@@ -69,13 +70,15 @@
 
     <TextView
         android:id="@+id/testCurrentField"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="22dp"
         android:layout_marginStart="16dp"
-        android:text="Current field"
-        app:layout_constraintLeft_toRightOf="@id/profilePhoto"
-        app:layout_constraintTop_toBottomOf="@id/usersTeam" />
+        android:textStyle="bold"
+
+        app:layout_constraintTop_toBottomOf="@id/usersTeam"
+        android:lines="2"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/userName"
@@ -83,11 +86,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Username"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/profilePhoto"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/usersTeam"
@@ -95,7 +98,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginStart="16dp"
-        android:text="User's team"
         app:layout_constraintLeft_toRightOf="@id/profilePhoto"
-        app:layout_constraintTop_toBottomOf="@id/userName" />
+        app:layout_constraintTop_toBottomOf="@id/userName"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="visible"/>
 </android.support.constraint.ConstraintLayout>

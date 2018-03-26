@@ -9,7 +9,9 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -51,7 +53,14 @@ public class ProfileActivity extends Activity {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     long placeHolder;
     String placeHolder2;
+    ProgressBar progressBar;
+    ImageView profileImage;
 
+    @Override
+    protected void onRestart() {
+        progressBar.setVisibility(View.GONE);
+        super.onRestart();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +69,13 @@ public class ProfileActivity extends Activity {
 
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
+        profileImage = findViewById(R.id.profilePhoto);
 
         testCurrentField = findViewById(R.id.testCurrentField);
         username = findViewById(R.id.userName);
         usersTeam = findViewById(R.id.usersTeam);
-        final Date currentTime = Calendar.getInstance().getTime();
-        final String stringCurrentTime = currentTime.toString();
-
-
+        progressBar = findViewById(R.id.progress_bar);
+        setTitle("Profile");
 
 
 
@@ -77,18 +85,21 @@ public class ProfileActivity extends Activity {
         reference = FirebaseFirestore.getInstance().collection("Users").document(uid);
 
 
-        Runnable runnable = new Runnable() {
-            @Override
 
-            public void run() {
                 reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        testCurrentField.setVisibility(View.VISIBLE);
+                        username.setVisibility(View.VISIBLE);
+                        usersTeam.setVisibility(View.VISIBLE);
+                        profileImage.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        //Progressbar doesn't go away when coming back
                         if (task.isSuccessful()){
                             final DocumentSnapshot documentSnapshot = task.getResult();
 
 
-                            if (documentSnapshot.get("Current Field name")!=null){
+                            if (!documentSnapshot.get("currentFieldName").toString().equals("Not at any field")){
 
                                 Map<String,Object> map = documentSnapshot.getData();
                                 Date checkDate = (Date) map.get("timestamp");
@@ -122,12 +133,6 @@ public class ProfileActivity extends Activity {
                                     }
                                 });
 
-
-
-
-
-
-
                                 currentField = documentSnapshot.get("Current Field name").toString();
                                 testCurrentField.setText("Last seen at:"+  " " + currentField + "," + " " + placeHolder2 + " " + "ago");
                             }else{
@@ -149,14 +154,14 @@ public class ProfileActivity extends Activity {
                     }
                 });
             }
-        };
-runnable.run();
 
 
 
 
 
-    }
+
+
+
 
     public void onExploreClick(View view) {
         Intent intent = new Intent(this, ExploreActivity.class);
@@ -164,7 +169,6 @@ runnable.run();
     }
 
     public void onProfileClick(View view){
-        recreate();
     }
 
     
@@ -178,4 +182,6 @@ runnable.run();
 
 
     }
+
+
 }

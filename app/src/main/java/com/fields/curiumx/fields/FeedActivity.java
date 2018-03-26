@@ -37,6 +37,7 @@ public class FeedActivity extends Activity {
     LocationRequest mLocationRequest;
     FirebaseAuth.AuthStateListener mAuthListener;
     TextView teamCardView;
+    TextView searchCardView;
 
     @Override
     protected void onStart() {
@@ -56,9 +57,17 @@ public class FeedActivity extends Activity {
         setContentView(R.layout.activity_feed);
         createLocationRequest();
         changeLocation();
+        setTitle("Feed");
         mAuth = FirebaseAuth.getInstance();
         feedButton = findViewById(R.id.feed_button);
         feedButton.setImageDrawable(getResources().getDrawable(R.drawable.home_green));
+        searchCardView = findViewById(R.id.search);
+        searchCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FeedActivity.this, SearchActivity.class));
+            }
+        });
 
         teamCardView = findViewById(R.id.team);
         teamCardView.setOnClickListener(new View.OnClickListener() {
@@ -70,14 +79,7 @@ public class FeedActivity extends Activity {
 
 
 
-        if (mAuth.getCurrentUser() != null) {
-            FirebaseUser user = mAuth.getCurrentUser();
 
-            if (user.getDisplayName() != null) {
-                TextView nameTest = findViewById(R.id.nameTest);
-                nameTest.setText(user.getDisplayName());
-            }
-        }
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -105,7 +107,6 @@ public class FeedActivity extends Activity {
     }
 
     public void onFeedClick(View view){
-        recreate();
     }
 
     protected void createLocationRequest() {

@@ -1,8 +1,11 @@
 package com.fields.curiumx.fields;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +38,8 @@ public class CreateNewTeamActivity extends Activity {
         setContentView(R.layout.activity_create_new_team);
         teamName = findViewById(R.id.teamName);
         teamCountry  = findViewById(R.id.teamCountry);
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         saveTeamButton = findViewById(R.id.saveTeamButton);
         saveTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,17 +93,21 @@ public class CreateNewTeamActivity extends Activity {
                                 data.put("username", username);
 
                                 db.collection("Teams").document(teamNameText).collection("TeamUsers").document(uid).set(data);
-                                Map<String, Object> data2 = new HashMap<>();
-                                data2.put("User's team", teamNameText);
 
-                                db.collection("Users").document(uid).set(data2).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                                db.collection("Users").document(uid).update("User's team", teamNameText)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()){
-                                            Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+                                            startActivity(new Intent(CreateNewTeamActivity.this, TeamActivity.class));
+                                            Toast.makeText(getApplicationContext(), "Team created successfully", Toast.LENGTH_LONG).show();
+                                            finish();
+
                                         }
                                     }
                                 });
+
                             }else{
                                 Toast.makeText(getApplicationContext(), "You are already in a team", Toast.LENGTH_LONG).show();
                             }
@@ -108,4 +117,15 @@ public class CreateNewTeamActivity extends Activity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

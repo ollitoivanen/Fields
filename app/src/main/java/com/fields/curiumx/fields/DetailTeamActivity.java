@@ -1,8 +1,12 @@
 package com.fields.curiumx.fields;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,17 +39,18 @@ public class DetailTeamActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_team);
-
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         textName = findViewById(R.id.teamName);
         textCountry = findViewById(R.id.teamCountry);
         joinButton = findViewById(R.id.join);
-        setTitle(teamName);
+
 
 
         Bundle info = getIntent().getExtras();
         teamName = info.getString("name");
         teamCountry = info.getString("country");
-
+        setTitle(teamName);
         textName.setText(teamName);
 
         final String username = user.getDisplayName();
@@ -64,13 +69,18 @@ public class DetailTeamActivity extends Activity {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("User's team", teamName);
-                db.collection("Users").document(uid).set(data);
+                db.collection("Users").document(uid).update("User's team", teamName);
 
                 Map<String, Object> data1 =new HashMap<>();
                 data1.put("username", username);
-                db.collection("Teams").document(teamName).collection("TeamUsers").document(uid).set(data1);
+                db.collection("Teams").document(teamName).collection("TeamUsers").document(uid).set(data1)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        startActivity(new Intent(DetailTeamActivity.this, TeamActivity.class));
+                        finish();
+                    }
+                });
             }
         });
 
@@ -82,5 +92,14 @@ public class DetailTeamActivity extends Activity {
 
 
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

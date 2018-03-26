@@ -9,8 +9,12 @@
     <SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toBottomOf="@id/activityBar"
+        android:background="@color/cardview_light_background"
+
         />
+
 
     <TextView
         android:id="@+id/textViews"
@@ -30,6 +34,50 @@
 
     </com.fields.curiumx.fields.EmptyRecyclerView>
 
+    <LinearLayout
+        android:id="@+id/activityBar"
+        android:transitionName="bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:clickable="true"
+        android:focusable="true">
 
+        <Button
+            android:id="@+id/users_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/cardview_light_background"
+
+            android:text="Users" />
+
+        <Button
+            android:id="@+id/teams_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/cardview_light_background"
+            android:scaleType="fitCenter"
+            android:padding="7dp"
+            android:text="Teams"
+             />
+
+        <Button
+            android:id="@+id/fields_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/cardview_light_background"
+            android:text="Fields"
+             />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

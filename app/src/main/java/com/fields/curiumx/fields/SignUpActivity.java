@@ -148,16 +148,18 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
 
 
 
+                    String displayName0 = username.getText().toString().trim();
+                    String displayName = displayName0.toLowerCase();
+                    String displayName1 = displayName.replace(" ", "");
 
-                    String displayName = username.getText().toString();
                     FirebaseUser user = mAuth.getCurrentUser();
                     String uid = user.getUid();
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("User's team", null);
-                    db.collection("Users").document(uid).set(data);
+
+                    UserMap userMap = new UserMap(displayName1, uid, "Not at any field", "Not at any field", null, displayName0);
+                    db.collection("Users").document(uid).set(userMap);
 
                     UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(displayName)
+                            .setDisplayName(displayName0)
                             .build();
                     user.updateProfile(profile);
 
@@ -209,23 +211,34 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            final FirebaseUser user = mAuth.getCurrentUser();
                             final String uid = user.getUid();
                             db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (!task.getResult().exists()){
-                                        Map<String, Object> data1 = new HashMap<>();
-                                        //REmove
-                                        data1.put("User's team", null);
-                                        db.collection("Users").document(uid).set(data1);
-                                        //REMOVE need tesitng!!! or remove completly
+
+                                        String displayName = user.getDisplayName().toLowerCase().trim();
+                                        String displayName1 = displayName.replace(" ", "");
+                                        UserMap userMap = new UserMap(displayName1, uid,
+                                                "Not at any field",
+                                                "Not at any field", null, user.getDisplayName());
+
+                                        db.collection("Users").document(uid).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(SignUpActivity.this, "Sign Up successful", Toast.LENGTH_LONG)
+                                                        .show();
+                                            }
+                                        });
+                                    }else{
+                                        Toast.makeText(SignUpActivity.this, "Sign In successful", Toast.LENGTH_LONG)
+                                                .show();
                                     }
                                 }
                             });
 
-                            Toast.makeText(SignUpActivity.this, "Sign in successful", Toast.LENGTH_LONG)
-                                    .show();
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

@@ -28,6 +28,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
@@ -38,6 +44,8 @@ public class SignInActivity extends Activity implements View.OnClickListener{
     GoogleSignInClient mGoogleSignInClient;
     private final static int RC_SIGN_IN = 3;
     FirebaseAuth.AuthStateListener mAuthListener;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onStart() {
@@ -193,14 +201,38 @@ public class SignInActivity extends Activity implements View.OnClickListener{
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
+                            final FirebaseUser user = mAuth.getCurrentUser();
+                            final String uid = user.getUid();
+                            db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (!task.getResult().exists()){
+                                        String displayName = user.getDisplayName().toLowerCase().trim();
+                                        String displayName1 = displayName.replace(" ", "");
+                                        UserMap userMap = new UserMap(displayName1, uid,
+                                                "Not at any field",
+                                                "Not at any field", null, user.getDisplayName());
 
-                            Toast.makeText(SignInActivity.this, "Sign in successful", Toast.LENGTH_LONG)
-                                    .show();
+
+                                        db.collection("Users").document(uid).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(SignInActivity.this, "Sign Up successful", Toast.LENGTH_LONG)
+                                                        .show();
+                                            }
+                                        });
+                                    }else{
+                                        Toast.makeText(SignInActivity.this, "Sign In successful", Toast.LENGTH_LONG)
+                                                .show();
+                                    }
+                                }
+                            });
+
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.login_activity), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(R.id.signUpActivity), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
