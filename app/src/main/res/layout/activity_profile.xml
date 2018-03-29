@@ -6,6 +6,30 @@
     android:layout_height="match_parent"
     tools:context="com.fields.curiumx.fields.ProfileActivity">
 
+
+    <TextView
+        android:id="@+id/friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/usersTeam"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/DividerColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/friends" />
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilePhoto"
         android:layout_width="70dp"
@@ -14,101 +38,101 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/field_photo3"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <LinearLayout
         android:id="@+id/activityBar"
-        android:transitionName="bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:transitionName="bar"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:clickable="true"
-        android:focusable="true">
+        app:layout_constraintRight_toRightOf="parent">
 
-    <ImageButton
-        android:id="@+id/feed_button"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/cardview_light_background"
-        android:onClick="onFeedClick"
+        <ImageButton
+            android:id="@+id/feed_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/cardview_light_background"
+            android:onClick="onFeedClick"
 
-        android:src="@drawable/home_icon" />
+            android:src="@drawable/home_icon" />
 
-    <ImageButton
-        android:id="@+id/explore_button"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/colorPrimary"
-        android:elevation="5dp"
-        android:onClick="onExploreClick"
-        android:scaleType="fitCenter"
-        android:padding="7dp"
-        android:src="@drawable/location_icon" />
+        <ImageButton
+            android:id="@+id/explore_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:elevation="5dp"
+            android:onClick="onExploreClick"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/location_icon" />
 
-    <ImageButton
-        android:id="@+id/profile_button"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/cardview_light_background"
-        android:onClick="onProfileClick"
-        android:src="@drawable/person_icon" />
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/profile_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/cardview_light_background"
+            android:onClick="onProfileClick"
+            android:src="@drawable/person_icon" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/testCurrentField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
         android:layout_marginStart="16dp"
-        android:textStyle="bold"
-
-        app:layout_constraintTop_toBottomOf="@id/usersTeam"
+        android:layout_marginTop="16dp"
         android:lines="2"
-        android:visibility="gone"/>
+
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
 
     <TextView
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/profilePhoto"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/usersTeam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
         app:layout_constraintLeft_toRightOf="@id/profilePhoto"
-        app:layout_constraintTop_toBottomOf="@id/userName"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@id/userName" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="visible"/>
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

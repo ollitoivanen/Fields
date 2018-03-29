@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -55,6 +56,8 @@ public class ProfileActivity extends Activity {
     String placeHolder2;
     ProgressBar progressBar;
     ImageView profileImage;
+    TextView friends;
+
 
     @Override
     protected void onRestart() {
@@ -66,7 +69,9 @@ public class ProfileActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        final String friendText = getString(R.string.friend);
+        final String friendsText = getString(R.string.friends);
+        friends = findViewById(R.id.friends);
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
         profileImage = findViewById(R.id.profilePhoto);
@@ -75,7 +80,13 @@ public class ProfileActivity extends Activity {
         username = findViewById(R.id.userName);
         usersTeam = findViewById(R.id.usersTeam);
         progressBar = findViewById(R.id.progress_bar);
-        setTitle("Profile");
+        friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ProfileActivity.this, FriendListActivity.class));
+            }
+        });
+
 
 
 
@@ -85,6 +96,17 @@ public class ProfileActivity extends Activity {
         reference = FirebaseFirestore.getInstance().collection("Users").document(uid);
 
 
+        reference.collection("Friends").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.getResult().size() == 1 ){
+                    friends.setText(String.valueOf(task.getResult().size()) + " " + friendText);
+                    }else {
+                    friends.setText(String.valueOf(task.getResult().size()) + " " + friendsText);
+
+                }
+            }
+        });
 
                 reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -93,10 +115,12 @@ public class ProfileActivity extends Activity {
                         username.setVisibility(View.VISIBLE);
                         usersTeam.setVisibility(View.VISIBLE);
                         profileImage.setVisibility(View.VISIBLE);
+                        friends.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
-                        //Progressbar doesn't go away when coming back
                         if (task.isSuccessful()){
                             final DocumentSnapshot documentSnapshot = task.getResult();
+                            setTitle(documentSnapshot.get("username").toString());
+
 
 
                             if (!documentSnapshot.get("currentFieldName").toString().equals("Not at any field")){

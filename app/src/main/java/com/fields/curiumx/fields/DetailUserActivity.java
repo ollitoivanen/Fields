@@ -26,6 +26,10 @@ public class DetailUserActivity extends Activity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String userID;
     String displayNameString;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    String uid = user.getUid();
+
 
 
 
@@ -40,15 +44,16 @@ public class DetailUserActivity extends Activity {
         displayNameString = info.getString("displayName");
 
 
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String uid = user.getUid();
         removeFriend = findViewById(R.id.unFollowButton);
         DisplayName = findViewById(R.id.username);
         DisplayName.setText(displayNameString);
         setTitle(usernameString);
+    }
 
-        db.collection("Users").document(uid).collection("Friends").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+    db.collection("Users").document(uid).collection("Friends").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.getResult().exists()){
@@ -68,6 +73,7 @@ public class DetailUserActivity extends Activity {
 
                 Map<String, Object> data = new HashMap<>();
                 data.put("username", usernameString);
+                data.put("userID", userID);
                 db.collection("Users").document(uid).collection("Friends").document(userID).set(data);
             }
         });

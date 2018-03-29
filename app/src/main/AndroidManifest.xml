@@ -81,7 +81,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SearchActivity" />
         </activity>
-        <activity android:name=".DetailUserActivity"></activity>
+        <activity android:name=".DetailUserActivity" />
+        <activity android:name=".FriendListActivity"></activity>
     </application>
 
 </manifest>
