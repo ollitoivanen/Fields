@@ -7,13 +7,19 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -25,12 +31,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class FeedActivity extends Activity {
 
     ImageButton feedButton;
-
+    TextView textView;
     Button logoutButton;
     FirebaseAuth mAuth;
     int REQUEST_CHECK_SETTINGS;
@@ -38,6 +50,16 @@ public class FeedActivity extends Activity {
     FirebaseAuth.AuthStateListener mAuthListener;
     TextView teamCardView;
     TextView searchCardView;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+
+
+
+
+
 
     @Override
     protected void onStart() {
@@ -58,6 +80,11 @@ public class FeedActivity extends Activity {
         createLocationRequest();
         changeLocation();
         setTitle("Feed");
+
+
+
+
+        textView = findViewById(R.id.textview);
         mAuth = FirebaseAuth.getInstance();
         feedButton = findViewById(R.id.feed_button);
         feedButton.setImageDrawable(getResources().getDrawable(R.drawable.home_green));

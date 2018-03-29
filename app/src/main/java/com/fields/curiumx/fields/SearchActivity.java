@@ -46,9 +46,9 @@ public class SearchActivity extends Activity implements View.OnClickListener{
     Button usersButton;
     Button teamsButton;
     Button fieldsButton;
-
     @BindView(R.id.teamRecycler)
     EmptyRecyclerView teamRecycler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,6 +162,7 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                         intent.putExtra("displayName", model.getDisplayName());
                         intent.putExtra("username", model.getUsername());
                         intent.putExtra("userID", model.getUserID());
+                        intent.putExtra("currentFieldName", model.getCurrentFieldName());
                         startActivity(intent);
                     }
                 });

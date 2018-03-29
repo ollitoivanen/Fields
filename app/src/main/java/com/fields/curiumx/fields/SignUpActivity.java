@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -31,63 +33,48 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import static android.content.ContentValues.TAG;
 
 public class SignUpActivity extends Activity implements View.OnClickListener{
 
-    FirebaseAuth mAuth;
     EditText emailSignUp, passwordSignUp, username;
-    GoogleSignInClient mGoogleSignInClient;
-    private final static int RC_SIGN_IN = 2;
-    FirebaseAuth.AuthStateListener mAuthListener;
     String teamName = null;
+
+    FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    GoogleSignInClient mGoogleSignInClient;
+    private final static int RC_SIGN_IN = 2;
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth = FirebaseAuth.getInstance();
-        mAuth.addAuthStateListener(mAuthListener);
-
-
-        if (mAuth.getCurrentUser() != null){
-            finish();
-            startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
+    InputFilter filter = new InputFilter() {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            String filtered = "";
+            for (int i = start; i < end; i++) {
+                char character = source.charAt(i);
+                if (!Character.isWhitespace(character)) {
+                    filtered += character;
+                }
+            }
+            return filtered;
         }
-    }
-
-
+        };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-
-
+        username = findViewById(R.id.username);
+        username.setFilters(new InputFilter[]{filter});
         emailSignUp = findViewById(R.id.emailSignUp);
         emailSignUp.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        username = findViewById(R.id.username);
         passwordSignUp = findViewById(R.id.passwordSignUp);
         Button signUpButton = findViewById(R.id.signUpButton);
         TextView signInTextView = findViewById(R.id.signInTextView);
         SignInButton googleSignInButton = findViewById(R.id.googleSignIn);
         setGooglePlusButtonText(googleSignInButton, "Sign up with Google account");
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() != null){
-                    startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
-                }
-            }
-        };
 
         googleSignInButton.setOnClickListener(this);
         signUpButton.setOnClickListener(this);
@@ -98,86 +85,99 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        //Sends user to FeedActivity if user is not null
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() != null) {
+                    startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
+                }
+            }
+        });
+
+
     }
 
 
     public void registerUser() {
-        String email = emailSignUp.getText().toString().trim();
-        String password = passwordSignUp.getText().toString().trim();
-        String usernamee =  username.getText().toString().trim();
+        final String emailString = emailSignUp.getText().toString().trim();
+        final String passwordString = passwordSignUp.getText().toString().trim();
+        final String usernameString =  username.getText().toString().trim();
 
-        if (email.isEmpty()) {
+
+
+        if (emailString.isEmpty()) {
             emailSignUp.setError("Email is required");
             emailSignUp.requestFocus();
             return;
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()) {
             emailSignUp.setError("Please enter a valid email");
             emailSignUp.requestFocus();
             return;
         }
 
-        if (password.isEmpty()) {
+        if (passwordString.isEmpty()) {
             passwordSignUp.setError("Password is required");
             passwordSignUp.requestFocus();
             return;
         }
 
-        if (password.length() < 6) {
+        if (passwordString.length() < 6) {
             passwordSignUp.setError("Minimum length of password should be 6");
             passwordSignUp.requestFocus();
             return;
         }
 
-        if (usernamee.isEmpty()){
-            username.setError("Username is required");
+        if (usernameString.isEmpty()){
+            username.setError("Name is required");
             username.requestFocus();
             return;
         }
 
-
-
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        //Checks if user with same username already already exists
+        db.collection("Users").whereEqualTo("username", usernameString).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT)
-                            .show();
-                    mAuth = FirebaseAuth.getInstance();
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.getResult().isEmpty()){
+                    mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), "User registered successfully", Toast.LENGTH_SHORT)
+                                        .show();
 
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String uid = user.getUid();
 
+                                UserMap userMap = new UserMap(usernameString, uid, "Not at any field",
+                                        "Not at any field", null, null);
+                                db.collection("Users").document(uid).set(userMap);
+                                startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
 
-                    String displayName0 = username.getText().toString().trim();
-                    String displayName = displayName0.toLowerCase();
-                    String displayName1 = displayName.replace(" ", "");
+                            } else {
 
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    String uid = user.getUid();
-
-                    UserMap userMap = new UserMap(displayName1, uid, "Not at any field", "Not at any field", null, displayName0);
-                    db.collection("Users").document(uid).set(userMap);
-
-                    UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(displayName0)
-                            .build();
-                    user.updateProfile(profile);
-
-
-                    startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
-                } else {
-
-                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                        Toast.makeText(getApplicationContext(), "You are already registered", Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                    Toast.makeText(getApplicationContext(), "You are already registered", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    });
+                    }else{
+                    username.setError("This username is taken");
+                    username.requestFocus();
                 }
             }
         });
-    }
+        }
 
+
+    //Google signup stuff
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -199,8 +199,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                 // ...
             }
         } else Toast.makeText(SignUpActivity.this, "Auth went wrong", Toast.LENGTH_SHORT);
-
-    }
+        }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
@@ -209,7 +208,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Sign in success
                             Log.d(TAG, "signInWithCredential:success");
                             final FirebaseUser user = mAuth.getCurrentUser();
                             final String uid = user.getUid();

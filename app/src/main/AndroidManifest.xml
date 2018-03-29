@@ -82,7 +82,8 @@
                 android:value=".SearchActivity" />
         </activity>
         <activity android:name=".DetailUserActivity" />
-        <activity android:name=".FriendListActivity"></activity>
+        <activity android:name=".FriendListActivity" />
+        <activity android:name=".SetDisplayNameActivity"></activity>
     </application>
 
 </manifest>

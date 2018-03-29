@@ -20,12 +20,14 @@ import java.util.Map;
 
 public class DetailUserActivity extends Activity {
     TextView DisplayName;
+    TextView currentField;
     Button addFriend;
     String usernameString;
     Button removeFriend;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String userID;
     String displayNameString;
+    String currentFieldName;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     String uid = user.getUid();
@@ -42,11 +44,14 @@ public class DetailUserActivity extends Activity {
         usernameString = info.getString("username");
         userID = info.getString("userID");
         displayNameString = info.getString("displayName");
+        currentFieldName = info.getString("currentFieldName");
 
 
+        currentField = findViewById(R.id.currentField);
         removeFriend = findViewById(R.id.unFollowButton);
         DisplayName = findViewById(R.id.username);
         DisplayName.setText(displayNameString);
+        currentField.setText("Currently at:" + " " + currentFieldName);
         setTitle(usernameString);
     }
 

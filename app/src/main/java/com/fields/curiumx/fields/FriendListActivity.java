@@ -95,8 +95,7 @@ public class FriendListActivity extends Activity {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot ds = task.getResult();
-                                db.collection("Users").document(ds.get("userID").toString()).get()
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                db.collection("Users").document(ds.get("userID").toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
                                         DocumentSnapshot ds1 = task1.getResult();
@@ -104,6 +103,7 @@ public class FriendListActivity extends Activity {
                                         intent.putExtra("displayName",ds1.get("displayName").toString());
                                         intent.putExtra("username", ds1.get("username").toString());
                                         intent.putExtra("userID", ds1.get("userID").toString());
+                                        intent.putExtra("currentFieldName", ds1.get("currentFieldName").toString());
                                         startActivity(intent);
                                     }
                                 });
