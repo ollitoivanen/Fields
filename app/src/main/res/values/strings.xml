@@ -64,7 +64,13 @@
     <string name="logo">Logo</string>
     <string name="welcome">Welcome to Fields! Let\'s create an account for you</string>
     <string name="welcome_back">Welcome back!</string>
+    <string name="forgot_password_text">Please enter your user\'s email so we can send you a message to change the password! You\'ll be back on Fields in no time </string>
 
+    <string-array name="role_spinner">
+        <item>Player</item>
+        <item>Coach</item>
+        <item>Other team member</item>
+    </string-array>
 </resources>
 
 
