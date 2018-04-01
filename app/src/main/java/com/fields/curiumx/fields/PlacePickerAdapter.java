@@ -2,29 +2,22 @@ package com.fields.curiumx.fields;
 
 import  android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.List;
 
 
 //PlacePickerAdapter represents the adapter for attaching venue data to the RecyclerView within
- //PlacePickerActivity.  This adapter will handle a list of incoming FoursquareResults and parse them
+//PlacePickerActivity.  This adapter will handle a list of incoming FoursquareResults and parse them
 // into the view.
-
 public class PlacePickerAdapter extends EmptyRecyclerView.Adapter<PlacePickerAdapter.ViewHolder> {
 
     // The application context for getting resources
-    private Context context;
-
+     private Context context;
     // The list of results from the Foursquare API
-     List<FoursquareResults> results;
-
+    private List<FoursquareResults> results;
 
     public static class ViewHolder extends EmptyRecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -35,13 +28,9 @@ public class PlacePickerAdapter extends EmptyRecyclerView.Adapter<PlacePickerAda
         double latitude;
         double longitude;
 
-
-
-
-        public ViewHolder(View v) {
+        private ViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
-
             // Gets the appropriate view for each venue detail
             name = v.findViewById(R.id.placePickerItemName);
             distance = v.findViewById(R.id.placePickerItemDistance);
@@ -49,21 +38,15 @@ public class PlacePickerAdapter extends EmptyRecyclerView.Adapter<PlacePickerAda
 
         @Override
         public void onClick(View v) {
-
             // Creates an intent to direct the user to a map view
             Context context = name.getContext();
             Intent i = new Intent(context, DetailFieldActivity.class);
-            // Passes the crucial venue details onto the map view
             i.putExtra("name", name.getText());
             i.putExtra("ID", id);
             i.putExtra("latitude", latitude);
             i.putExtra("longitude", longitude);
-
-
-            // Transitions to the map view.
-            context.startActivity(i);
-
-        }
+            i.putExtra("distance", distance.getText());
+            }
     }
 
     public PlacePickerAdapter(Context context, List<FoursquareResults> results) {
@@ -75,17 +58,14 @@ public class PlacePickerAdapter extends EmptyRecyclerView.Adapter<PlacePickerAda
     public PlacePickerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_place_picker, parent, false);
         return new ViewHolder(v);
-
-
-    }
+        }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-
-
         // Sets each view with the appropriate venue details
         holder.name.setText(results.get(position).venue.name);
+
+        //TODO if settings is set to miles, convert
         holder.distance.setText(Integer.toString(results.get(position).venue.location.distance) + "m");
 
         // Stores additional venue details for the map view

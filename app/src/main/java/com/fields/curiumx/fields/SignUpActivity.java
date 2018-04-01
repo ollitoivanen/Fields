@@ -55,11 +55,32 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ConstraintLayout container1;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         setTitle("");
+        animateLogo();
+
+
+
+        roleSpinner = findViewById(R.id.role);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.role_spinner, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        roleSpinner.setAdapter(adapter);
+        welcome = findViewById(R.id.welcome);
+        realName = findViewById(R.id.real_name);
+        username = findViewById(R.id.username);
+        emailSignUp = findViewById(R.id.emailSignUp);
+        emailSignUp.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        passwordSignUp = findViewById(R.id.passwordSignUp);
+        signUpButton = findViewById(R.id.signUpButton);
+        signInTextView = findViewById(R.id.signInTextView);
+        container1 = findViewById(R.id.cont);
+
+        signUpButton.setOnClickListener(this);
+        signInTextView.setOnClickListener(this);
 
         //Filters spaces from username
         InputFilter filter = new InputFilter() {
@@ -74,64 +95,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                 return filtered;
             }
         };
-
-        final ImageView logo = findViewById(R.id.logo);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(logo, "y", 1000f, 0f )
-                .setDuration(2000);
-        animator.addListener(new Animator.AnimatorListener(){
-            @Override
-            public void onAnimationStart(Animator animator) {
-                 logo.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                 }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                 }
-
-                 @Override
-                 public void onAnimationCancel(Animator animator) {
-                 logo.setLayerType(View.LAYER_TYPE_NONE, null);
-                 }
-
-                 @Override
-                 public void onAnimationEnd(Animator animator) {
-                     logo.post(new Runnable() {
-                         @Override
-                         public void run() {
-                             logo.setLayerType(View.LAYER_TYPE_NONE, null);
-                             container1.setVisibility(View.VISIBLE);
-                             container1.setAlpha(0.0f);
-                             container1.animate().alpha(1.0f).setDuration(1000).setListener(new AnimatorListenerAdapter() {
-                                 @Override
-                                 public void onAnimationEnd(Animator animation) {
-                                     super.onAnimationEnd(animation);
-                                 }
-                             });
-                         }
-                     });
-            }
-        });
-        animator.start();
-
-        roleSpinner = findViewById(R.id.role);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.role_spinner, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        roleSpinner.setAdapter(adapter);
-
-
-        welcome = findViewById(R.id.welcome);
-        realName = findViewById(R.id.real_name);
-        username = findViewById(R.id.username);
         username.setFilters(new InputFilter[]{filter});
-        emailSignUp = findViewById(R.id.emailSignUp);
-        emailSignUp.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        passwordSignUp = findViewById(R.id.passwordSignUp);
-        signUpButton = findViewById(R.id.signUpButton);
-        signInTextView = findViewById(R.id.signInTextView);
-        container1 = findViewById(R.id.cont);
-
-        signUpButton.setOnClickListener(this);
-        signInTextView.setOnClickListener(this);
 
         //Sends user to FeedActivity if user is not null
         mAuth = FirebaseAuth.getInstance();
@@ -150,6 +114,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
         final String passwordString = passwordSignUp.getText().toString().trim();
         final String usernameString = username.getText().toString().trim();
         final String realNameString = realName.getText().toString().trim();
+        final String userRole = roleSpinner.getSelectedItem().toString();
 
         if (realNameString.isEmpty()){
             realName.setError("Please give real name");
@@ -203,7 +168,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                                 String uid = user.getUid();
 
                                 UserMap userMap = new UserMap(usernameString, uid, "Not at any field",
-                                        "Not at any field", null, realNameString);
+                                        "Not at any field", null, realNameString, userRole);
                                 db.collection("Users").document(uid).set(userMap);
 
                                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
@@ -232,6 +197,46 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                     }
             }
         });
+    }
+
+    public void animateLogo(){
+        final ImageView logo = findViewById(R.id.logo);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(logo, "y", 1000f, 0f )
+                .setDuration(2000);
+        animator.addListener(new Animator.AnimatorListener(){
+            @Override
+            public void onAnimationStart(Animator animator) {
+                logo.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+                logo.setLayerType(View.LAYER_TYPE_NONE, null);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                logo.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        logo.setLayerType(View.LAYER_TYPE_NONE, null);
+                        container1.setVisibility(View.VISIBLE);
+                        container1.setAlpha(0.0f);
+                        container1.animate().alpha(1.0f).setDuration(1000).setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        animator.start();
     }
 
     @Override

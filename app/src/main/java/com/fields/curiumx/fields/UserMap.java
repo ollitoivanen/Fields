@@ -9,17 +9,19 @@ public class UserMap {
     private String currentFieldID;
     private String currentFieldName;
     private String usersTeam;
+    private String userRole;
 
     public  UserMap(){
 
     }
-    public UserMap(String username, String userID, String currentFieldID, String currentFieldName, String usersTeam, String displayName){
+    public UserMap(String username, String userID, String currentFieldID, String currentFieldName, String usersTeam, String displayName, String userRole){
         this.username = username;
         this.userID = userID;
         this.currentFieldID = currentFieldID;
         this.currentFieldName = currentFieldName;
         this.usersTeam = usersTeam;
         this.displayName = displayName;
+        this.userRole = userRole;
     }
 
     public String getUsername(){
@@ -46,4 +48,7 @@ public class UserMap {
         return displayName;
     }
 
+    public String getUserRole() {
+        return userRole;
+    }
 }

@@ -19,7 +19,10 @@ public interface FoursquareService {
                                       @Query("llAcc") double llAcc,
                                       @Query("categoryId") String categoryId,
                                       @Query("radius") int radius,
-                                      @Query("limit")int limit);
+                                      @Query("limit")int limit,
+                                      @Query("photoLimit") int pl);
+
+
 
 
 

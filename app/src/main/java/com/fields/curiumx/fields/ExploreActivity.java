@@ -76,6 +76,7 @@ public class ExploreActivity extends Activity {
     String categoryId = "4cce455aebf7b749d5e191f5";
     int radius = 10000;
     int limit = 20;
+    int pl = 1;
     //Parameters used to modify Foursquare results
 
     int REQUEST_FINE_LOCATION;
@@ -127,7 +128,8 @@ public class ExploreActivity extends Activity {
                                      llAcc,
                                      categoryId,
                                      radius,
-                                     limit);
+                                     limit,
+                                     pl);
 
                              fieldsCall.enqueue(new Callback<FoursquareJSON>() {
                                  @Override
@@ -255,7 +257,6 @@ public class ExploreActivity extends Activity {
                             requestPermissions();
                             popupWindow.dismiss();
                         }
-                        //TODO show message to accept the location in settings
                     });
 
                 }

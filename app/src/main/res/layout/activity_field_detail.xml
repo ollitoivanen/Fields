@@ -32,7 +32,10 @@
     <TextView
         android:id="@+id/fieldDistance"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="97dp"
+        android:textStyle="bold"/>
 
     <ImageButton
         android:id="@+id/imTrainingHereButton"
@@ -70,17 +73,24 @@
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
        app:layout_constraintTop_toBottomOf="@id/fieldName"
         app:layout_constraintLeft_toRightOf="@id/FieldImage"
-        android:visibility="gone"
+        android:visibility="visible"
+
         />
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="232dp"
+        android:layout_marginEnd="156dp"
+        android:layout_marginStart="156dp"
+        android:layout_marginTop="231dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
 </android.support.constraint.ConstraintLayout>
 
 

@@ -15,40 +15,54 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="295dp"
-        android:layout_height="131dp"
+        android:layout_width="287dp"
+        android:layout_height="124dp"
         android:contentDescription="@string/logo"
         android:scaleType="centerCrop"
         android:src="@drawable/fields_full"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/cont"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/cont"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cont"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo">
 
-        app:layout_constraintTop_toBottomOf="@id/logo"
-        android:layout_marginTop="16dp">
 
         <TextView
             android:id="@+id/welcome"
             android:layout_width="350dp"
             android:layout_height="49dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/welcome"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@id/role"
+            app:layout_constraintBottom_toTopOf="@id/im"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="16dp"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/im"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/imtext"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.093"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/welcome" />
 
         <Spinner
             android:id="@+id/role"
@@ -58,10 +72,8 @@
             android:layout_marginStart="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/welcome">
+            app:layout_constraintTop_toBottomOf="@id/im" />
 
-
-        </Spinner>
 
         <EditText
             android:id="@+id/real_name"
@@ -76,7 +88,7 @@
             app:layout_constraintBottom_toTopOf="@id/username"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/welcome" />
+            app:layout_constraintTop_toBottomOf="@id/im" />
 
         <EditText
             android:id="@+id/username"
@@ -126,7 +138,6 @@
             android:layout_height="60dp"
             android:layout_marginEnd="32dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
             android:backgroundTint="@color/colorPrimary"
             android:text="@string/sign_up"
             android:visibility="visible"
@@ -145,10 +156,13 @@
             android:text="@string/alread_have_an_account"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/signUpButton"
             tools:layout_editor_absoluteX="10dp" />
-    </android.support.constraint.ConstraintLayout>
 
+
+    </android.support.constraint.ConstraintLayout>
 
 
 
