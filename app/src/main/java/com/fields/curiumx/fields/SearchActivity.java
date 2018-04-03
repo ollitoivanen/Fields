@@ -1,23 +1,39 @@
 package com.fields.curiumx.fields;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,8 +62,66 @@ public class SearchActivity extends Activity implements View.OnClickListener{
     Button usersButton;
     Button teamsButton;
     Button fieldsButton;
+    CardView addNewField;
     @BindView(R.id.teamRecycler)
     EmptyRecyclerView teamRecycler;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    int REQUEST_FINE_LOCATION;
+
+    LayoutInflater layoutInflater;
+    PopupWindow popupWindow;
+    ConstraintLayout searchActivity;
+
+    public void gettingLocation(){
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location lastLocation) {
+                        // Got last known location. In some rare situations this can be null.
+
+
+                        if (lastLocation != null) {
+                            // Logic to handle location object
+
+                            // The user's current latitude, longitude, and location accuracy
+                            String ll = lastLocation.getLatitude() + "," + lastLocation.getLongitude();
+                            double llAcc = lastLocation.getAccuracy();
+                        } else {
+
+                            Toast.makeText(getApplicationContext(), "Mr. Jitters can't determine your current location!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+    }
+
+    public void requestPermissions() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                REQUEST_FINE_LOCATION);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == REQUEST_FINE_LOCATION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+                gettingLocation();
+
+            } else {
+
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+                Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +132,8 @@ public class SearchActivity extends Activity implements View.OnClickListener{
         ButterKnife.bind(this);
         init();
 
+        addNewField = findViewById(R.id.add_new_field);
+        addNewField.setOnClickListener(this);
         usersButton = findViewById(R.id.users_button);
         usersButton.setOnClickListener(this);
         teamsButton = findViewById(R.id.teams_button);
@@ -66,12 +142,44 @@ public class SearchActivity extends Activity implements View.OnClickListener{
         fieldsButton.setOnClickListener(this);
         search = findViewById(R.id.search);
         textView = findViewById(R.id.textViews);
-        usersButton.callOnClick();
+        fieldsButton.callOnClick();
         teamRecycler.setEmptyView(textView);
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        //Popup items
+        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        searchActivity = findViewById(R.id.search_activity);
+        final ConstraintLayout popUp = findViewById(R.id.popup);
+        final ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.location_prompt_popup, popUp);
+        popupWindow = new PopupWindow(container, 1000, 600, false);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        popupWindow.setElevation(100);
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            gettingLocation();
 
 
+        } else {
 
+            searchActivity.post(new Runnable() {
+                @Override
+                public void run() {
+                    popupWindow.showAtLocation(searchActivity, Gravity.CENTER_HORIZONTAL, 0, 0);
+                    Button okButton = container.findViewById(R.id.okButton);
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            requestPermissions();
+                            popupWindow.dismiss();
+                        }
+                    });
+
+                }
+            });
+
+
+        }
 
     }
 
@@ -186,6 +294,11 @@ public class SearchActivity extends Activity implements View.OnClickListener{
     }
 
 
+    public void findField(){
+
+    }
+
+
 
 
 
@@ -206,6 +319,7 @@ public class SearchActivity extends Activity implements View.OnClickListener{
         switch (view.getId()){
 
             case R.id.users_button:
+                addNewField.setVisibility(View.GONE);
                 usersButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 teamsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                 fieldsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
@@ -226,6 +340,7 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                 break;
 
             case R.id.teams_button:
+                addNewField.setVisibility(View.GONE);
                 teamsButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 usersButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                 fieldsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
@@ -249,8 +364,11 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                 fieldsButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 usersButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                 teamsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
-
+                findField();
                 break;
+
+            case R.id.add_new_field:
+                //startActivity(new Intent(SearchActivity.this, AddNewFieldActivity.class));
         }
 
     }

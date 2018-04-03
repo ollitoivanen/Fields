@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +55,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
     FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ConstraintLayout container1;
+    ProgressBar progressBar;
 
 
     @Override
@@ -78,6 +80,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
         signUpButton = findViewById(R.id.signUpButton);
         signInTextView = findViewById(R.id.signInTextView);
         container1 = findViewById(R.id.cont);
+        progressBar = findViewById(R.id.progress);
 
         signUpButton.setOnClickListener(this);
         signInTextView.setOnClickListener(this);
@@ -152,14 +155,17 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
         }
 
 
+
         //Checks if user with same username already already exists
         db.collection("Users").whereEqualTo("username", usernameString).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.getResult().isEmpty()){
+                        progressBar.setVisibility(View.VISIBLE);
                     mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            progressBar.setVisibility(View.GONE);
                             if (task.isSuccessful()) {
                                 Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT)
                                         .show();
@@ -167,8 +173,8 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 String uid = user.getUid();
 
-                                UserMap userMap = new UserMap(usernameString, uid, "Not at any field",
-                                        "Not at any field", null, realNameString, userRole);
+                                UserMap userMap = new UserMap(usernameString, uid, "",
+                                        "", null, realNameString, userRole, 0, "", "", "");
                                 db.collection("Users").document(uid).set(userMap);
 
                                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()

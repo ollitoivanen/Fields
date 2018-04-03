@@ -129,7 +129,7 @@ public class FeedActivity extends Activity {
 
 
     public void onExploreClick(View view) {
-        Intent intent = new Intent(this, ExploreActivity.class);
+        Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
 

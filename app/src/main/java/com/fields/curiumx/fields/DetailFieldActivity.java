@@ -118,8 +118,8 @@ public class DetailFieldActivity extends Activity {
 
         imTrainingHereButton.setVisibility(View.VISIBLE);
         imTrainingHereNoMore.setVisibility(View.GONE);
-        db.collection("Users").document(uid).update("currentFieldID", "Not at any field");
-        db.collection("Users").document(uid).update("currentFieldName", "Not at any field");
+        db.collection("Users").document(uid).update("currentFieldID", "");
+        db.collection("Users").document(uid).update("currentFieldName", "");
         db.collection("Users").document(uid).update("timestamp", null);
 
 

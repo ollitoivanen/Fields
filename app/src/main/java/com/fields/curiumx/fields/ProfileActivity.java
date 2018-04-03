@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -57,7 +59,14 @@ public class ProfileActivity extends Activity {
     ProgressBar progressBar;
     ImageView profileImage;
     TextView friends;
+    View divider;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_profile, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onRestart() {
@@ -75,6 +84,7 @@ public class ProfileActivity extends Activity {
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
         profileImage = findViewById(R.id.profilePhoto);
+        divider = findViewById(R.id.divider);
 
         testCurrentField = findViewById(R.id.testCurrentField);
         username = findViewById(R.id.userName);
@@ -117,13 +127,14 @@ public class ProfileActivity extends Activity {
                         profileImage.setVisibility(View.VISIBLE);
                         friends.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
+                        divider.setVisibility(View.VISIBLE);
                         if (task.isSuccessful()){
                             final DocumentSnapshot documentSnapshot = task.getResult();
                             setTitle(documentSnapshot.get("username").toString());
 
 
 
-                            if (!documentSnapshot.get("currentFieldName").toString().equals("Not at any field")){
+                            if (!documentSnapshot.get("currentFieldName").toString().equals("")){
 
                                 Map<String,Object> map = documentSnapshot.getData();
                                 Date checkDate = (Date) map.get("timestamp");
@@ -188,7 +199,7 @@ public class ProfileActivity extends Activity {
 
 
     public void onExploreClick(View view) {
-        Intent intent = new Intent(this, ExploreActivity.class);
+        Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
 

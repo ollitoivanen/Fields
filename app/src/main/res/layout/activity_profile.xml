@@ -11,13 +11,44 @@
         android:id="@+id/friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textStyle="bold"
         android:layout_gravity="center"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/usersTeam"
         android:layout_marginTop="30dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toEndOf="@id/trainings"
+        android:background="@drawable/rounded_view"
+        android:padding="10dp"
+        android:elevation="3dp"/>
+
+    <TextView
+        android:id="@+id/reputation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_view"
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/usersTeam"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:text="1000 reputation"
+        android:elevation="3dp"
+        android:layout_marginStart="12dp"/>
+
+    <TextView
+        android:id="@+id/trainings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_view"
+        android:padding="10dp"
+        app:layout_constraintStart_toEndOf="@id/reputation"
+        app:layout_constraintTop_toBottomOf="@id/usersTeam"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="12dp"
+        android:elevation="3dp"
+        android:textStyle="bold"
+        android:text="20 trainings"/>
 
 
 
@@ -28,7 +59,8 @@
         android:layout_marginTop="10dp"
         android:background="@color/DividerColor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/friends" />
+        app:layout_constraintTop_toBottomOf="@id/friends"
+        android:visibility="gone"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilePhoto"

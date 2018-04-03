@@ -10,11 +10,15 @@ public class UserMap {
     private String currentFieldName;
     private String usersTeam;
     private String userRole;
+    private int userReputation;
+    private String userBio;
+    private String position;
+    private String profilePic;
 
     public  UserMap(){
 
     }
-    public UserMap(String username, String userID, String currentFieldID, String currentFieldName, String usersTeam, String displayName, String userRole){
+    public UserMap(String username, String userID, String currentFieldID, String currentFieldName, String usersTeam, String displayName, String userRole, int userReputation, String userBio, String position, String profilePic){
         this.username = username;
         this.userID = userID;
         this.currentFieldID = currentFieldID;
@@ -22,6 +26,10 @@ public class UserMap {
         this.usersTeam = usersTeam;
         this.displayName = displayName;
         this.userRole = userRole;
+        this.userReputation = userReputation;
+        this.userBio = userBio;
+        this.position = position;
+        this.profilePic = profilePic;
     }
 
     public String getUsername(){
@@ -50,5 +58,21 @@ public class UserMap {
 
     public String getUserRole() {
         return userRole;
+    }
+
+    public int getUserReputation() {
+        return userReputation;
+    }
+
+    public String getUserBio() {
+        return userBio;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
     }
 }
