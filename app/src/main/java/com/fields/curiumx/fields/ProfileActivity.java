@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -61,11 +63,35 @@ public class ProfileActivity extends Activity {
     TextView friends;
     View divider;
 
+    private void loadUserInformation() {
+
+        if (user != null) {
+            if (user.getPhotoUrl() != null) {
+                Glide.with(this)
+                        .load(user.getPhotoUrl().toString())
+                        .into(profileImage);
+            }else{
+                profileImage.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.edit_profile, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.edit_profile:
+                Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+                intent.putExtra("DisplayName",user.getDisplayName());
+                startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -86,6 +112,8 @@ public class ProfileActivity extends Activity {
         profileImage = findViewById(R.id.profilePhoto);
         divider = findViewById(R.id.divider);
 
+        loadUserInformation();
+
         testCurrentField = findViewById(R.id.testCurrentField);
         username = findViewById(R.id.userName);
         usersTeam = findViewById(R.id.usersTeam);
@@ -96,9 +124,6 @@ public class ProfileActivity extends Activity {
                 startActivity(new Intent(ProfileActivity.this, FriendListActivity.class));
             }
         });
-
-
-
 
         String uid = user.getUid();
         UserName = user.getDisplayName();
