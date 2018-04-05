@@ -6,21 +6,108 @@
     android:layout_height="match_parent"
     tools:context=".EditProfileActivity">
 
+
     <TextView
-        android:id="@+id/realname_text"
-        android:layout_width="wrap_content"
+        android:id="@+id/press_text"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:text="@string/realname"
+        android:text="@string/press_text"
         app:layout_constraintTop_toBottomOf="@id/profilePhotoEdit"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+    android:id="@+id/realname_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="32dp"
+    android:layout_marginTop="8dp"
+    android:text="@string/realname"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/press_text" />
+
+
 
     <EditText
         android:id="@+id/display_name_change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/realname_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        />
+
+    <TextView
+        android:id="@+id/position_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/playing_position"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bio_edit_text" />
+
+
+
+    <Spinner
+        android:id="@+id/player_position"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/position_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        />
+
+    <TextView
+        android:id="@+id/bio_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/bio"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/display_name_change"
+        />
+
+    <Spinner
+        android:id="@+id/role_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/role_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        />
+
+    <TextView
+        android:id="@+id/role_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/imtext"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/player_position"
+        />
+
+    <EditText
+        android:id="@+id/bio_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bio_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         />
 
     <Button
@@ -29,18 +116,30 @@
         android:layout_height="wrap_content"
         android:text="@string/fui_button_text_save"
         android:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-
-        />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilePhotoEdit"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/field_photo3"
+        android:src="@drawable/profileim"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/save_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

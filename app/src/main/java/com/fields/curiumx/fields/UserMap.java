@@ -13,12 +13,13 @@ public class UserMap {
     private int userReputation;
     private String userBio;
     private String position;
-    private String profilePic;
 
     public  UserMap(){
 
     }
-    public UserMap(String username, String userID, String currentFieldID, String currentFieldName, String usersTeam, String displayName, String userRole, int userReputation, String userBio, String position, String profilePic){
+    public UserMap(String username, String userID, String currentFieldID, String currentFieldName,
+                   String usersTeam, String displayName, String userRole, int userReputation,
+                   String userBio, String position){
         this.username = username;
         this.userID = userID;
         this.currentFieldID = currentFieldID;
@@ -29,7 +30,6 @@ public class UserMap {
         this.userReputation = userReputation;
         this.userBio = userBio;
         this.position = position;
-        this.profilePic = profilePic;
     }
 
     public String getUsername(){
@@ -72,7 +72,5 @@ public class UserMap {
         return position;
     }
 
-    public String getProfilePic() {
-        return profilePic;
-    }
+
 }

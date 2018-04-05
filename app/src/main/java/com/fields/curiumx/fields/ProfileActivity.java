@@ -51,6 +51,8 @@ public class ProfileActivity extends Activity {
     TextView testCurrentField;
     TextView username;
     TextView usersTeam;
+    TextView bioText;
+    TextView roleText;
     DocumentReference reference;
     String currentField;
     String UserName;
@@ -62,6 +64,7 @@ public class ProfileActivity extends Activity {
     ImageView profileImage;
     TextView friends;
     View divider;
+    View divider2;
 
     private void loadUserInformation() {
 
@@ -71,7 +74,7 @@ public class ProfileActivity extends Activity {
                         .load(user.getPhotoUrl().toString())
                         .into(profileImage);
             }else{
-                profileImage.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
+                profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
             }
         }
     }
@@ -111,6 +114,9 @@ public class ProfileActivity extends Activity {
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
         profileImage = findViewById(R.id.profilePhoto);
         divider = findViewById(R.id.divider);
+        divider2 = findViewById(R.id.divider2);
+        roleText = findViewById(R.id.position_role_text);
+        bioText = findViewById(R.id.bio_text1);
 
         loadUserInformation();
 
@@ -153,9 +159,14 @@ public class ProfileActivity extends Activity {
                         friends.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
                         divider.setVisibility(View.VISIBLE);
+                        divider2.setVisibility(View.VISIBLE);
+                        bioText.setVisibility(View.VISIBLE);
+                        roleText.setVisibility(View.VISIBLE);
                         if (task.isSuccessful()){
                             final DocumentSnapshot documentSnapshot = task.getResult();
                             setTitle(documentSnapshot.get("username").toString());
+                            bioText.setText(documentSnapshot.get("userBio").toString());
+                            roleText.setText(documentSnapshot.get("userRole").toString() + ","+" " + documentSnapshot.get("position").toString());
 
 
 
@@ -202,11 +213,11 @@ public class ProfileActivity extends Activity {
                             if (documentSnapshot.get("User's team")!=null){
                                 UserTeam = documentSnapshot.get("User's team").toString();
                                 usersTeam.setText(UserTeam);
-
-
-                            }else {
+                                }else {
                                 usersTeam.setText("Not at any team");
                             }
+
+
                         }else {
                             Log.d(TAG, "no such file");
                         }

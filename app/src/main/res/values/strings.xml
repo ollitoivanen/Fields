@@ -70,12 +70,29 @@
     <string name="field_name">Field name</string>
     <string name="pick_location">Pick location from map</string>
     <string name="edit_profile_string">Edit profile</string>
+    <string name="press_text">Tap to change profile picture</string>
+    <string name="playing_position">Playing position</string>
+    <string name="bio">Bio</string>
 
     <string-array name="role_spinner">
         <item>Player</item>
         <item>Coach</item>
         <item>Other team member</item>
 
+    </string-array>
+
+    <string-array name="position_spinner">
+        <item>Goalkeeper</item>
+        <item>Left back</item>
+        <item>Right back</item>
+        <item>Center back</item>
+        <item>Middle field</item>
+        <item>Attacking middle field</item>
+        <item>Defending middle field</item>
+        <item>Left winger</item>
+        <item>Right winger</item>
+        <item>Striker</item>
+        <item>On the side of the field</item>
     </string-array>
 </resources>
 
