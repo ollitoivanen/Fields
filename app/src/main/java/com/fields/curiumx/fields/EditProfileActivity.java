@@ -50,6 +50,7 @@ public class EditProfileActivity extends Activity {
     private static final int CHOOSE_IMAGE = 101;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,44 +139,36 @@ public class EditProfileActivity extends Activity {
         if (displayNameString.isEmpty()) {
             displayNameChange.setError("Please enter valid name");
             displayNameChange.requestFocus();
-        }
-
-        if (displayNameString.length() > 50) {
-            displayNameChange.setError("Name should be under 50 characters");
-            displayNameChange.requestFocus();
-        }
-
-        if (bioText.length()>100){
+        }else if (bioText.length()>100){
             bio.setError("character limit is 100");
             bio.requestFocus();
-        }
-
-        progressBar.setVisibility(View.VISIBLE);
-        db.collection("Users").document(uid).update("displayName", displayNameString,
-                "position", playerPosition, "userBio", bioText, "userRole", userRole)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-
-                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(displayNameString)
-                            .build();
-                    user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+        }else {
+            progressBar.setVisibility(View.VISIBLE);
+            db.collection("Users").document(uid).update("displayName", displayNameString,
+                    "position", playerPosition, "userBio", bioText, "userRole", userRole)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(getApplicationContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.GONE);
-                            finish();
+                            if (task.isSuccessful()) {
+
+                                UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(displayNameString)
+                                        .build();
+                                user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(getApplicationContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
+                                        finish();
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Something went wrong. Please try again", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
-                } else {
-                    Toast.makeText(getApplicationContext(), "Something went wrong. Please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
-
+        }
 
     }
 

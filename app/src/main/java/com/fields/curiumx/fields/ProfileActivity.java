@@ -63,8 +63,7 @@ public class ProfileActivity extends Activity {
     ProgressBar progressBar;
     ImageView profileImage;
     TextView friends;
-    View divider;
-    View divider2;
+
 
     private void loadUserInformation() {
 
@@ -100,6 +99,10 @@ public class ProfileActivity extends Activity {
     @Override
     protected void onRestart() {
         progressBar.setVisibility(View.GONE);
+        loadChanges();
+        loadUserInformation();
+        UserName = user.getDisplayName();
+        username.setText(UserName);
         super.onRestart();
     }
 
@@ -113,8 +116,7 @@ public class ProfileActivity extends Activity {
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
         profileImage = findViewById(R.id.profilePhoto);
-        divider = findViewById(R.id.divider);
-        divider2 = findViewById(R.id.divider2);
+
         roleText = findViewById(R.id.position_role_text);
         bioText = findViewById(R.id.bio_text1);
 
@@ -140,91 +142,93 @@ public class ProfileActivity extends Activity {
         reference.collection("Friends").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.getResult().size() == 1 ){
+                if (task.getResult().size() == 1) {
                     friends.setText(String.valueOf(task.getResult().size()) + " " + friendText);
-                    }else {
+                } else {
                     friends.setText(String.valueOf(task.getResult().size()) + " " + friendsText);
 
                 }
             }
         });
+        loadChanges();
+    }
 
-                reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        testCurrentField.setVisibility(View.VISIBLE);
-                        username.setVisibility(View.VISIBLE);
-                        usersTeam.setVisibility(View.VISIBLE);
-                        profileImage.setVisibility(View.VISIBLE);
-                        friends.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                        divider.setVisibility(View.VISIBLE);
-                        divider2.setVisibility(View.VISIBLE);
-                        bioText.setVisibility(View.VISIBLE);
-                        roleText.setVisibility(View.VISIBLE);
-                        if (task.isSuccessful()){
-                            final DocumentSnapshot documentSnapshot = task.getResult();
-                            setTitle(documentSnapshot.get("username").toString());
-                            bioText.setText(documentSnapshot.get("userBio").toString());
-                            roleText.setText(documentSnapshot.get("userRole").toString() + ","+" " + documentSnapshot.get("position").toString());
+        public void loadChanges() {
+            reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    testCurrentField.setVisibility(View.VISIBLE);
+                    username.setVisibility(View.VISIBLE);
+                    usersTeam.setVisibility(View.VISIBLE);
+                    profileImage.setVisibility(View.VISIBLE);
+                    friends.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    bioText.setVisibility(View.VISIBLE);
+                    roleText.setVisibility(View.VISIBLE);
+                    if (task.isSuccessful()) {
+                        final DocumentSnapshot documentSnapshot = task.getResult();
+                        setTitle(documentSnapshot.get("username").toString());
+                        bioText.setText(documentSnapshot.get("userBio").toString());
+                        roleText.setText(documentSnapshot.get("userRole").toString() + "," + " " + documentSnapshot.get("position").toString());
 
 
+                        if (!documentSnapshot.get("currentFieldName").toString().equals("")) {
 
-                            if (!documentSnapshot.get("currentFieldName").toString().equals("")){
+                            Map<String, Object> map = documentSnapshot.getData();
+                            Date checkDate = (Date) map.get("timestamp");
+                            Date currentTime = Calendar.getInstance().getTime();
+                            long diff = currentTime.getTime() - checkDate.getTime();
+                            long seconds = diff / 1000;
+                            long minutes = seconds / 60;
+                            long hours = minutes / 60;
+                            long days = hours / 24;
 
-                                Map<String,Object> map = documentSnapshot.getData();
-                                Date checkDate = (Date) map.get("timestamp");
-                                Date currentTime = Calendar.getInstance().getTime();
-                                long diff = currentTime.getTime() - checkDate.getTime();
-                                long seconds = diff/1000;
-                                long minutes = seconds/60;
-                                long hours = minutes/60;
-                                long days = hours/24;
+                            if (hours < 1) {
+                                placeHolder = minutes;
+                                placeHolder2 = placeHolder + " " + "minutes";
+                            } else if (days < 1) {
+                                placeHolder = hours;
+                                placeHolder2 = placeHolder + " " + "hours";
+                            } else {
+                                placeHolder = days;
+                                placeHolder2 = placeHolder2 + " " + "days";
+                            }
 
-                                if (hours < 1){
-                                    placeHolder = minutes;
-                                    placeHolder2 = placeHolder + " " + "minutes";
-                                } else if (days < 1){
-                                    placeHolder = hours;
-                                    placeHolder2 = placeHolder + " " + "hours";
-                                }else {
-                                    placeHolder = days;
-                                    placeHolder2 = placeHolder2 + " " + "days";
+                            testCurrentField.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    String venueID = documentSnapshot.get("Current Field ID").toString();
+
+                                    Intent intent = new Intent(ProfileActivity.this, DetailFieldActivity.class);
+                                    intent.putExtra("ID", venueID);
+                                    intent.putExtra("name", currentField);
+                                    startActivity(intent);
                                 }
+                            });
 
-                                testCurrentField.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        String venueID = documentSnapshot.get("Current Field ID").toString();
-
-                                        Intent intent = new Intent(ProfileActivity.this, DetailFieldActivity.class);
-                                        intent.putExtra("ID", venueID);
-                                        intent.putExtra("name", currentField);
-                                        startActivity(intent);
-                                    }
-                                });
-
-                                currentField = documentSnapshot.get("Current Field name").toString();
-                                testCurrentField.setText("Last seen at:"+  " " + currentField + "," + " " + placeHolder2 + " " + "ago");
-                            }else{
-                                testCurrentField.setText("Not at any field");
-                            }
-
-                            if (documentSnapshot.get("User's team")!=null){
-                                UserTeam = documentSnapshot.get("User's team").toString();
-                                usersTeam.setText(UserTeam);
-                                }else {
-                                usersTeam.setText("Not at any team");
-                            }
-
-
-                        }else {
-                            Log.d(TAG, "no such file");
+                            currentField = documentSnapshot.get("Current Field name").toString();
+                            testCurrentField.setText("Last seen at:" + " " + currentField + "," + " " + placeHolder2 + " " + "ago");
+                        } else {
+                            testCurrentField.setText("Not at any field");
                         }
 
+                        if (documentSnapshot.get("User's team") != null) {
+                            UserTeam = documentSnapshot.get("User's team").toString();
+                            usersTeam.setText(UserTeam);
+                        } else {
+                            usersTeam.setText("Not at any team");
+                        }
+
+
+                    } else {
+                        Log.d(TAG, "no such file");
                     }
-                });
-            }
+
+                }
+            });
+        }
+
 
 
 

@@ -6,112 +6,149 @@
     android:layout_height="match_parent"
     tools:context="com.fields.curiumx.fields.ProfileActivity">
 
+    <ImageView
+        android:id="@+id/gradient"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:elevation="3dp"
+        android:src="@drawable/gradient_bg"
 
-    <TextView
-    android:id="@+id/position_role_text"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/profilePhoto"
-    android:layout_marginTop="28dp"
-    android:layout_marginStart="12dp"
-    android:layout_marginEnd="8dp"
-    android:textStyle="bold"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/position_role_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/gradient"
+        app:layout_constraintStart_toStartOf="@id/gradient"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        android:elevation="3dp"
+        android:gravity="center"
+
+         />
 
     <TextView
         android:id="@+id/bio_text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/position_role_text"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
         android:layout_marginTop="8dp"
-        android:visibility="gone"/>
-
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/gradient"
+        app:layout_constraintStart_toStartOf="@id/gradient"
+        app:layout_constraintTop_toBottomOf="@id/position_role_text"
+        android:elevation="3dp"
+        android:gravity="center"
+        android:maxLines="1"
+         />
 
     <TextView
         android:id="@+id/friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:layout_gravity="center"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/bio_text1"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@id/trainings"
+        android:layout_marginBottom="150dp"
         android:background="@drawable/rounded_view"
+        android:elevation="5dp"
         android:padding="10dp"
-        android:elevation="3dp"/>
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/profile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/gradient"
+        app:layout_constraintBottom_toBottomOf="@id/gradient"/>
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/rep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_view"
+        android:elevation="5dp"
+        app:layout_constraintTop_toBottomOf="@id/usersTeam"
+        app:layout_constraintStart_toStartOf="@id/gradient"
+        app:layout_constraintEnd_toEndOf="@id/gradient"
+        android:layout_marginTop="4dp">
     <TextView
         android:id="@+id/reputation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_view"
-        android:padding="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bio_text1"
-        android:layout_marginTop="30dp"
+        android:text="1000"
         android:textStyle="bold"
-        android:text="1000 reputation"
-        android:elevation="3dp"
-        android:layout_marginStart="8dp"/>
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingStart="7dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:paddingEnd="3dp"
+
+        />
+
+        <ImageView
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingEnd="5dp"
+            android:paddingStart="1dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/reps"
+            app:layout_constraintStart_toEndOf="@id/reputation"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </android.support.constraint.ConstraintLayout>
 
     <TextView
         android:id="@+id/trainings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+        android:layout_marginBottom="150dp"
         android:background="@drawable/rounded_view"
+        android:elevation="5dp"
         android:padding="10dp"
-        app:layout_constraintStart_toEndOf="@id/reputation"
-        app:layout_constraintTop_toBottomOf="@id/bio_text1"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="8dp"
-        android:elevation="3dp"
+        android:text="20 trainings"
         android:textStyle="bold"
-        android:text="20 trainings"/>
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@id/profile"
+        app:layout_constraintEnd_toEndOf="@id/gradient"
+        app:layout_constraintTop_toTopOf="@id/gradient"
+        app:layout_constraintBottom_toBottomOf="@id/gradient" />
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:background="@color/DividerColor"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profilePhoto"
-        android:visibility="gone"/>
+    <FrameLayout
+        android:id="@+id/profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="140dp"
+        android:elevation="5dp"
+        app:layout_constraintBottom_toBottomOf="@id/gradient"
+        app:layout_constraintEnd_toEndOf="@id/gradient"
+        app:layout_constraintStart_toStartOf="@id/gradient"
+        app:layout_constraintTop_toTopOf="@id/gradient">
 
 
+        <ImageView
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/profile_round" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/DividerColor"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/friends"
-        android:visibility="gone"/>
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profilePhoto"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/profileim"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profilePhoto"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+
+            android:src="@drawable/profileim"
+            android:visibility="visible" />
+    </FrameLayout>
 
 
     <LinearLayout
@@ -125,7 +162,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        android:elevation="6dp">
+
 
         <ImageButton
             android:id="@+id/feed_button"
@@ -166,35 +205,129 @@
         android:id="@+id/testCurrentField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="@id/gradient"
+        app:layout_constraintTop_toBottomOf="@id/div"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:lines="2"
-
+        android:layout_marginEnd="16dp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/divider" />
+        android:background="@drawable/rounded_view"
+        android:padding="10dp"
+        android:elevation="3dp"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/challenges"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_view"
+        android:backgroundTint="@color/colorPrimary"
+        android:padding="10dp"
+        android:elevation="3dp"
+        app:layout_constraintTop_toBottomOf="@id/testCurrentField"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Challenges"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/badges"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_view"
+        android:backgroundTint="@color/colorPrimary"
+        android:padding="10dp"
+        android:elevation="3dp"
+        app:layout_constraintTop_toBottomOf="@id/challenges"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Badges"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        />
+
 
     <TextView
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="4dp"
+        android:elevation="4dp"
+        android:text="@string/username"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/profilePhoto"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@id/gradient"
+        app:layout_constraintStart_toStartOf="@id/gradient"
+        app:layout_constraintTop_toBottomOf="@id/profile" />
 
     <TextView
         android:id="@+id/usersTeam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="2dp"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@id/profilePhoto"
-        app:layout_constraintTop_toBottomOf="@id/userName" />
+        app:layout_constraintTop_toBottomOf="@id/userName"
+        app:layout_constraintStart_toStartOf="@id/gradient"
+        app:layout_constraintEnd_toEndOf="@id/gradient"
+        android:elevation="4dp"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        app:layout_constraintTop_toBottomOf="@id/rep"
+        android:layout_marginTop="10dp"
+        android:elevation="3dp"/>
+
+    <RelativeLayout
+        android:id="@+id/div"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        app:layout_constraintTop_toBottomOf="@id/gradient"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/tvText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="actions"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toLeftOf="@id/tvText"
+            android:background="@color/DividerColor"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:layout_toRightOf="@id/tvText"
+            android:background="@color/DividerColor"
+            />
+
+    </RelativeLayout>
+
+
 
     <ProgressBar
         android:id="@+id/progress_bar"
