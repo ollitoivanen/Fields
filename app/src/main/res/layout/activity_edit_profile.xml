@@ -6,27 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".EditProfileActivity">
 
-
     <TextView
         android:id="@+id/press_text"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:text="@string/press_text"
-        app:layout_constraintTop_toBottomOf="@id/profilePhotoEdit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"
         android:gravity="center"
-        android:layout_marginTop="8dp" />
+        android:text="@string/press_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profilePhotoEdit" />
 
     <TextView
-    android:id="@+id/realname_text"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="32dp"
-    android:layout_marginTop="8dp"
-    android:text="@string/realname"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/press_text" />
+        android:id="@+id/realname_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/realname"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/press_text" />
 
 
 
@@ -47,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="@string/playing_position"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bio_edit_text" />
@@ -71,11 +70,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="@string/bio"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/display_name_change"
-        />
+        app:layout_constraintTop_toBottomOf="@id/display_name_change" />
 
     <Spinner
         android:id="@+id/role_spinner"
@@ -130,6 +128,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/customize_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/rounded_view"
+        android:backgroundTint="@color/premium_yellow"
+        android:elevation="3dp"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:text="@string/custimize_profile_text"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/save_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/role_spinner" />
 
     <ProgressBar
         android:id="@+id/progress_bar_edit"

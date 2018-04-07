@@ -368,7 +368,7 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                 break;
 
             case R.id.add_new_field:
-                //startActivity(new Intent(SearchActivity.this, AddNewFieldActivity.class));
+                startActivity(new Intent(SearchActivity.this, CreateNewFieldActivity.class));
         }
 
     }

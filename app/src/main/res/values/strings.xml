@@ -73,6 +73,13 @@
     <string name="press_text">Tap to change profile picture</string>
     <string name="playing_position">Playing position</string>
     <string name="bio">Bio</string>
+    <string name="custimize_profile_text">Customize profile</string>
+    <string name="badges">Badges</string>
+    <string name="fields_plus">FIELDS Plus</string>
+    <string name="field_area">Field Area</string>
+    <string name="field_address">Field Address</string>
+    <string name="field_type">Field type</string>
+    <string name="goal_count">Goal count</string>
 
     <string-array name="role_spinner">
         <item>Player</item>
@@ -93,6 +100,29 @@
         <item>Right winger</item>
         <item>Striker</item>
         <item>On the side of the field</item>
+    </string-array>
+
+    <string-array name="field_type_array">
+        <item>Maintained natural grass</item>
+        <item>Natural grass</item>
+        <item>Soft artificial grass</item>
+        <item>Hard artificial grass</item>
+        <item>Sand</item>
+        <item>Pavement</item>
+    </string-array>
+
+    <string-array name="goal_count_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+
     </string-array>
 </resources>
 

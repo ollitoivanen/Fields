@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
 import android.view.Menu;
@@ -46,7 +47,7 @@ import javax.xml.datatype.Duration;
 
 import static android.content.ContentValues.TAG;
 
-public class ProfileActivity extends Activity {
+public class ProfileActivity extends Activity implements View.OnClickListener{
     ImageButton profileButton;
     TextView testCurrentField;
     TextView username;
@@ -63,6 +64,10 @@ public class ProfileActivity extends Activity {
     ProgressBar progressBar;
     ImageView profileImage;
     TextView friends;
+    TextView challenges;
+    TextView badges;
+    ConstraintLayout rep;
+    TextView fields_plus;
 
 
     private void loadUserInformation() {
@@ -116,6 +121,14 @@ public class ProfileActivity extends Activity {
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
         profileImage = findViewById(R.id.profilePhoto);
+        challenges = findViewById(R.id.challenges);
+        badges = findViewById(R.id.badges);
+        fields_plus = findViewById(R.id.fields_plus);
+        rep = findViewById(R.id.rep);
+        rep.setOnClickListener(this);
+        badges.setOnClickListener(this);
+        challenges.setOnClickListener(this);
+        fields_plus.setOnClickListener(this);
 
         roleText = findViewById(R.id.position_role_text);
         bioText = findViewById(R.id.bio_text1);
@@ -259,4 +272,21 @@ public class ProfileActivity extends Activity {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.challenges:
+                startActivity(new Intent(ProfileActivity.this, ChallengesActivity.class));
+                break;
+            case R.id.badges:
+                startActivity(new Intent(ProfileActivity.this, BadgesActivity.class));
+                break;
+            case R.id.rep:
+                startActivity(new Intent(ProfileActivity.this, ReputationActivity.class));
+                break;
+            case R.id.fields_plus:
+                startActivity(new Intent(ProfileActivity.this, FieldsPlusStartActivity.class));
+                break;
+        }
+    }
 }

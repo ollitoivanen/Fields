@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -39,7 +40,7 @@ public class EditProfileActivity extends Activity {
     Spinner roleSpinner;
     Spinner positionSpinner;
     EditText displayNameChange;
-    Button saveUserButton;;
+    Button saveUserButton;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
@@ -47,14 +48,21 @@ public class EditProfileActivity extends Activity {
     Uri uriProfileImage;
     String profileImageUrl;
     ProgressBar progressBar;
+    TextView customizeButton;
     private static final int CHOOSE_IMAGE = 101;
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        customizeButton = findViewById(R.id.customize_button);
+        customizeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(EditProfileActivity.this, CustomizeProfileActivity.class));
+            }
+        });
         roleSpinner = findViewById(R.id.role_spinner);
         final ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this, R.array.role_spinner, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -109,7 +117,6 @@ public class EditProfileActivity extends Activity {
         });
     }
 
-
     private void loadUserInformation() {
 
 
@@ -127,7 +134,6 @@ public class EditProfileActivity extends Activity {
             }
         }
     }
-
 
     public void saveChanges() {
         String playerPosition = positionSpinner.getSelectedItem().toString();
@@ -197,7 +203,6 @@ public class EditProfileActivity extends Activity {
             }
         }
     }
-
 
     private void uploadImageToFirebaseStorage() {
 
