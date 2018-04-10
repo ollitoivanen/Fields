@@ -2,15 +2,26 @@ package com.fields.curiumx.fields;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Registry;
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,6 +31,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.InputStream;
 
 import retrofit2.http.GET;
 
@@ -39,6 +54,20 @@ public class DetailFieldActivity extends Activity {
     ProgressBar progressBar;
     String distance;
     TextView distan;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    String fieldID;
+    String fieldName1;
+    String fieldAddress;
+    String fieldArea;
+    String fieldType;
+    String fieldAccessType;
+    String goalCount;
+    String creator;
+    ImageView fieldPhoto;
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +81,34 @@ public class DetailFieldActivity extends Activity {
         imTrainingHereNoMore = findViewById(R.id.imTrainingHereNoMoreButton);
         amountOfPeople = findViewById(R.id.amountOfPeople);
         progressBar = findViewById(R.id.progress_bar);
-        distan = findViewById(R.id.fieldDistance);
+        fieldPhoto = findViewById(R.id.FieldImage);
 
         Bundle venue = getIntent().getExtras();
-        venueName = venue.getString("name");
-        venueID = venue.getString("ID");
-        distance = venue.getString("distance");
-        setTitle(venueName);
+         fieldName1 = venue.getString("fieldName2");
+        fieldAddress = venue.getString("fieldAddress");
+        fieldAddress = venue.getString("fieldArea");
+        fieldType = venue.getString("fieldType");
+        fieldAccessType = venue.getString("fieldAccessType");
+        goalCount = venue.getString("goalCount");
+        creator =venue.getString("creator");
+        fieldID = venue.getString("fieldID");
+
+        StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
+        storageRef.getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                fieldPhoto.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
+            }
+        });
+
+        Glide.with(this)
+                .load(storageRef)
+                .into(fieldPhoto);
+
+
+        setTitle(fieldName1);
         TextView fieldName = findViewById(R.id.fieldName);
-        distan.setText(distance);
-        fieldName.setText(venueName);
+        fieldName.setText(fieldName1);
 
 
 

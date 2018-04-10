@@ -12,12 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <View
             android:id="@+id/gradient1"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:elevation="3dp"
-            android:src="@drawable/gradient_bg"
+            android:background="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -277,6 +277,7 @@
         android:padding="10dp"
         android:text="Challenges"
         android:textStyle="bold"
+        android:textColor="@color/blacknot"
         app:layout_constraintEnd_toStartOf="@id/badges"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/testCurrentField" />
@@ -294,7 +295,7 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/badges"
-        android:textColor="@color/black"
+        android:textColor="@color/blacknot"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/challenges"
@@ -313,7 +314,7 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/fields_plus"
-        android:textColor="@color/black"
+        android:textColor="@color/blacknot"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/activityBar"
         app:layout_constraintEnd_toEndOf="parent"

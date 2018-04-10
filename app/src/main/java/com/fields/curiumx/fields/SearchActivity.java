@@ -1,52 +1,39 @@
 package com.fields.curiumx.fields;
 
-import android.Manifest;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Registry;
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.storage.StorageReference;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,65 +49,17 @@ public class SearchActivity extends Activity implements View.OnClickListener{
     Button usersButton;
     Button teamsButton;
     Button fieldsButton;
-    CardView addNewField;
+    TextView addNewField;
     @BindView(R.id.teamRecycler)
     EmptyRecyclerView teamRecycler;
-    FusedLocationProviderClient fusedLocationProviderClient;
-    int REQUEST_FINE_LOCATION;
-
-    LayoutInflater layoutInflater;
-    PopupWindow popupWindow;
-    ConstraintLayout searchActivity;
-
-    public void gettingLocation(){
-        fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location lastLocation) {
-                        // Got last known location. In some rare situations this can be null.
+    LinearLayout area_name_thing;
+    Button fieldsByName;
+    Button fieldsByArea;
+    Boolean clicked_name;
+    Boolean clicked_area;
+    Boolean clicked_fields;
 
 
-                        if (lastLocation != null) {
-                            // Logic to handle location object
-
-                            // The user's current latitude, longitude, and location accuracy
-                            String ll = lastLocation.getLatitude() + "," + lastLocation.getLongitude();
-                            double llAcc = lastLocation.getAccuracy();
-                        } else {
-
-                            Toast.makeText(getApplicationContext(), "Mr. Jitters can't determine your current location!", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
-    }
-
-    public void requestPermissions() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_FINE_LOCATION);
-    }
-
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if (requestCode == REQUEST_FINE_LOCATION) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                // permission was granted, yay! Do the
-                // contacts-related task you need to do.
-                gettingLocation();
-
-            } else {
-
-                // permission denied, boo! Disable the
-                // functionality that depends on this permission.
-                Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
 
 
     @Override
@@ -132,6 +71,14 @@ public class SearchActivity extends Activity implements View.OnClickListener{
         ButterKnife.bind(this);
         init();
 
+        clicked_fields = false;
+
+        fieldsByArea = findViewById(R.id.field_by_area);
+        fieldsByName = findViewById(R.id.field_by_name);
+        fieldsByArea.setOnClickListener(this);
+        fieldsByName.setOnClickListener(this);
+        fieldsByName.callOnClick();
+        area_name_thing = findViewById(R.id.area_name_thing);
         addNewField = findViewById(R.id.add_new_field);
         addNewField.setOnClickListener(this);
         usersButton = findViewById(R.id.users_button);
@@ -145,45 +92,9 @@ public class SearchActivity extends Activity implements View.OnClickListener{
         fieldsButton.callOnClick();
         teamRecycler.setEmptyView(textView);
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        //Popup items
-        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        searchActivity = findViewById(R.id.search_activity);
-        final ConstraintLayout popUp = findViewById(R.id.popup);
-        final ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.location_prompt_popup, popUp);
-        popupWindow = new PopupWindow(container, 1000, 600, false);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        popupWindow.setElevation(100);
-
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            gettingLocation();
-
-
-        } else {
-
-            searchActivity.post(new Runnable() {
-                @Override
-                public void run() {
-                    popupWindow.showAtLocation(searchActivity, Gravity.CENTER_HORIZONTAL, 0, 0);
-                    Button okButton = container.findViewById(R.id.okButton);
-                    okButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            requestPermissions();
-                            popupWindow.dismiss();
-                        }
-                    });
-
-                }
-            });
-
-
         }
 
-    }
-
-    public void init(){
+        public void init(){
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         teamRecycler.setLayoutManager(linearLayoutManager);
         db = FirebaseFirestore.getInstance();
@@ -251,6 +162,7 @@ public class SearchActivity extends Activity implements View.OnClickListener{
         text = search.getQuery().toString();
 
 
+
         Query query = db.collection("Users").whereEqualTo("username", text);
 
         FirestoreRecyclerOptions<UserMap> response = new FirestoreRecyclerOptions.Builder<UserMap>()
@@ -295,8 +207,58 @@ public class SearchActivity extends Activity implements View.OnClickListener{
 
 
     public void findField(){
+        text = search.getQuery().toString();
+        Query query;
+        if (clicked_name){
+            query = db.collection("Fields").whereEqualTo("fieldName", text);
+            }else {
+            query = db.collection("Fields").whereEqualTo("fieldArea", text);
+        }
 
+        FirestoreRecyclerOptions<FieldMap> response = new FirestoreRecyclerOptions.Builder<FieldMap>()
+                .setQuery(query, FieldMap.class)
+                .build();
+
+        adapter = new FirestoreRecyclerAdapter<FieldMap, teamHolder>(response) {
+            @Override
+            public void onBindViewHolder(teamHolder holder, int position, final FieldMap model) {
+                holder.textName.setText(model.getFieldName());
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), DetailFieldActivity.class);
+                        intent.putExtra("fieldName2", model.getFieldName());
+                        intent.putExtra("fieldAddress", model.getFieldAddress());
+                        intent.putExtra("fieldArea", model.getFieldArea());
+                        intent.putExtra("fieldType", model.getFieldType());
+                        intent.putExtra("fieldAccessType", model.getAccessType());
+                        intent.putExtra("goalCount", model.getGoalCount());
+                        intent.putExtra("creator", model.getCreator());
+                        intent.putExtra("fieldID", model.getFieldID());
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            @Override
+            public teamHolder onCreateViewHolder(ViewGroup group, int i) {
+                View view = LayoutInflater.from(group.getContext())
+                        .inflate(R.layout.list_item, group, false);
+                return new teamHolder(view);
+            }
+
+            @Override
+            public void onError(FirebaseFirestoreException e) {
+                Log.e("error", e.getMessage());
+            }
+        };
+
+        adapter.notifyDataSetChanged();
+        teamRecycler.setAdapter(adapter);
     }
+
+
 
 
 
@@ -312,6 +274,40 @@ public class SearchActivity extends Activity implements View.OnClickListener{
         return super.onOptionsItemSelected(item);
     }
 
+    public void animateThing(){
+        area_name_thing = findViewById(R.id.area_name_thing);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(area_name_thing, "y", 200f )
+                .setDuration(100);
+        animator.addListener(new Animator.AnimatorListener(){
+            @Override
+            public void onAnimationStart(Animator animator) {
+                area_name_thing.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+                area_name_thing.setLayerType(View.LAYER_TYPE_NONE, null);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                area_name_thing.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        area_name_thing.setLayerType(View.LAYER_TYPE_NONE, null);
+
+
+                    }
+                });
+            }
+        });
+        animator.start();
+    }
+
 
 
     @Override
@@ -319,7 +315,11 @@ public class SearchActivity extends Activity implements View.OnClickListener{
         switch (view.getId()){
 
             case R.id.users_button:
+                search.setQuery("", false);
+                area_name_thing.setVisibility(View.GONE);
                 addNewField.setVisibility(View.GONE);
+                clicked_fields = false;
+
                 usersButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 teamsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                 fieldsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
@@ -340,7 +340,10 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                 break;
 
             case R.id.teams_button:
+                area_name_thing.setVisibility(View.GONE);
                 addNewField.setVisibility(View.GONE);
+                clicked_fields = false;
+                search.setQuery("", false);
                 teamsButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 usersButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                 fieldsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
@@ -361,14 +364,47 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                 break;
 
             case R.id.fields_button:
+                search.setQuery("", false);
+                area_name_thing.setVisibility(View.VISIBLE);
+
+                addNewField.setVisibility(View.VISIBLE);
                 fieldsButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 usersButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                 teamsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
-                findField();
+                search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        findField();
+                        adapter.startListening();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                });
+
                 break;
 
             case R.id.add_new_field:
                 startActivity(new Intent(SearchActivity.this, CreateNewFieldActivity.class));
+                break;
+
+            case R.id.field_by_name:
+                clicked_name = true;
+                clicked_area = false;
+                fieldsByName.setTextColor((getResources().getColor(R.color.colorPrimaryDark)));
+                fieldsByArea.setTextColor((getResources().getColor(R.color.blacknot)));
+                break;
+            case R.id.field_by_area:
+                clicked_area = true;
+                clicked_name = false;
+                fieldsByArea.setTextColor((getResources().getColor(R.color.colorPrimaryDark)));
+                fieldsByName.setTextColor((getResources().getColor(R.color.blacknot)));
+
+
+
         }
 
     }

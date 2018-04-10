@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -94,7 +93,7 @@ public class EditProfileActivity extends Activity {
                 Bundle info = getIntent().getExtras();
                 String displayName = info.getString("DisplayName");
 
-                displayNameChange = findViewById(R.id.display_name_change);
+                displayNameChange = findViewById(R.id.display_name_change1);
                 displayNameChange.setText(displayName);
                 saveUserButton = findViewById(R.id.save_button);
                 saveUserButton.setOnClickListener(new View.OnClickListener() {
