@@ -97,6 +97,8 @@ public class CreateNewFieldActivity extends Activity {
                        intent.setAction(Intent.ACTION_VIEW);
                        intent.setPackage("com.google.android.apps.maps");
 
+
+
                        startActivity(intent);
                        popupWindow.dismiss();
                    }
@@ -156,7 +158,6 @@ public class CreateNewFieldActivity extends Activity {
                 String fieldNametext = field_name.getText().toString().trim();
                 String fieldAreaText = field_area.getText().toString().trim();
                 String fieldAdressText = field_address.getText().toString().trim();
-                final FieldMap model = new FieldMap();
 
                 if (fieldNametext.isEmpty()){
                     field_name.setError("Please enter valid field name");
@@ -172,23 +173,25 @@ public class CreateNewFieldActivity extends Activity {
                         uploadImageToFirebaseStorage();
                     }
 
-                    FieldMap fieldMap = new FieldMap(fieldNametext, fieldAreaText, fieldAdressText,
+                    final FieldMap fieldMap = new FieldMap(fieldNametext, fieldAreaText, fieldAdressText,
                             fieldID, goal_count.getSelectedItem().toString(),
-                            field_type.getSelectedItem().toString(), field_access_type.getSelectedItem().toString(), uid);
+                            field_type.getSelectedItem().toString(), field_access_type.getSelectedItem().toString(), uid, user.getDisplayName());
                     db.collection("Fields").document(fieldID).set(fieldMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Toast.makeText(getApplicationContext(), "Field created successfully!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(CreateNewFieldActivity.this, DetailFieldActivity.class);
-                            intent.putExtra("fieldName2", model.getFieldName());
-                            intent.putExtra("fieldAddress", model.getFieldAddress());
-                            intent.putExtra("fieldArea", model.getFieldArea());
-                            intent.putExtra("fieldType", model.getFieldType());
-                            intent.putExtra("fieldAccessType", model.getAccessType());
-                            intent.putExtra("goalCount", model.getGoalCount());
-                            intent.putExtra("creator", model.getCreator());
-                            intent.putExtra("fieldID", model.getFieldID());
+                            intent.putExtra("fieldName2", fieldMap.getFieldName());
+                            intent.putExtra("fieldAddress", fieldMap.getFieldAddress());
+                            intent.putExtra("fieldArea", fieldMap.getFieldArea());
+                            intent.putExtra("fieldType", fieldMap.getFieldType());
+                            intent.putExtra("fieldAccessType", fieldMap.getAccessType());
+                            intent.putExtra("goalCount", fieldMap.getGoalCount());
+                            intent.putExtra("creator", fieldMap.getCreator());
+                            intent.putExtra("creatorName", fieldMap.getCreatorName());
+                            intent.putExtra("fieldID", fieldMap.getFieldID());
                             startActivity(intent);
+                            finish();
                         }
                     });
 

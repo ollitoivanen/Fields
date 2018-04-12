@@ -9,8 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.fields.curiumx.fields.SignUpActivity"
-    android:id="@+id/signUpActivity"
-    android:animateLayoutChanges="true">
+    android:id="@+id/signUpActivity">
 
     <ProgressBar
         android:id="@+id/progress"
@@ -45,9 +44,8 @@
         android:id="@+id/cont"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo">
 
@@ -136,13 +134,12 @@
         <EditText
             android:id="@+id/passwordSignUp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_marginEnd="32dp"
             android:layout_marginStart="32dp"
             android:hint="@string/password"
             android:inputType="textPassword"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/emailSignUp" />
@@ -173,8 +170,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/signUpButton"
-            tools:layout_editor_absoluteX="10dp" />
+            app:layout_constraintTop_toBottomOf="@+id/signUpButton" />
 
 
     </android.support.constraint.ConstraintLayout>

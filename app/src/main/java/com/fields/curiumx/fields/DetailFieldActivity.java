@@ -1,16 +1,23 @@
 package com.fields.curiumx.fields;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,6 +42,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import retrofit2.http.GET;
 
@@ -63,8 +71,27 @@ public class DetailFieldActivity extends Activity {
     String fieldAccessType;
     String goalCount;
     String creator;
+    String creatorName;
     ImageView fieldPhoto;
+    TextView fieldLocation;
+    LinearLayout area_map;
+    TextView fieldTypeText;
+    LinearLayout drop;
+    TextView goalCountDrop;
+    TextView accessDrop;
+    TextView addressDrop;
+    TextView creatorDrop;
+    ImageView dropImage;
+    Boolean down;
 
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_field, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
 
 
@@ -82,28 +109,123 @@ public class DetailFieldActivity extends Activity {
         amountOfPeople = findViewById(R.id.amountOfPeople);
         progressBar = findViewById(R.id.progress_bar);
         fieldPhoto = findViewById(R.id.FieldImage);
+        fieldLocation = findViewById(R.id.field_area1);
+        area_map = findViewById(R.id.area_map);
+        fieldTypeText = findViewById(R.id.fieldType);
+        goalCountDrop = findViewById(R.id.goalCountText);
+        accessDrop = findViewById(R.id.access);
+        addressDrop = findViewById(R.id.address);
+        creatorDrop = findViewById(R.id.creator);
+        drop = findViewById(R.id.drop);
+        dropImage = findViewById(R.id.dropdown);
+        down = false;
+
+
+
 
         Bundle venue = getIntent().getExtras();
-         fieldName1 = venue.getString("fieldName2");
+        fieldName1 = venue.getString("fieldName2");
         fieldAddress = venue.getString("fieldAddress");
-        fieldAddress = venue.getString("fieldArea");
+        fieldArea = venue.getString("fieldArea");
         fieldType = venue.getString("fieldType");
         fieldAccessType = venue.getString("fieldAccessType");
         goalCount = venue.getString("goalCount");
         creator =venue.getString("creator");
         fieldID = venue.getString("fieldID");
+        creatorName = venue.getString("creatorName");
+        fieldLocation.setText(fieldArea);
+        fieldTypeText.setText(fieldType);
 
-        StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
-        storageRef.getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+        goalCountDrop.setText("Goals:" + " " + goalCount);
+        accessDrop.setText("Access type:" + " " + fieldAccessType);
+        addressDrop.setText("Address:" + " " + fieldAddress);
+        creatorDrop.setText("Creator:" + " " + creatorName);
+
+        area_map.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                fieldPhoto.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setPackage("com.google.android.apps.maps");
+                intent.setData(Uri.parse("https://www.google.com/maps/search/?api=1&query=" + fieldName1));
+                startActivity(intent);
             }
         });
 
-        Glide.with(this)
-                .load(storageRef)
-                .into(fieldPhoto);
+        dropImage.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+                                             if (!down) {
+                                                 down = true;
+                                                 drop.setVisibility(View.VISIBLE);
+                                                 drop.animate().translationY(drop.getHeight()).setListener(new AnimatorListenerAdapter() {
+                                                     @Override
+                                                     public void onAnimationEnd(Animator animation) {
+
+                                                         goalCountDrop.setVisibility(View.VISIBLE);
+                                                         goalCountDrop.setAlpha(0.0f);
+                                                         goalCountDrop.animate().alpha(1.0f);
+
+                                                         accessDrop.setVisibility(View.VISIBLE);
+                                                         accessDrop.setAlpha(0.0f);
+                                                         accessDrop.animate().alpha(1.0f);
+
+                                                         addressDrop.setVisibility(View.VISIBLE);
+                                                         addressDrop.setAlpha(0.0f);
+                                                         addressDrop.animate().alpha(1.0f);
+
+                                                         creatorDrop.setVisibility(View.VISIBLE);
+                                                         creatorDrop.setAlpha(0.0f);
+                                                         creatorDrop.animate().alpha(1.0f);
+                                                         super.onAnimationEnd(animation);
+                                                     }
+                                                 });
+                                             } else {
+                                                 down = false;
+
+                                                 drop.animate().translationY(0).setListener(new AnimatorListenerAdapter() {
+                                                     @Override
+                                                     public void onAnimationEnd(Animator animation) {
+
+                                                         goalCountDrop.setVisibility(View.GONE);
+
+
+                                                         accessDrop.setVisibility(View.GONE);
+
+
+                                                         addressDrop.setVisibility(View.GONE);
+
+
+                                                         creatorDrop.setVisibility(View.GONE);
+
+                                                         drop.setVisibility(View.INVISIBLE);
+
+                                                         super.onAnimationEnd(animation);
+
+                                                     }
+                                                 });
+
+                                             }
+                                         }
+                                     });
+
+
+        final StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
+        storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()){
+                    Glide.with(getApplicationContext())
+                            .load(storageRef)
+                            .into(fieldPhoto);
+                }else {
+                    fieldPhoto.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
+                }
+
+            }
+        });
+
+
 
 
         setTitle(fieldName1);
@@ -131,7 +253,7 @@ public class DetailFieldActivity extends Activity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot documentSnapshot = task.getResult();
-                if (documentSnapshot.get("currentFieldID").toString().equals(venueID)) {
+                if (documentSnapshot.get("currentFieldID").toString().equals(fieldID)) {
                     imTrainingHereNoMore.setVisibility(View.VISIBLE);
                 }else
                     imTrainingHereButton.setVisibility(View.VISIBLE);
@@ -139,7 +261,7 @@ public class DetailFieldActivity extends Activity {
         });
 
 
-        db.collection("Users").whereEqualTo("currentFieldID", venueID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("Users").whereEqualTo("currentFieldID", fieldID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 String text0 = valueOf(task.getResult().size());
@@ -155,8 +277,8 @@ public class DetailFieldActivity extends Activity {
 
         imTrainingHereButton.setVisibility(View.GONE);
         imTrainingHereNoMore.setVisibility(View.VISIBLE);
-        db.collection("Users").document(uid).update("currentFieldID", venueID);
-        db.collection("Users").document(uid).update("currentFieldName", venueName);
+        db.collection("Users").document(uid).update("currentFieldID", fieldID);
+        db.collection("Users").document(uid).update("currentFieldName", fieldName1);
         db.collection("Users").document(uid).update("timestamp", FieldValue.serverTimestamp());
     }
 
@@ -178,6 +300,16 @@ public class DetailFieldActivity extends Activity {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
+            case R.id.edit_field:
+                Intent intent = new Intent(DetailFieldActivity.this, EditFieldActivity.class);
+                intent.putExtra("fieldName", fieldName1);
+                intent.putExtra("fieldID", fieldID);
+                intent.putExtra("fieldType", fieldType);
+                intent.putExtra("fieldAddress", fieldAddress);
+                intent.putExtra("fieldArea", fieldArea);
+                intent.putExtra("fieldAccessType", fieldAccessType);
+                intent.putExtra("goalCount", goalCount);
+                startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

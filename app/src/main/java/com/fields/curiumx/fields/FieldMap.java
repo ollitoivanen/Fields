@@ -11,6 +11,7 @@ public class FieldMap {
     private String fieldType;
     private String accessType;
     private String creator;
+    private String creatorName;
 
 
 
@@ -18,7 +19,7 @@ public class FieldMap {
 
     }
 
-    public FieldMap(String fieldName, String fieldArea, String fieldAddress, String fieldID, String goalCount, String fieldType, String accessType, String creator){
+    public FieldMap(String fieldName, String fieldArea, String fieldAddress, String fieldID, String goalCount, String fieldType, String accessType, String creator, String creatorName){
         this.fieldName = fieldName;
         this.fieldArea = fieldArea;
         this.fieldAddress = fieldAddress;
@@ -27,6 +28,7 @@ public class FieldMap {
         this.fieldType = fieldType;
         this.accessType = accessType;
         this.creator = creator;
+        this.creatorName = creatorName;
     }
 
     public String getFieldName() {
@@ -59,5 +61,9 @@ public class FieldMap {
 
     public String getCreator() {
         return creator;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
     }
 }
