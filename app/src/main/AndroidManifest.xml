@@ -37,8 +37,7 @@
         <activity android:name=".DetailFieldActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SearchActivity"
-                />
+                android:value=".SearchActivity" />
         </activity>
         <activity
             android:name=".SignUpActivity"
@@ -88,7 +87,9 @@
         <activity android:name=".BadgesActivity" />
         <activity android:name=".FieldsPlusStartActivity" />
         <activity android:name=".CreateNewFieldActivity" />
-        <activity android:name=".EditFieldActivity"></activity>
+        <activity android:name=".EditFieldActivity" />
+        <activity android:name=".TrainingActivity" />
+        <activity android:name=".TrainingSummaryActivity"></activity>
     </application>
 
 </manifest>

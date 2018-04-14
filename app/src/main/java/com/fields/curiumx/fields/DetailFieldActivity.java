@@ -3,18 +3,23 @@ package com.fields.curiumx.fields;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Context;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,17 +27,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.Registry;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -41,27 +39,20 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.InputStream;
-import java.util.concurrent.atomic.AtomicReferenceArray;
-
-import retrofit2.http.GET;
-
 import static java.lang.String.valueOf;
 
 public class DetailFieldActivity extends Activity {
 
-    ImageButton imTrainingHereButton;
-    ImageButton imTrainingHereNoMore;
-    String venueName;
-    String venueID;
+
+
+    Button imTrainingHereButton;
+    Button imTrainingHereNoMore;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     DocumentReference reference;
     String uid = user.getUid();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     TextView amountOfPeople;
     ProgressBar progressBar;
-    String distance;
-    TextView distan;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     String fieldID;
     String fieldName1;
@@ -83,8 +74,26 @@ public class DetailFieldActivity extends Activity {
     TextView creatorDrop;
     ImageView dropImage;
     Boolean down;
+    ProgressBar prgr;
 
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot.get("currentFieldID").toString().equals(fieldID)) {
+                    imTrainingHereNoMore.setVisibility(View.VISIBLE);
+                    imTrainingHereButton.setVisibility(View.GONE);
+                } else {
+                    imTrainingHereButton.setVisibility(View.VISIBLE);
+                    imTrainingHereNoMore.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -92,9 +101,6 @@ public class DetailFieldActivity extends Activity {
         inflater.inflate(R.menu.edit_field, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +124,10 @@ public class DetailFieldActivity extends Activity {
         creatorDrop = findViewById(R.id.creator);
         drop = findViewById(R.id.drop);
         dropImage = findViewById(R.id.dropdown);
+        prgr = findViewById(R.id.prgr);
         down = false;
+
+
 
 
 
@@ -255,10 +264,14 @@ public class DetailFieldActivity extends Activity {
                 DocumentSnapshot documentSnapshot = task.getResult();
                 if (documentSnapshot.get("currentFieldID").toString().equals(fieldID)) {
                     imTrainingHereNoMore.setVisibility(View.VISIBLE);
-                }else
+                    imTrainingHereButton.setVisibility(View.GONE);
+                } else {
                     imTrainingHereButton.setVisibility(View.VISIBLE);
+                    imTrainingHereNoMore.setVisibility(View.GONE);
+                }
             }
         });
+
 
 
         db.collection("Users").whereEqualTo("currentFieldID", fieldID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -275,21 +288,39 @@ public class DetailFieldActivity extends Activity {
 
     public void onButtonPressImHere() {
 
+        prgr.setVisibility(View.VISIBLE);
+        final Intent intent = new Intent(DetailFieldActivity.this, TrainingActivity.class);
+        intent.putExtra("fieldName", fieldName1);
         imTrainingHereButton.setVisibility(View.GONE);
+        imTrainingHereNoMore.setEnabled(false);
         imTrainingHereNoMore.setVisibility(View.VISIBLE);
         db.collection("Users").document(uid).update("currentFieldID", fieldID);
         db.collection("Users").document(uid).update("currentFieldName", fieldName1);
-        db.collection("Users").document(uid).update("timestamp", FieldValue.serverTimestamp());
+        db.collection("Users").document(uid).update("timestamp", FieldValue.serverTimestamp()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                prgr.setVisibility(View.GONE);
+                startActivity(intent);
+                imTrainingHereNoMore.setEnabled(true);
+
+            }
+        });
+
+
     }
 
-    public void onButtonPressImHereNoMore(){
 
+
+    public void onButtonPressImHereNoMore(){
+//
+        final Intent intent = new Intent(DetailFieldActivity.this, TrainingActivity.class);
+        intent.putExtra("fieldName", fieldName1);
 
         imTrainingHereButton.setVisibility(View.VISIBLE);
+        imTrainingHereButton.setEnabled(false);
         imTrainingHereNoMore.setVisibility(View.GONE);
-        db.collection("Users").document(uid).update("currentFieldID", "");
-        db.collection("Users").document(uid).update("currentFieldName", "");
-        db.collection("Users").document(uid).update("timestamp", null);
+       startActivity(intent);
+       imTrainingHereButton.setEnabled(true);
 
 
     }

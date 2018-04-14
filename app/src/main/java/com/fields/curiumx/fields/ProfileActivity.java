@@ -194,11 +194,13 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
                                 placeHolder2 = placeHolder2 + " " + "days";
                             }
 
+
+
                             testCurrentField.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    String venueID = documentSnapshot.get("Current Field ID").toString();
-
+                                    String venueID = documentSnapshot.get("currentFieldID").toString();
+//
                                     Intent intent = new Intent(ProfileActivity.this, DetailFieldActivity.class);
                                     intent.putExtra("ID", venueID);
                                     intent.putExtra("name", currentField);
@@ -206,7 +208,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
                                 }
                             });
 
-                            currentField = documentSnapshot.get("Current Field name").toString();
+                            currentField = documentSnapshot.get("currentFieldName").toString();
                             testCurrentField.setText("Last seen at:" + " " + currentField + "," + " " + placeHolder2 + " " + "ago");
                         } else {
                             testCurrentField.setText("Not at any field");

@@ -10,15 +10,16 @@ public class UserMap {
     private String currentFieldName;
     private String usersTeam;
     private String userRole;
-    private int userReputation;
+    private String userReputation;
     private String userBio;
     private String position;
+
 
     public  UserMap(){
 
     }
     public UserMap(String username, String userID, String currentFieldID, String currentFieldName,
-                   String usersTeam, String displayName, String userRole, int userReputation,
+                   String usersTeam, String displayName, String userRole, String userReputation,
                    String userBio, String position){
         this.username = username;
         this.userID = userID;
@@ -60,7 +61,7 @@ public class UserMap {
         return userRole;
     }
 
-    public int getUserReputation() {
+    public String getUserReputation() {
         return userReputation;
     }
 

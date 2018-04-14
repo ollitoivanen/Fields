@@ -174,7 +174,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                                 String uid = user.getUid();
 
                                 UserMap userMap = new UserMap(usernameString, uid, "",
-                                        "", null, realNameString, userRole, 0, "", "");
+                                        "", null, realNameString, userRole, "0", "", "");
                                 db.collection("Users").document(uid).set(userMap);
 
                                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
