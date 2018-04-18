@@ -9,8 +9,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
+import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -29,12 +35,17 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class TeamActivity extends Activity {
     String teamName;
@@ -55,16 +66,35 @@ public class TeamActivity extends Activity {
     TextView leaderDrop;
     TextView workStyleDrop;
     FirebaseStorage storage = FirebaseStorage.getInstance();
+    @BindView(R.id.eventRecycler)
+    EmptyRecyclerView eventRecycler;
+    private FirestoreRecyclerAdapter adapter;
+    LinearLayoutManager linearLayoutManager;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
+    public class eventHolder extends EmptyRecyclerView.ViewHolder {
+        @BindView(R.id.name)
+        TextView textName;
+
+
+        public eventHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final DocumentReference docRef = db.collection("Users").document(uid);
         playerCount = findViewById(R.id.teamPlayerCount);
         down1 = false;
+        eventRecycler = findViewById(R.id.eventRecycler);
+        init();
+
+        ButterKnife.bind(this);
         dropIm1 = findViewById(R.id.dropdown1);
         drop2 = findViewById(R.id.drop2);
         homefieldDrop = findViewById(R.id.homeFieldText);
@@ -159,31 +189,72 @@ public class TeamActivity extends Activity {
 
                 } else {
 
-                    final String testt = documentSnapshot.get("User's team").toString();
+                    final String teamID1 = documentSnapshot.get("usersTeamID").toString();
 
-                    db.collection("Teams").whereEqualTo("teamNameText", testt).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    db.collection("Teams").document(teamID1).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                            QuerySnapshot querySnapshot = task.getResult();
-                            DocumentSnapshot documentSnapshot1 = querySnapshot.getDocuments().get(0);
+                            DocumentSnapshot documentSnapshot1 = task.getResult();
                             String nameBoi = documentSnapshot1.get("teamNameText").toString();
                             final String countryBoi = documentSnapshot1.get("teamCountryText").toString();
                             String homeField = documentSnapshot1.get("homeField").toString();
                             String leader = documentSnapshot1.get("leader").toString();
                             String level = documentSnapshot1.get("level").toString();
                             String workStyle = documentSnapshot1.get("workStyle").toString();
-                            String teamID = documentSnapshot1.get("teamID").toString();
                             teamTextName.setText(nameBoi);
                             teamTextCountry.setText(countryBoi);
 
-                            db.collection("Teams").document(teamID).collection("TeamUsers").get();
-                            int amountOfPlayers = task.getResult().size();
-                            if (task.getResult().size()==1){
-                                playerCount.setText(Integer.toString(amountOfPlayers) + " " + "Player");
-                            }else {
-                                playerCount.setText(Integer.toString(amountOfPlayers) + " " + "Players");
-                            }
+
+
+                            Query query = db.collection("Teams").document(teamID1).collection("Team's Events");
+                            FirestoreRecyclerOptions<EventMap> response = new FirestoreRecyclerOptions.Builder<EventMap>()
+                                    .setQuery(query, EventMap.class)
+                                    .build();
+
+                            adapter = new FirestoreRecyclerAdapter<EventMap, eventHolder>(response) {
+                                @Override
+                                public void onBindViewHolder(eventHolder holder, int position, final EventMap model) {
+                                    holder.textName.setText(model.getEventType());
+                                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public eventHolder onCreateViewHolder(ViewGroup group, int i) {
+                                    View view = LayoutInflater.from(group.getContext())
+                                            .inflate(R.layout.list_item, group, false);
+                                    return new eventHolder(view);
+                                }
+
+                                @Override
+                                public void onError(FirebaseFirestoreException e) {
+                                    Log.e("error", e.getMessage());
+                                }
+                            };
+
+                            adapter.notifyDataSetChanged();
+                            eventRecycler.setAdapter(adapter);
+                            adapter.startListening();
+
+
+                            db.collection("Teams").document(teamID1).collection("TeamUsers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    int amountOfPlayers = task.getResult().size();
+                                    if (task.getResult().size()==1){
+                                        playerCount.setText(Integer.toString(amountOfPlayers) + " " + "Player");
+                                    }else {
+                                        playerCount.setText(Integer.toString(amountOfPlayers) + " " + "Players");
+                                    }
+                                }
+                            });
+
 
                             teamLevel.setText("Level:" + " " + level);
                             if (homeField.isEmpty()){
@@ -205,7 +276,7 @@ public class TeamActivity extends Activity {
                                 }
                             });
 
-                            final StorageReference storageRef = storage.getReference().child("teampics/"+teamID+".jpg");
+                            final StorageReference storageRef = storage.getReference().child("teampics/"+teamID1+".jpg");
                             storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
@@ -230,6 +301,11 @@ public class TeamActivity extends Activity {
 
 
 
+    }
+    public void init(){
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        eventRecycler.setLayoutManager(linearLayoutManager);
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override

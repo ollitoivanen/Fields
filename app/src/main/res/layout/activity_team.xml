@@ -203,6 +203,7 @@
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/add_event_image"
         app:layout_constraintTop_toBottomOf="@id/basicInfoContainer" />
 
     <ImageView
@@ -214,6 +215,13 @@
         android:src="@drawable/ic_add"
         app:layout_constraintStart_toEndOf="@id/events_text"
         app:layout_constraintTop_toBottomOf="@id/basicInfoContainer" />
+
+    <com.fields.curiumx.fields.EmptyRecyclerView
+        android:id="@+id/eventRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/events_text"/>
 
 
 
