@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,10 +16,21 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 
 public class NewEventActivity extends Activity {
     Spinner typeSpinner;
@@ -28,11 +40,17 @@ public class NewEventActivity extends Activity {
     TextView trainingEndTime;
     TextView trainingEndDate;
     Button chooseFieldButton;
+    Button publishButton;
+    TextView chosenFieldText;
     Boolean startBool;
     Boolean endBool;
     Boolean startTime = true;
     Boolean endTime = true;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String uid = user.getUid();
     final Calendar c = Calendar.getInstance();
+    String chosenFieldNameIntent;
 
 
     private int hr;
@@ -50,6 +68,18 @@ public class NewEventActivity extends Activity {
         return null;
     }
 
+    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            c.set(Calendar.YEAR, year);
+            c.set(Calendar.MONTH, monthOfYear);
+            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        }
+
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +89,53 @@ public class NewEventActivity extends Activity {
         chooseFieldButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(NewEventActivity.this, SearchFieldOnlyActivity.class));
+                startActivityForResult(new Intent(NewEventActivity.this, SearchFieldOnlyActivity.class), 1);
+            }
+        });
+
+
+        publishButton = findViewById(R.id.publish_button);
+        publishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot ds = task.getResult();
+                        String ref = ds.get("usersTeamID").toString();
+                        String eventID = UUID.randomUUID().toString();
+                        String eventTimeStart = trainingStartTime.getText().toString();
+                        String eventTimeEnd = trainingEndTime.getText().toString();
+                        if (chosenFieldNameIntent == null){
+                            chosenFieldNameIntent = "";
+                        }
+                        EventMap eventMap = new EventMap(eventID,
+                                typeSpinner.getSelectedItem().toString(),
+                                eventTimeStart, eventTimeEnd,chosenFieldNameIntent);
+                        db.collection("Teams").document(ref).collection("Team's Events")
+                                .document(eventID).set(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(getApplicationContext(), "Event created successfully", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(NewEventActivity.this, TeamActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+
+                                finish();
+                            }
+                        });
+                    }
+                });
+
             }
         });
         trainingStartTime = findViewById(R.id.training_start_time);
         trainingStartDate = findViewById(R.id.training_start_date);
         trainingEndDate = findViewById(R.id.training_end_date);
         trainingEndTime = findViewById(R.id.training_end_time);
+        chosenFieldText = findViewById(R.id.chosen_field_name);
+        chosenFieldText.setVisibility(View.GONE);
+
         Date currentTime = Calendar.getInstance().getTime();
 
 
@@ -105,6 +175,20 @@ public class NewEventActivity extends Activity {
         typeSpinner.setAdapter(adapter);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                chosenFieldText.setVisibility(View.VISIBLE);
+                chosenFieldNameIntent = data.getStringExtra("fieldName2");
+              chosenFieldText.setText(chosenFieldNameIntent);
+            }
+        }
+    }
+
+
     public void addButtonClickListener() {
 
         trainingStartTime.setOnClickListener(new View.OnClickListener() {
@@ -124,20 +208,6 @@ public class NewEventActivity extends Activity {
         });
     }
 
-    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            c.set(Calendar.YEAR, year);
-            c.set(Calendar.MONTH, monthOfYear);
-            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel();
-        }
-
-    };
-
     private void updateLabel() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM");
         if (startBool){
@@ -150,11 +220,9 @@ public class NewEventActivity extends Activity {
         }
     }
 
-
     private TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
-// TODO Auto-generated method stub
             hr = hourOfDay;
             min = minutes;
             updateTime(hr, min);

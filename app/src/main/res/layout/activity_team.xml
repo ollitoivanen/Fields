@@ -205,6 +205,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/basicInfoContainer" />
 
+    <ImageView
+        android:id="@+id/add_event_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/ic_add"
+        app:layout_constraintStart_toEndOf="@id/events_text"
+        app:layout_constraintTop_toBottomOf="@id/basicInfoContainer" />
+
 
 
     <ProgressBar

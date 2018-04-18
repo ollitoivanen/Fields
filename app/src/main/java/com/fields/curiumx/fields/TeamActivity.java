@@ -44,6 +44,7 @@ public class TeamActivity extends Activity {
     TextView teamTextName;
     TextView teamTextCountry;
     ImageView teamImage;
+    ImageView addEventImage;
     TextView playerCount;
     ProgressBar progressBar;
     Boolean down1;
@@ -70,10 +71,13 @@ public class TeamActivity extends Activity {
         leaderDrop = findViewById(R.id.leader_text);
         workStyleDrop = findViewById(R.id.workstyle_text);
         country_map = findViewById(R.id.country_map);
-
-
-
-
+        addEventImage = findViewById(R.id.add_event_image);
+        addEventImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(TeamActivity.this, NewEventActivity.class));
+            }
+        });
 
 
         dropIm1.setOnClickListener(new View.OnClickListener() {
