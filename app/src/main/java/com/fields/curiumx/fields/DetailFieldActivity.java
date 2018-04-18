@@ -8,21 +8,28 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -74,15 +81,20 @@ public class DetailFieldActivity extends Activity {
     TextView creatorDrop;
     ImageView dropImage;
     Boolean down;
-    ProgressBar prgr;
+
+    LayoutInflater layoutInflater;
+    ConstraintLayout detail_field_activity;
+    PopupWindow popupWindow;
 
 
     @Override
     protected void onRestart() {
         super.onRestart();
+        imTrainingHereNoMore.setEnabled(false);
         db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                imTrainingHereNoMore.setEnabled(true);
                 DocumentSnapshot documentSnapshot = task.getResult();
                 if (documentSnapshot.get("currentFieldID").toString().equals(fieldID)) {
                     imTrainingHereNoMore.setVisibility(View.VISIBLE);
@@ -98,6 +110,7 @@ public class DetailFieldActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.add, menu);
         inflater.inflate(R.menu.edit_field, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -124,7 +137,6 @@ public class DetailFieldActivity extends Activity {
         creatorDrop = findViewById(R.id.creator);
         drop = findViewById(R.id.drop);
         dropImage = findViewById(R.id.dropdown);
-        prgr = findViewById(R.id.prgr);
         down = false;
 
 
@@ -288,7 +300,7 @@ public class DetailFieldActivity extends Activity {
 
     public void onButtonPressImHere() {
 
-        prgr.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         final Intent intent = new Intent(DetailFieldActivity.this, TrainingActivity.class);
         intent.putExtra("fieldName", fieldName1);
         imTrainingHereButton.setVisibility(View.GONE);
@@ -299,7 +311,7 @@ public class DetailFieldActivity extends Activity {
         db.collection("Users").document(uid).update("timestamp", FieldValue.serverTimestamp()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                prgr.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 startActivity(intent);
                 imTrainingHereNoMore.setEnabled(true);
 
@@ -309,10 +321,8 @@ public class DetailFieldActivity extends Activity {
 
     }
 
-
-
     public void onButtonPressImHereNoMore(){
-//
+
         final Intent intent = new Intent(DetailFieldActivity.this, TrainingActivity.class);
         intent.putExtra("fieldName", fieldName1);
 
@@ -341,7 +351,47 @@ public class DetailFieldActivity extends Activity {
                 intent.putExtra("fieldAccessType", fieldAccessType);
                 intent.putExtra("goalCount", goalCount);
                 startActivity(intent);
+            case R.id.add2:
+                layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                detail_field_activity = findViewById(R.id.detail_field_actvity);
+                final ConstraintLayout popUp2 = findViewById(R.id.add_popup2);
+                final ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.add_popup, popUp2);
+                popupWindow = new PopupWindow(container, 1000, 220, false);
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.setElevation(100);
+                popupWindow.showAtLocation(detail_field_activity, Gravity.CENTER, 0,0 );
+                final Button add_button = container.findViewById(R.id.set_homefield_button);
+                db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        final DocumentSnapshot ds = task.getResult();
+                        if (ds.get("usersTeamID") == null){
+                            add_button.setEnabled(false);
+                        }else {
+                            add_button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    String usersTeam = ds.get("usersTeamID").toString();
+                                    db.collection("Teams").document(usersTeam).update("homeField", fieldName1);
+                                }
+                            });
+                        }
+
+                    }
+                });
+
+                return true;
+
+
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setAsHomeField(){
+
+
     }
 }

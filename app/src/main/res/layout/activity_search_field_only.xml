@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SearchFieldOnlyActivity">
+
+    <SearchView
+        android:id="@+id/search1"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/rounded_view"
+        android:elevation="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/area_name_thing"
+        android:paddingBottom="6dp"
+        android:paddingEnd="2dp"
+        android:paddingStart="2dp"
+        android:queryHint="@string/search_field"/>
+
+    <com.fields.curiumx.fields.EmptyRecyclerView
+        android:id="@+id/fieldRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/search1"
+        android:layout_marginTop="8dp"
+        />
+
+</android.support.constraint.ConstraintLayout>

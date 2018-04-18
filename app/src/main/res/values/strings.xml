@@ -76,11 +76,13 @@
     <string name="custimize_profile_text">Customize profile</string>
     <string name="badges">Badges</string>
     <string name="fields_plus">FIELDS Plus</string>
-    <string name="field_area">Field area</string>
+    <string name="field_area">Field City</string>
     <string name="field_address">Field Address</string>
     <string name="field_type">Field type</string>
     <string name="goal_count">Goal count</string>
     <string name="press_text2">Tap to choose field picture</string>
+    <string name="press_text3">Tap to choose team picture</string>
+
     <string name="field_access_text">Field access type</string>
     <string name="tap_to_find">Tap to find in map</string>
     <string name="map_explanation">To find field address, search for the field in map and copy the address from there. Easy as that!</string>
@@ -93,6 +95,17 @@
     <string name="done">Done</string>
     <string name="im_training_here">I\'m training here</string>
     <string name="im_not_training_here">End training</string>
+    <string name="you_earned">You earned</string>
+    <string name="level">Team\'s playing level</string>
+    <string name="team_country">Team country</string>
+    <string name="events">Events</string>
+    <string name="add">Add</string>
+    <string name="add_homefield">Add as team\'s home field </string>
+    <string name="event_type">Event type</string>
+    <string name="event_time">Event time</string>
+    <string name="event_location">Event Location</string>
+    <string name="choose_field">Choose field</string>
+    <string name="search_field">Search Field</string>
 
 
     <string-array name="role_spinner">
@@ -144,6 +157,288 @@
         <item>Booking, free if space</item>
         <item>No booking</item>
         <item>No outside access</item>
+    </string-array>
+
+    <string-array name="level_array">
+        <item>1st Div</item>
+        <item>2nd Div</item>
+        <item>3rd Div</item>
+        <item>4th Div</item>
+        <item>5th Div</item>
+        <item>6th Div</item>
+        <item>7th Div</item>
+        <item>8th Div</item>
+        <item>9th Div</item>
+        <item>Sunday Div</item>
+    </string-array>
+
+    <string-array name="event_type_array">
+        <item>Training</item>
+        <item>Game</item>
+        <item>Meeting</item>
+        <item>Tournament</item>
+        <item>Other</item>
+    </string-array>
+
+
+    <string-array name="country_list">
+        <item><![CDATA[Afghanistan]]><value /></item>
+
+        <item><![CDATA[Åland Islands]]><value /></item>
+        <item><![CDATA[Albania]]><value /></item>
+        <item><![CDATA[Algeria]]><value /></item>
+        <item><![CDATA[American Samoa]]><value /></item>
+        <item><![CDATA[Andorra]]><value /></item>
+        <item><![CDATA[Angola]]><value /></item>
+        <item><![CDATA[Anguilla]]><value /></item>
+        <item><![CDATA[Antarctica]]><value /></item>
+        <item><![CDATA[Antigua & Barbuda]]><value /></item>
+        <item><![CDATA[Argentina]]><value /></item>
+        <item><![CDATA[Armenia]]><value /></item>
+        <item><![CDATA[Aruba]]><value /></item>
+        <item><![CDATA[Ascension Island]]><value /></item>
+        <item><![CDATA[Australia]]><value /></item>
+        <item><![CDATA[Austria]]><value /></item>
+        <item><![CDATA[Azerbaijan]]><value /></item>
+        <item><![CDATA[Bahamas]]><value /></item>
+        <item><![CDATA[Bahrain]]><value /></item>
+        <item><![CDATA[Bangladesh]]><value /></item>
+        <item><![CDATA[Barbados]]><value /></item>
+        <item><![CDATA[Belarus]]><value /></item>
+        <item><![CDATA[Belgium]]><value /></item>
+        <item><![CDATA[Belize]]><value /></item>
+        <item><![CDATA[Benin]]><value /></item>
+        <item><![CDATA[Bermuda]]><value /></item>
+        <item><![CDATA[Bhutan]]><value /></item>
+        <item><![CDATA[Bolivia]]><value /></item>
+        <item><![CDATA[Bosnia & Herzegovina]]><value /></item>
+        <item><![CDATA[Botswana]]><value /></item>
+        <item><![CDATA[Brazil]]><value /></item>
+        <item><![CDATA[British Indian Ocean Territory]]><value /></item>
+        <item><![CDATA[British Virgin Islands]]><value /></item>
+        <item><![CDATA[Brunei]]><value /></item>
+        <item><![CDATA[Bulgaria]]><value /></item>
+        <item><![CDATA[Burkina Faso]]><value /></item>
+        <item><![CDATA[Burundi]]><value /></item>
+        <item><![CDATA[Cambodia]]><value /></item>
+        <item><![CDATA[Cameroon]]><value /></item>
+        <item><![CDATA[Canada]]><value /></item>
+        <item><![CDATA[Canary Islands]]><value /></item>
+        <item><![CDATA[Cape Verde]]><value /></item>
+        <item><![CDATA[Caribbean Netherlands]]><value /></item>
+        <item><![CDATA[Cayman Islands]]><value /></item>
+        <item><![CDATA[Central African Republic]]><value /></item>
+        <item><![CDATA[Ceuta & Melilla]]><value /></item>
+        <item><![CDATA[Chad]]><value /></item>
+        <item><![CDATA[Chile]]><value /></item>
+        <item><![CDATA[China]]><value /></item>
+        <item><![CDATA[Christmas Island]]><value /></item>
+        <item><![CDATA[Cocos (Keeling) Islands]]><value /></item>
+        <item><![CDATA[Colombia]]><value /></item>
+        <item><![CDATA[Comoros]]><value /></item>
+        <item><![CDATA[Congo - Brazzaville]]><value /></item>
+        <item><![CDATA[Congo - Kinshasa]]><value /></item>
+        <item><![CDATA[Cook Islands]]><value /></item>
+        <item><![CDATA[Costa Rica]]><value /></item>
+        <item><![CDATA[Côte d’Ivoire]]><value /></item>
+        <item><![CDATA[Croatia]]><value /></item>
+        <item><![CDATA[Cuba]]><value /></item>
+        <item><![CDATA[Curaçao]]><value /></item>
+        <item><![CDATA[Cyprus]]><value /></item>
+        <item><![CDATA[Czechia]]><value /></item>
+        <item><![CDATA[Denmark]]><value /></item>
+        <item><![CDATA[Diego Garcia]]><value /></item>
+        <item><![CDATA[Djibouti]]><value /></item>
+        <item><![CDATA[Dominica]]><value /></item>
+        <item><![CDATA[Dominican Republic]]><value /></item>
+        <item><![CDATA[Ecuador]]><value /></item>
+        <item><![CDATA[Egypt]]><value /></item>
+        <item><![CDATA[El Salvador]]><value /></item>
+        <item><![CDATA[Equatorial Guinea]]><value /></item>
+        <item><![CDATA[Eritrea]]><value /></item>
+        <item><![CDATA[Estonia]]><value /></item>
+        <item><![CDATA[Ethiopia]]><value /></item>
+        <item><![CDATA[Eurozone]]><value /></item>
+        <item><![CDATA[Falkland Islands]]><value /></item>
+        <item><![CDATA[Faroe Islands]]><value /></item>
+        <item><![CDATA[Fiji]]><value /></item>
+        <item><![CDATA[Finland]]><value /></item>
+        <item><![CDATA[France]]><value /></item>
+        <item><![CDATA[French Guiana]]><value /></item>
+        <item><![CDATA[French Polynesia]]><value /></item>
+        <item><![CDATA[French Southern Territories]]><value /></item>
+        <item><![CDATA[Gabon]]><value /></item>
+        <item><![CDATA[Gambia]]><value /></item>
+        <item><![CDATA[Georgia]]><value /></item>
+        <item><![CDATA[Germany]]><value /></item>
+        <item><![CDATA[Ghana]]><value /></item>
+        <item><![CDATA[Gibraltar]]><value /></item>
+        <item><![CDATA[Greece]]><value /></item>
+        <item><![CDATA[Greenland]]><value /></item>
+        <item><![CDATA[Grenada]]><value /></item>
+        <item><![CDATA[Guadeloupe]]><value /></item>
+        <item><![CDATA[Guam]]><value /></item>
+        <item><![CDATA[Guatemala]]><value /></item>
+        <item><![CDATA[Guernsey]]><value /></item>
+        <item><![CDATA[Guinea]]><value /></item>
+        <item><![CDATA[Guinea-Bissau]]><value /></item>
+        <item><![CDATA[Guyana]]><value /></item>
+        <item><![CDATA[Haiti]]><value /></item>
+        <item><![CDATA[Honduras]]><value /></item>
+        <item><![CDATA[Hong Kong SAR China]]><value /></item>
+        <item><![CDATA[Hungary]]><value /></item>
+        <item><![CDATA[Iceland]]><value /></item>
+        <item><![CDATA[India]]><value /></item>
+        <item><![CDATA[Indonesia]]><value /></item>
+        <item><![CDATA[Iran]]><value /></item>
+        <item><![CDATA[Iraq]]><value /></item>
+        <item><![CDATA[Ireland]]><value /></item>
+        <item><![CDATA[Isle of Man]]><value /></item>
+        <item><![CDATA[Israel]]><value /></item>
+        <item><![CDATA[Italy]]><value /></item>
+        <item><![CDATA[Jamaica]]><value /></item>
+        <item><![CDATA[Japan]]><value /></item>
+        <item><![CDATA[Jersey]]><value /></item>
+        <item><![CDATA[Jordan]]><value /></item>
+        <item><![CDATA[Kazakhstan]]><value /></item>
+        <item><![CDATA[Kenya]]><value /></item>
+        <item><![CDATA[Kiribati]]><value /></item>
+        <item><![CDATA[Kosovo]]><value /></item>
+        <item><![CDATA[Kuwait]]><value /></item>
+        <item><![CDATA[Kyrgyzstan]]><value /></item>
+        <item><![CDATA[Laos]]><value /></item>
+        <item><![CDATA[Latvia]]><value /></item>
+        <item><![CDATA[Lebanon]]><value /></item>
+        <item><![CDATA[Lesotho]]><value /></item>
+        <item><![CDATA[Liberia]]><value /></item>
+        <item><![CDATA[Libya]]><value /></item>
+        <item><![CDATA[Liechtenstein]]><value /></item>
+        <item><![CDATA[Lithuania]]><value /></item>
+        <item><![CDATA[Luxembourg]]><value /></item>
+        <item><![CDATA[Macau SAR China]]><value /></item>
+        <item><![CDATA[Macedonia]]><value /></item>
+        <item><![CDATA[Madagascar]]><value /></item>
+        <item><![CDATA[Malawi]]><value /></item>
+        <item><![CDATA[Malaysia]]><value /></item>
+        <item><![CDATA[Maldives]]><value /></item>
+        <item><![CDATA[Mali]]><value /></item>
+        <item><![CDATA[Malta]]><value /></item>
+        <item><![CDATA[Marshall Islands]]><value /></item>
+        <item><![CDATA[Martinique]]><value /></item>
+        <item><![CDATA[Mauritania]]><value /></item>
+        <item><![CDATA[Mauritius]]><value /></item>
+        <item><![CDATA[Mayotte]]><value /></item>
+        <item><![CDATA[Mexico]]><value /></item>
+        <item><![CDATA[Micronesia]]><value /></item>
+        <item><![CDATA[Moldova]]><value /></item>
+        <item><![CDATA[Monaco]]><value /></item>
+        <item><![CDATA[Mongolia]]><value /></item>
+        <item><![CDATA[Montenegro]]><value /></item>
+        <item><![CDATA[Montserrat]]><value /></item>
+        <item><![CDATA[Morocco]]><value /></item>
+        <item><![CDATA[Mozambique]]><value /></item>
+        <item><![CDATA[Myanmar (Burma)]]><value /></item>
+        <item><![CDATA[Namibia]]><value /></item>
+        <item><![CDATA[Nauru]]><value /></item>
+        <item><![CDATA[Nepal]]><value /></item>
+        <item><![CDATA[Netherlands]]><value /></item>
+        <item><![CDATA[New Caledonia]]><value /></item>
+        <item><![CDATA[New Zealand]]><value /></item>
+        <item><![CDATA[Nicaragua]]><value /></item>
+        <item><![CDATA[Niger]]><value /></item>
+        <item><![CDATA[Nigeria]]><value /></item>
+        <item><![CDATA[Niue]]><value /></item>
+        <item><![CDATA[Norfolk Island]]><value /></item>
+        <item><![CDATA[North Korea]]><value /></item>
+        <item><![CDATA[Northern Mariana Islands]]><value /></item>
+        <item><![CDATA[Norway]]><value /></item>
+        <item><![CDATA[Oman]]><value /></item>
+        <item><![CDATA[Pakistan]]><value /></item>
+        <item><![CDATA[Palau]]><value /></item>
+        <item><![CDATA[Palestinian Territories]]><value /></item>
+        <item><![CDATA[Panama]]><value /></item>
+        <item><![CDATA[Papua New Guinea]]><value /></item>
+        <item><![CDATA[Paraguay]]><value /></item>
+        <item><![CDATA[Peru]]><value /></item>
+        <item><![CDATA[Philippines]]><value /></item>
+        <item><![CDATA[Pitcairn Islands]]><value /></item>
+        <item><![CDATA[Poland]]><value /></item>
+        <item><![CDATA[Portugal]]><value /></item>
+        <item><![CDATA[Puerto Rico]]><value /></item>
+        <item><![CDATA[Qatar]]><value /></item>
+        <item><![CDATA[Réunion]]><value /></item>
+        <item><![CDATA[Romania]]><value /></item>
+        <item><![CDATA[Russia]]><value /></item>
+        <item><![CDATA[Rwanda]]><value /></item>
+        <item><![CDATA[Samoa]]><value /></item>
+        <item><![CDATA[San Marino]]><value /></item>
+        <item><![CDATA[São Tomé & Príncipe]]><value /></item>
+        <item><![CDATA[Saudi Arabia]]><value /></item>
+        <item><![CDATA[Senegal]]><value /></item>
+        <item><![CDATA[Serbia]]><value /></item>
+        <item><![CDATA[Seychelles]]><value /></item>
+        <item><![CDATA[Sierra Leone]]><value /></item>
+        <item><![CDATA[Singapore]]><value /></item>
+        <item><![CDATA[Sint Maarten]]><value /></item>
+        <item><![CDATA[Slovakia]]><value /></item>
+        <item><![CDATA[Slovenia]]><value /></item>
+        <item><![CDATA[Solomon Islands]]><value /></item>
+        <item><![CDATA[Somalia]]><value /></item>
+        <item><![CDATA[South Africa]]><value /></item>
+        <item><![CDATA[South Georgia & South Sandwich Islands]]><value /></item>
+        <item><![CDATA[South Korea]]><value /></item>
+        <item><![CDATA[South Sudan]]><value /></item>
+        <item><![CDATA[Spain]]><value /></item>
+        <item><![CDATA[Sri Lanka]]><value /></item>
+        <item><![CDATA[St. Barthélemy]]><value /></item>
+        <item><![CDATA[St. Helena]]><value /></item>
+        <item><![CDATA[St. Kitts & Nevis]]><value /></item>
+        <item><![CDATA[St. Lucia]]><value /></item>
+        <item><![CDATA[St. Martin]]><value /></item>
+        <item><![CDATA[St. Pierre & Miquelon]]><value /></item>
+        <item><![CDATA[St. Vincent & Grenadines]]><value /></item>
+        <item><![CDATA[Sudan]]><value /></item>
+        <item><![CDATA[Suriname]]><value /></item>
+        <item><![CDATA[Svalbard & Jan Mayen]]><value /></item>
+        <item><![CDATA[Swaziland]]><value /></item>
+        <item><![CDATA[Sweden]]><value /></item>
+        <item><![CDATA[Switzerland]]><value /></item>
+        <item><![CDATA[Syria]]><value /></item>
+        <item><![CDATA[Taiwan]]><value /></item>
+        <item><![CDATA[Tajikistan]]><value /></item>
+        <item><![CDATA[Tanzania]]><value /></item>
+        <item><![CDATA[Thailand]]><value /></item>
+        <item><![CDATA[Timor-Leste]]><value /></item>
+        <item><![CDATA[Togo]]><value /></item>
+        <item><![CDATA[Tokelau]]><value /></item>
+        <item><![CDATA[Tonga]]><value /></item>
+        <item><![CDATA[Trinidad & Tobago]]><value /></item>
+        <item><![CDATA[Tristan da Cunha]]><value /></item>
+        <item><![CDATA[Tunisia]]><value /></item>
+        <item><![CDATA[Turkey]]><value /></item>
+        <item><![CDATA[Turkmenistan]]><value /></item>
+        <item><![CDATA[Turks & Caicos Islands]]><value /></item>
+        <item><![CDATA[Tuvalu]]><value /></item>
+        <item><![CDATA[U.S. Outlying Islands]]><value /></item>
+        <item><![CDATA[U.S. Virgin Islands]]><value /></item>
+        <item><![CDATA[Uganda]]><value /></item>
+        <item><![CDATA[Ukraine]]><value /></item>
+        <item><![CDATA[United Arab Emirates]]><value /></item>
+        <item><![CDATA[United Kingdom]]><value /></item>
+        <item><![CDATA[United Nations]]><value /></item>
+        <item><![CDATA[United States]]><value /></item>
+        <item><![CDATA[Uruguay]]><value /></item>
+        <item><![CDATA[Uzbekistan]]><value /></item>
+        <item><![CDATA[Vanuatu]]><value /></item>
+        <item><![CDATA[Vatican City]]><value /></item>
+        <item><![CDATA[Venezuela]]><value /></item>
+        <item><![CDATA[Vietnam]]><value /></item>
+        <item><![CDATA[Wallis & Futuna]]><value /></item>
+        <item><![CDATA[Western Sahara]]><value /></item>
+        <item><![CDATA[Yemen]]><value /></item>
+        <item><![CDATA[Zambia]]><value /></item>
+        <item><![CDATA[Zimbabwe]]><value /></item>
+
     </string-array>
 </resources>
 

@@ -20,7 +20,7 @@ public class TrainingSummaryActivity extends Activity {
         String trainingRep = info.getString("trainingRep");
 
         rept = findViewById(R.id.rept);
-        rept.setText(trainingRep);
+        rept.setText(trainingRep + " " + "Reputation");
         done = findViewById(R.id.done);
         done.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -54,6 +54,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
     TextView badges;
     ConstraintLayout rep;
     TextView fields_plus;
+    TextView rept;
 
 
     private void loadUserInformation() {
@@ -104,6 +105,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
         final String friendText = getString(R.string.friend);
         final String friendsText = getString(R.string.friends);
         friends = findViewById(R.id.friends);
+        rept = findViewById(R.id.reputation);
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
         profileImage = findViewById(R.id.profilePhoto);
@@ -221,6 +223,8 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
                             usersTeam.setText("Not at any team");
                         }
 
+                        String reputation = documentSnapshot.get("userReputation").toString();
+                        rept.setText(reputation);
 
                     } else {
                         Log.d(TAG, "no such file");
