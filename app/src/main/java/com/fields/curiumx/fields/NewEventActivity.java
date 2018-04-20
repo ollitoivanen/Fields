@@ -41,6 +41,7 @@ public class NewEventActivity extends Activity {
     TextView trainingEndTime;
     TextView trainingEndDate;
     TextView error;
+    TextView error2;
     Button chooseFieldButton;
     Button publishButton;
     TextView chosenFieldText;
@@ -104,6 +105,7 @@ public class NewEventActivity extends Activity {
         setContentView(R.layout.activity_new_event);
         chooseFieldButton = findViewById(R.id.choose_field_button);
         error = findViewById(R.id.error_message);
+        error2 = findViewById(R.id.error_message2);
 
         progressBar12 = findViewById(R.id.progress_bar1);
         chooseFieldButton.setOnClickListener(new View.OnClickListener() {
@@ -121,9 +123,8 @@ public class NewEventActivity extends Activity {
                 if (c.getTimeInMillis()-System.currentTimeMillis() < 0 ) {
                     error.setVisibility(View.VISIBLE);
                 }else if (cEnd.getTimeInMillis() < c.getTimeInMillis()){
-                    error.setVisibility(View.VISIBLE);
-                    error.setText("Event should not end before it has started");
-                    
+                    error2.setVisibility(View.VISIBLE);
+
                 }else {
                     progressBar12.setVisibility(View.VISIBLE);
                     publishButton.setEnabled(false);
@@ -176,6 +177,8 @@ public class NewEventActivity extends Activity {
             @Override
             public void onClick(View v) {
                 error.setVisibility(View.GONE);
+                error2.setVisibility(View.GONE);
+
 
                 startBool = true;
                 endBool = false;
@@ -190,6 +193,8 @@ public class NewEventActivity extends Activity {
             @Override
             public void onClick(View v) {
                 error.setVisibility(View.GONE);
+                error2.setVisibility(View.GONE);
+
                 endBool = true;
                 startBool = false;
                 new DatePickerDialog(NewEventActivity.this, date, cEnd
@@ -231,6 +236,8 @@ public class NewEventActivity extends Activity {
             @Override
             public void onClick(View v) {
                 error.setVisibility(View.GONE);
+                error2.setVisibility(View.GONE);
+
 
                 startTime = true;
                 createdDialog(1111).show();
@@ -241,6 +248,8 @@ public class NewEventActivity extends Activity {
             @Override
             public void onClick(View v) {
                 error.setVisibility(View.GONE);
+                error2.setVisibility(View.GONE);
+
 
                 endTime = true;
                 createdDialog(1111).show();

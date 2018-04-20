@@ -109,6 +109,7 @@
     <string name="no_results_found">No results found</string>
     <string name="publish">Publish</string>
     <string name="error">This date has already passed</string>
+    <string name="error2">Event should not end before it has started</string>
 
 
     <string-array name="role_spinner">
