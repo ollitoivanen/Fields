@@ -6,17 +6,19 @@ public class EventMap {
     String eventTimeStart;
     String eventTimeEnd;
     String eventField;
+    String eventStartDate;
 
     public EventMap(){
 
     }
 
-    public EventMap(String eventID, String eventType, String eventTimeStart, String eventTimeEnd, String eventField){
+    public EventMap(String eventID, String eventType, String eventTimeStart, String eventTimeEnd, String eventField, String eventStartDate){
         this.eventID = eventID;
         this.eventType = eventType;
         this.eventTimeStart = eventTimeStart;
         this.eventField = eventField;
         this.eventTimeEnd = eventTimeEnd;
+        this.eventStartDate = eventStartDate;
     }
 
     public String getEventField() {
@@ -37,5 +39,9 @@ public class EventMap {
 
     public String getEventTimeEnd() {
         return eventTimeEnd;
+    }
+
+    public String getEventStartDate() {
+        return eventStartDate;
     }
 }

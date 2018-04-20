@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -39,6 +40,7 @@ public class NewEventActivity extends Activity {
     TextView trainingStartDate;
     TextView trainingEndTime;
     TextView trainingEndDate;
+    TextView error;
     Button chooseFieldButton;
     Button publishButton;
     TextView chosenFieldText;
@@ -50,7 +52,10 @@ public class NewEventActivity extends Activity {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
     final Calendar c = Calendar.getInstance();
+    final Calendar cEnd = Calendar.getInstance();
+
     String chosenFieldNameIntent;
+    ProgressBar progressBar12;
 
 
     private int hr;
@@ -73,10 +78,22 @@ public class NewEventActivity extends Activity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            c.set(Calendar.YEAR, year);
-            c.set(Calendar.MONTH, monthOfYear);
-            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel();
+            if (startBool){
+
+                c.set(Calendar.YEAR, year);
+                c.set(Calendar.MONTH, monthOfYear);
+                c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                updateLabel();
+            }else {
+
+                cEnd.set(Calendar.YEAR, year);
+                cEnd.set(Calendar.MONTH, monthOfYear);
+                cEnd.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                updateLabel();
+            }
+
         }
 
     };
@@ -86,6 +103,9 @@ public class NewEventActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_event);
         chooseFieldButton = findViewById(R.id.choose_field_button);
+        error = findViewById(R.id.error_message);
+
+        progressBar12 = findViewById(R.id.progress_bar1);
         chooseFieldButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,35 +118,46 @@ public class NewEventActivity extends Activity {
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        DocumentSnapshot ds = task.getResult();
-                        String ref = ds.get("usersTeamID").toString();
-                        String eventID = UUID.randomUUID().toString();
-                        String eventTimeStart = trainingStartTime.getText().toString();
-                        String eventTimeEnd = trainingEndTime.getText().toString();
-                        if (chosenFieldNameIntent == null){
-                            chosenFieldNameIntent = "";
-                        }
-                        EventMap eventMap = new EventMap(eventID,
-                                typeSpinner.getSelectedItem().toString(),
-                                eventTimeStart, eventTimeEnd,chosenFieldNameIntent);
-                        db.collection("Teams").document(ref).collection("Team's Events")
-                                .document(eventID).set(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getApplicationContext(), "Event created successfully", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(NewEventActivity.this, TeamActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-
-                                finish();
+                if (c.getTimeInMillis()-System.currentTimeMillis() < 0 ) {
+                    error.setVisibility(View.VISIBLE);
+                }else if (cEnd.getTimeInMillis() < c.getTimeInMillis()){
+                    error.setVisibility(View.VISIBLE);
+                    error.setText("Event should not end before it has started");
+                    
+                }else {
+                    progressBar12.setVisibility(View.VISIBLE);
+                    publishButton.setEnabled(false);
+                    db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot ds = task.getResult();
+                            String ref = ds.get("usersTeamID").toString();
+                            String eventID = UUID.randomUUID().toString();
+                            String eventTimeStart = trainingStartTime.getText().toString();
+                            String eventTimeEnd = trainingEndTime.getText().toString();
+                            if (chosenFieldNameIntent == null) {
+                                chosenFieldNameIntent = "";
                             }
-                        });
-                    }
-                });
+                            EventMap eventMap = new EventMap(eventID,
+                                    typeSpinner.getSelectedItem().toString(),
+                                    eventTimeStart, eventTimeEnd, chosenFieldNameIntent, trainingStartDate.getText().toString());
+                            db.collection("Teams").document(ref).collection("Team's Events")
+                                    .document(Long.toString(c.getTimeInMillis())).set(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    progressBar12.setVisibility(View.GONE);
+                                    publishButton.setEnabled(true);
+                                    Toast.makeText(getApplicationContext(), "Event created successfully", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(NewEventActivity.this, TeamActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
 
+                                    finish();
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
         trainingStartTime = findViewById(R.id.training_start_time);
@@ -144,7 +175,10 @@ public class NewEventActivity extends Activity {
         trainingStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                error.setVisibility(View.GONE);
+
                 startBool = true;
+                endBool = false;
                 new DatePickerDialog(NewEventActivity.this, date, c
                         .get(Calendar.YEAR), c.get(Calendar.MONTH),
                         c.get(Calendar.DAY_OF_MONTH)).show();
@@ -155,10 +189,12 @@ public class NewEventActivity extends Activity {
         trainingEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                error.setVisibility(View.GONE);
                 endBool = true;
-                new DatePickerDialog(NewEventActivity.this, date, c
-                        .get(Calendar.YEAR), c.get(Calendar.MONTH),
-                        c.get(Calendar.DAY_OF_MONTH)).show();
+                startBool = false;
+                new DatePickerDialog(NewEventActivity.this, date, cEnd
+                        .get(Calendar.YEAR), cEnd.get(Calendar.MONTH),
+                        cEnd.get(Calendar.DAY_OF_MONTH)).show();
                 }
         });
 
@@ -194,6 +230,8 @@ public class NewEventActivity extends Activity {
         trainingStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                error.setVisibility(View.GONE);
+
                 startTime = true;
                 createdDialog(1111).show();
             }
@@ -202,6 +240,8 @@ public class NewEventActivity extends Activity {
         trainingEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                error.setVisibility(View.GONE);
+
                 endTime = true;
                 createdDialog(1111).show();
             }
@@ -212,10 +252,11 @@ public class NewEventActivity extends Activity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM");
         if (startBool){
             startBool = false;
+
             trainingStartDate.setText(dateFormat.format(c.getTime()));
             }else {
             endBool = false;
-            trainingEndDate.setText(dateFormat.format(c.getTime()));
+            trainingEndDate.setText(dateFormat.format(cEnd.getTime()));
 
         }
     }
@@ -225,6 +266,15 @@ public class NewEventActivity extends Activity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
             hr = hourOfDay;
             min = minutes;
+
+            if (startTime){
+                c.set(Calendar.MINUTE, minutes);
+                c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            }else {
+                cEnd.set(Calendar.MINUTE, minutes);
+                cEnd.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            }
+
             updateTime(hr, min);
         }
     };

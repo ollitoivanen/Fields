@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,6 +43,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,8 +79,17 @@ public class TeamActivity extends Activity {
 
 
     public class eventHolder extends EmptyRecyclerView.ViewHolder {
-        @BindView(R.id.name)
-        TextView textName;
+
+        CardView root = findViewById(R.id.root);
+        @BindView(R.id.eventDate)
+        TextView textDate;
+        @BindView(R.id.eventTime)
+        TextView textTime;
+        @BindView(R.id.eventPlace)
+        TextView textPlace;
+        @BindView(R.id.eventType)
+        TextView textType;
+
 
 
         public eventHolder(View itemView) {
@@ -93,6 +107,8 @@ public class TeamActivity extends Activity {
         down1 = false;
         eventRecycler = findViewById(R.id.eventRecycler);
         init();
+
+
 
         ButterKnife.bind(this);
         dropIm1 = findViewById(R.id.dropdown1);
@@ -208,6 +224,7 @@ public class TeamActivity extends Activity {
 
 
                             Query query = db.collection("Teams").document(teamID1).collection("Team's Events");
+
                             FirestoreRecyclerOptions<EventMap> response = new FirestoreRecyclerOptions.Builder<EventMap>()
                                     .setQuery(query, EventMap.class)
                                     .build();
@@ -215,7 +232,26 @@ public class TeamActivity extends Activity {
                             adapter = new FirestoreRecyclerAdapter<EventMap, eventHolder>(response) {
                                 @Override
                                 public void onBindViewHolder(eventHolder holder, int position, final EventMap model) {
-                                    holder.textName.setText(model.getEventType());
+
+                                    Date currentTime = Calendar.getInstance().getTime();
+                                    Calendar c = Calendar.getInstance();
+
+
+
+
+
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM");
+                                    String compareDate = dateFormat.format(currentTime);
+                                    if (compareDate.equals(model.getEventStartDate())){
+                                        holder.textDate.setText("Today");
+                                    }else {
+                                        holder.textDate.setText(model.getEventStartDate());
+                                    }
+                                    holder.textType.setText(model.getEventType());
+                                    holder.textTime.setText(model.getEventTimeStart() + "- " + model.getEventTimeEnd());
+                                    if (!model.getEventField().equals("")) {
+                                        holder.textPlace.setText("at " + model.getEventField());
+                                    }
                                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -228,7 +264,7 @@ public class TeamActivity extends Activity {
                                 @Override
                                 public eventHolder onCreateViewHolder(ViewGroup group, int i) {
                                     View view = LayoutInflater.from(group.getContext())
-                                            .inflate(R.layout.list_item, group, false);
+                                            .inflate(R.layout.event_item, group, false);
                                     return new eventHolder(view);
                                 }
 

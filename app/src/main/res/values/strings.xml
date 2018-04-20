@@ -108,6 +108,7 @@
     <string name="search_field">Search Field</string>
     <string name="no_results_found">No results found</string>
     <string name="publish">Publish</string>
+    <string name="error">This date has already passed</string>
 
 
     <string-array name="role_spinner">
