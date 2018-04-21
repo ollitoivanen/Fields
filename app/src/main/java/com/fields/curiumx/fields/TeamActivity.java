@@ -255,7 +255,14 @@ public class TeamActivity extends Activity {
                                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-
+                                            Intent intent = new Intent(TeamActivity.this, DetailEventActivity.class);
+                                            intent.putExtra("type", model.getEventType());
+                                            intent.putExtra("place", model.getEventField());
+                                            intent.putExtra("date", model.getEventStartDate());
+                                            intent.putExtra("timeEnd", model.getEventTimeEnd());
+                                            intent.putExtra("timeStart", model.getEventTimeStart());
+                                            intent.putExtra("eventID", model.getEventID());
+                                            startActivity(intent);
 
                                         }
                                     });

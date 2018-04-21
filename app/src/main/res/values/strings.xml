@@ -110,6 +110,7 @@
     <string name="publish">Publish</string>
     <string name="error">This date has already passed</string>
     <string name="error2">Event should not end before it has started</string>
+    <string name="location_not_given">Field not given</string>
 
 
     <string-array name="role_spinner">
