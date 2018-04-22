@@ -21,15 +21,15 @@
         android:id="@+id/eventTypeDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@android:style/TextAppearance.Material.Medium"
-        android:textStyle="bold"
-        android:text="Type"
-        app:layout_constraintStart_toEndOf="@id/green"
-
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:text="Type"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+
         android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/green"
+        app:layout_constraintTop_toTopOf="parent"
 
         />
 
@@ -37,13 +37,13 @@
         android:id="@+id/eventPlaceDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
         android:text="Palce"
+        android:textSize="22sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/green"
         app:layout_constraintTop_toBottomOf="@id/eventTypeDetail"
-        android:textSize="22sp"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="20dp"
-        android:textStyle="bold"
 
         />
 
@@ -54,8 +54,8 @@
         android:layout_marginTop="16dp"
         android:text="date"
         android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/eventTimeDetail"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/eventPlaceDetail" />
 
     <TextView
@@ -70,12 +70,13 @@
         app:layout_constraintTop_toBottomOf="@id/eventPlaceDetail" />
 
     <View
+        android:id="@+id/divs"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/eventTimeDetail"
+        android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"/>
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/eventTimeDetail" />
 
     <ImageView
         android:id="@+id/crossRed"
@@ -89,13 +90,79 @@
 
         />
 
+    <TextView
+        android:id="@+id/take_part"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/taking_part"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divs"
+
+        />
+
+    <com.fields.curiumx.fields.EmptyRecyclerView
+        android:id="@+id/taking_part_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/take_part" />
+
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/take_part"
+        app:layout_constraintTop_toBottomOf="@id/divs">
+
+        <Button
+            android:id="@+id/in_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:background="@color/colorPrimary"
+            android:text="@string/in" />
+
+        <Button
+            android:id="@+id/half_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/DividerColor"
+            android:text="@string/open" />
+
+        <Button
+            android:id="@+id/out_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/FSQStrawberry"
+            android:text="@string/out"
+
+            />
+    </LinearLayout>
+
     <ProgressBar
         android:id="@+id/prgress_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

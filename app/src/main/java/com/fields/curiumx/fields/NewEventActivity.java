@@ -133,7 +133,7 @@ public class NewEventActivity extends Activity {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             DocumentSnapshot ds = task.getResult();
                             String ref = ds.get("usersTeamID").toString();
-                            String eventID = UUID.randomUUID().toString();
+                            String eventID = Long.toString(c.getTimeInMillis());
                             String eventTimeStart = trainingStartTime.getText().toString();
                             String eventTimeEnd = trainingEndTime.getText().toString();
                             if (chosenFieldNameIntent == null) {

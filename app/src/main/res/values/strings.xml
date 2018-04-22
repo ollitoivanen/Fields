@@ -111,6 +111,11 @@
     <string name="error">This date has already passed</string>
     <string name="error2">Event should not end before it has started</string>
     <string name="location_not_given">Field not given</string>
+    <string name="taking_part">Taking part</string>
+    <string name="out">Out</string>
+    <string name="in">In</string>
+    <string name="open">Open</string>
+    <string name="you">You</string>
 
 
     <string-array name="role_spinner">

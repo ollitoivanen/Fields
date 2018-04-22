@@ -234,7 +234,6 @@ public class TeamActivity extends Activity {
                                 public void onBindViewHolder(eventHolder holder, int position, final EventMap model) {
 
                                     Date currentTime = Calendar.getInstance().getTime();
-                                    Calendar c = Calendar.getInstance();
 
 
 
@@ -262,6 +261,7 @@ public class TeamActivity extends Activity {
                                             intent.putExtra("timeEnd", model.getEventTimeEnd());
                                             intent.putExtra("timeStart", model.getEventTimeStart());
                                             intent.putExtra("eventID", model.getEventID());
+                                            intent.putExtra("teamID", teamID1);
                                             startActivity(intent);
 
                                         }

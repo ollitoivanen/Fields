@@ -135,10 +135,9 @@ public class CreateNewTeamActivity extends Activity {
                                             level.getSelectedItem().toString());
                                     db.collection("Teams").document(teamID).set(data1);
 
-                                    Map<String, Object> data = new HashMap<>();
-                                    data.put("username", username);
+                                   MemberMap memberMap = new MemberMap(username, user.getUid());
 
-                                    db.collection("Teams").document(teamID).collection("TeamUsers").document(uid).set(data);
+                                    db.collection("Teams").document(teamID).collection("TeamUsers").document(uid).set(memberMap);
 
                                     db.collection("Users").document(uid).update("usersTeamID", teamID);
                                     db.collection("Users").document(uid).update("User's team", teamNameText)
