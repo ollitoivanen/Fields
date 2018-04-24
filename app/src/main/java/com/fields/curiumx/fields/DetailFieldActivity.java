@@ -390,8 +390,5 @@ public class DetailFieldActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setAsHomeField(){
 
-
-    }
 }

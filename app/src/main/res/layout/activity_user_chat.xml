@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserChatActivity">
+
+    <com.fields.curiumx.fields.EmptyRecyclerView
+        android:id="@+id/chat_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        app:layout_constraintBottom_toTopOf="@id/message_box"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+    </com.fields.curiumx.fields.EmptyRecyclerView>
+
+    <EditText
+        android:id="@+id/message_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/write"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/send_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/send_button"
+        android:layout_width="79dp"
+        android:layout_height="43dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/rounded_view"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="@string/fui_button_text_send"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/message_box" />
+
+</android.support.constraint.ConstraintLayout>
+
+

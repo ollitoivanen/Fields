@@ -94,7 +94,8 @@
         <activity android:name=".NewEventActivity" />
         <activity android:name=".SearchFieldOnlyActivity" />
         <activity android:name=".DetailEventActivity" />
-        <activity android:name=".PendingPlayerActivity"></activity>
+        <activity android:name=".PendingPlayerActivity" />
+        <activity android:name=".UserChatActivity"></activity>
     </application>
 
 </manifest>

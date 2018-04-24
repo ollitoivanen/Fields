@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_done_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/communication/ic_forum_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -34,8 +34,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="imageAsset" value="$USER_HOME$/Downloads/account-edit/holo_dark/drawable-xxxhdpi/ic_account_edit.png" />
-                                      <entry key="outputName" value="ic_pending_players_accept" />
-                                      <entry key="theme" value="CUSTOM" />
+                                      <entry key="outputName" value="ic_chat" />
                                       <entry key="themeColor" value="3bd774" />
                                     </map>
                                   </option>

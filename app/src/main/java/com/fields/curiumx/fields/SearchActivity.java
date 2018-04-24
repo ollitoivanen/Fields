@@ -188,6 +188,13 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                         intent.putExtra("username", model.getUsername());
                         intent.putExtra("userID", model.getUserID());
                         intent.putExtra("currentFieldName", model.getCurrentFieldName());
+                        intent.putExtra("currentFieldID", model.getCurrentFieldID());
+                        intent.putExtra("usersTeam", model.getUsersTeam());
+                        intent.putExtra("usersTeamID", model.getUsersTeamID());
+                        intent.putExtra("userRole", model.getUserRole());
+                        intent.putExtra("userReputation", model.getUserReputation());
+                        intent.putExtra("userBio", model.getUserBio());
+                        intent.putExtra("position", model.getPosition());
                         startActivity(intent);
                     }
                 });

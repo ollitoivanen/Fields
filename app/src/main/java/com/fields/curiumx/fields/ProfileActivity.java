@@ -56,7 +56,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
     TextView fields_plus;
     TextView rept;
 
-
     private void loadUserInformation() {
 
         if (user != null) {

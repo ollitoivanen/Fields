@@ -119,6 +119,8 @@
     <string name="join_team">Join team</string>
     <string name="leave_team">Leave team</string>
     <string name="pending_players">Pending players</string>
+    <string name="write">Write</string>
+    <string name="message_player">Message Player</string>
 
 
     <string-array name="role_spinner">
