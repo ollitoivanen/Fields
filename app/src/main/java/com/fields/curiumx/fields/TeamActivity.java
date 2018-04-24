@@ -14,6 +14,8 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +55,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TeamActivity extends Activity {
-    String teamName;
+    String nameBoi;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
     TextView teamLevel;
@@ -76,6 +78,15 @@ public class TeamActivity extends Activity {
     private FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String teamID1;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.leave_team, menu);
+        inflater.inflate(R.menu.pending_players, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
 
     public class eventHolder extends EmptyRecyclerView.ViewHolder {
@@ -198,21 +209,21 @@ public class TeamActivity extends Activity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot documentSnapshot = task.getResult();
                 progressBar.setVisibility(View.GONE);
-                if (documentSnapshot.get("User's team") == null) {
+                if (documentSnapshot.get("usersTeam") == null) {
 
                     startActivity(new Intent(TeamActivity.this, NoTeamActivity.class));
                     progressBar.setVisibility(View.GONE);
 
                 } else {
 
-                    final String teamID1 = documentSnapshot.get("usersTeamID").toString();
+                     teamID1 = documentSnapshot.get("usersTeamID").toString();
 
                     db.collection("Teams").document(teamID1).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                             DocumentSnapshot documentSnapshot1 = task.getResult();
-                            String nameBoi = documentSnapshot1.get("teamNameText").toString();
+                            nameBoi = documentSnapshot1.get("teamNameText").toString();
                             final String countryBoi = documentSnapshot1.get("teamCountryText").toString();
                             String homeField = documentSnapshot1.get("homeField").toString();
                             String leader = documentSnapshot1.get("leader").toString();
@@ -357,6 +368,24 @@ public class TeamActivity extends Activity {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
+            case R.id.leave:
+                db.collection("Users").document(uid).update("usersTeamID", null);
+                db.collection("Teams").document(teamID1).collection("TeamUsers").document(uid).delete();
+                db.collection("Users").document(uid).update("usersTeam", null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Intent intent = new Intent(TeamActivity.this, NoTeamActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        Toast.makeText(getApplicationContext(), "Left team", Toast.LENGTH_LONG).show();
+                        startActivity(intent);
+                    }
+                });
+
+            case R.id.pending_player:
+                Intent intent = new Intent(TeamActivity.this, PendingPlayerActivity.class);
+                intent.putExtra("teamID", teamID1);
+                intent.putExtra("teamName", nameBoi);
+                startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -93,7 +93,8 @@
         <activity android:name=".NoTeamActivity" />
         <activity android:name=".NewEventActivity" />
         <activity android:name=".SearchFieldOnlyActivity" />
-        <activity android:name=".DetailEventActivity"></activity>
+        <activity android:name=".DetailEventActivity" />
+        <activity android:name=".PendingPlayerActivity"></activity>
     </application>
 
 </manifest>

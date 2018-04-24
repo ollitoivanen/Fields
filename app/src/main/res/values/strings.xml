@@ -116,6 +116,9 @@
     <string name="in">In</string>
     <string name="open">Open</string>
     <string name="you">You</string>
+    <string name="join_team">Join team</string>
+    <string name="leave_team">Leave team</string>
+    <string name="pending_players">Pending players</string>
 
 
     <string-array name="role_spinner">

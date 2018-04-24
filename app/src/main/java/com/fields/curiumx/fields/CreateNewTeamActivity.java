@@ -106,6 +106,9 @@ public class CreateNewTeamActivity extends Activity {
             teamName.setError("Team name is required");
             teamName.requestFocus();
 
+        }else if (teamNameText.equals(" ")){
+            teamName.setError("Team name is required");
+            teamName.requestFocus();
 
             //Check if team with the same name already exists
         }else {
@@ -125,7 +128,7 @@ public class CreateNewTeamActivity extends Activity {
 
 
                                 //Check if user is already in a team
-                                if (documentSnapshot.get("User's team") == null) {
+                                if (documentSnapshot.get("usersTeam") == null) {
                                     teamID = UUID.randomUUID().toString();
                                     if (uriFieldImage != null){
                                         uploadImageToFirebaseStorage();
@@ -140,7 +143,7 @@ public class CreateNewTeamActivity extends Activity {
                                     db.collection("Teams").document(teamID).collection("TeamUsers").document(uid).set(memberMap);
 
                                     db.collection("Users").document(uid).update("usersTeamID", teamID);
-                                    db.collection("Users").document(uid).update("User's team", teamNameText)
+                                    db.collection("Users").document(uid).update("usersTeam", teamNameText)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
