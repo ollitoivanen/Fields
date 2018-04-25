@@ -121,6 +121,9 @@
     <string name="pending_players">Pending players</string>
     <string name="write">Write</string>
     <string name="message_player">Message Player</string>
+    <string name="player_position_role_given">%1$s, %1$s</string>
+    <string name="player_position_role_not_given">%1$s</string>
+
 
 
     <string-array name="role_spinner">

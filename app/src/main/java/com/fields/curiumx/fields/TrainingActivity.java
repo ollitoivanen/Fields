@@ -80,10 +80,15 @@ public class TrainingActivity extends Activity {
                 } else {
                     reputation = diff / 60000;
                      userReputationNew = reputation + Long.parseLong(userReputation);
+                     UserMap userMap = new UserMap();
                      db.collection("Users").document(uid).update("userReputation", userReputationNew);
+                            db.collection("Users").document(uid).update("userReputation", userReputationNew);
+                            db.collection("Users").document(uid).update("trainingCount", userMap.getTrainingCount() + 1);
 
 
-                     }
+
+
+                        }
 
                         db.collection("Users").document(uid).update("currentFieldID", "");
                         db.collection("Users").document(uid).update("currentFieldName", "");

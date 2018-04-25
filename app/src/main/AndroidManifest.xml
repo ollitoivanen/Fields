@@ -83,7 +83,6 @@
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".CustomizeProfileActivity" />
         <activity android:name=".ReputationActivity" />
-        <activity android:name=".ChallengesActivity" />
         <activity android:name=".BadgesActivity" />
         <activity android:name=".FieldsPlusStartActivity" />
         <activity android:name=".CreateNewFieldActivity" />

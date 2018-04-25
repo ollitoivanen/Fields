@@ -50,11 +50,14 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
     ProgressBar progressBar;
     ImageView profileImage;
     TextView friends;
-    TextView challenges;
     TextView badges;
     ConstraintLayout rep;
     TextView fields_plus;
     TextView rept;
+    TextView trainingCount;
+    ConstraintLayout gradient;
+    String uid = user.getUid();
+
 
     private void loadUserInformation() {
 
@@ -66,6 +69,8 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
             }else{
                 profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
             }
+        }else{
+            startActivity(new Intent(ProfileActivity.this, SignUpActivity.class));
         }
     }
 
@@ -92,8 +97,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
         progressBar.setVisibility(View.GONE);
         loadChanges();
         loadUserInformation();
-        UserName = user.getDisplayName();
-        username.setText(UserName);
         super.onRestart();
     }
 
@@ -101,24 +104,22 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        final String friendText = getString(R.string.friend);
-        final String friendsText = getString(R.string.friends);
+
         friends = findViewById(R.id.friends);
         rept = findViewById(R.id.reputation);
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
         profileImage = findViewById(R.id.profilePhoto);
-        challenges = findViewById(R.id.challenges);
         badges = findViewById(R.id.badges);
         fields_plus = findViewById(R.id.fields_plus);
         rep = findViewById(R.id.rep);
         rep.setOnClickListener(this);
         badges.setOnClickListener(this);
-        challenges.setOnClickListener(this);
         fields_plus.setOnClickListener(this);
-
+        gradient = findViewById(R.id.gradient);
         roleText = findViewById(R.id.position_role_text);
         bioText = findViewById(R.id.bio_text1);
+        trainingCount = findViewById(R.id.trainings);
 
         loadUserInformation();
 
@@ -133,45 +134,52 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
             }
         });
 
-        String uid = user.getUid();
         UserName = user.getDisplayName();
         username.setText(UserName);
-        reference = FirebaseFirestore.getInstance().collection("Users").document(uid);
 
 
-        reference.collection("Friends").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.getResult().size() == 1) {
-                    friends.setText(String.valueOf(task.getResult().size()) + " " + friendText);
-                } else {
-                    friends.setText(String.valueOf(task.getResult().size()) + " " + friendsText);
 
-                }
-            }
-        });
         loadChanges();
     }
 
         public void loadChanges() {
+
+            //final String friendText = getString(R.string.friend);
+            //final String friendsText = getString(R.string.friends);
+            reference = FirebaseFirestore.getInstance().collection("Users").document(uid);
+            //reference.collection("Friends").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            //    @Override
+            //    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            //        if (task.getResult().size() == 1) {
+            //            friends.setText(String.valueOf(task.getResult().size()) + " " + friendText);
+            //        } else {
+            //            friends.setText(String.valueOf(task.getResult().size()) + " " + friendsText);
+            //
+            //        }
+            //    }
+            //});
+
             reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     testCurrentField.setVisibility(View.VISIBLE);
-                    username.setVisibility(View.VISIBLE);
-                    usersTeam.setVisibility(View.VISIBLE);
-                    profileImage.setVisibility(View.VISIBLE);
-                    friends.setVisibility(View.VISIBLE);
+                    gradient.setVisibility(View.VISIBLE);
+                    rep.setVisibility(View.VISIBLE);
+                    badges.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
 
-                    bioText.setVisibility(View.VISIBLE);
-                    roleText.setVisibility(View.VISIBLE);
+
                     if (task.isSuccessful()) {
                         final DocumentSnapshot documentSnapshot = task.getResult();
                         setTitle(documentSnapshot.get("username").toString());
                         bioText.setText(documentSnapshot.get("userBio").toString());
-                        roleText.setText(documentSnapshot.get("userRole").toString() + "," + " " + documentSnapshot.get("position").toString());
-
+                        String userRole = documentSnapshot.get("userRole").toString();
+                        String userPosition = documentSnapshot.get("position").toString();
+                        if (userPosition.equals("")) {
+                            roleText.setText(getResources().getString(R.string.player_position_role_not_given, userRole));
+                        }else {
+                            roleText.setText("WAIT");
+                        }
 
                         if (!documentSnapshot.get("currentFieldName").toString().equals("")) {
 
@@ -192,7 +200,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
                                 placeHolder2 = placeHolder + " " + "hours";
                             } else {
                                 placeHolder = days;
-                                placeHolder2 = placeHolder2 + " " + "days";
                             }
 
 
@@ -266,9 +273,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.challenges:
-                startActivity(new Intent(ProfileActivity.this, ChallengesActivity.class));
-                break;
             case R.id.badges:
                 startActivity(new Intent(ProfileActivity.this, BadgesActivity.class));
                 break;
