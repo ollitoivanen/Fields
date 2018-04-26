@@ -83,7 +83,6 @@
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".CustomizeProfileActivity" />
         <activity android:name=".ReputationActivity" />
-        <activity android:name=".BadgesActivity" />
         <activity android:name=".FieldsPlusStartActivity" />
         <activity android:name=".CreateNewFieldActivity" />
         <activity android:name=".EditFieldActivity" />
@@ -94,7 +93,7 @@
         <activity android:name=".SearchFieldOnlyActivity" />
         <activity android:name=".DetailEventActivity" />
         <activity android:name=".PendingPlayerActivity" />
-        <activity android:name=".UserChatActivity"></activity>
+        <activity android:name=".UserChatActivity" />
     </application>
 
 </manifest>

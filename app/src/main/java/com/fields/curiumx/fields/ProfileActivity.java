@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
 import android.view.Menu;
@@ -25,7 +26,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,29 +34,33 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class ProfileActivity extends Activity implements View.OnClickListener{
+
     ImageButton profileButton;
     TextView testCurrentField;
     TextView username;
     TextView usersTeam;
-    TextView bioText;
     TextView roleText;
     DocumentReference reference;
     String currentField;
     String UserName;
     String UserTeam;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     long placeHolder;
     String placeHolder2;
     ProgressBar progressBar;
     ImageView profileImage;
     TextView friends;
-    TextView badges;
-    ConstraintLayout rep;
+    ConstraintLayout reputation;
     TextView fields_plus;
-    TextView rept;
+    TextView reputationText;
     TextView trainingCount;
     ConstraintLayout gradient;
     String uid = user.getUid();
+    String[] userRoleArray;
+    String [] userPositionArray;
+
+
 
 
     private void loadUserInformation() {
@@ -105,159 +109,144 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        friends = findViewById(R.id.friends);
-        rept = findViewById(R.id.reputation);
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
+
+        reference = FirebaseFirestore.getInstance().collection("Users").document(uid);
+        userRoleArray = getResources().getStringArray(R.array.role_spinner);
+        userPositionArray = getResources().getStringArray(R.array.position_spinner);
+        friends = findViewById(R.id.friends);
+        reputationText = findViewById(R.id.reputation);
         profileImage = findViewById(R.id.profilePhoto);
-        badges = findViewById(R.id.badges);
         fields_plus = findViewById(R.id.fields_plus);
-        rep = findViewById(R.id.rep);
-        rep.setOnClickListener(this);
-        badges.setOnClickListener(this);
+        reputation = findViewById(R.id.rep);
+        reputation.setOnClickListener(this);
         fields_plus.setOnClickListener(this);
+        friends.setOnClickListener(this);
+
         gradient = findViewById(R.id.gradient);
         roleText = findViewById(R.id.position_role_text);
-        bioText = findViewById(R.id.bio_text1);
         trainingCount = findViewById(R.id.trainings);
-
-        loadUserInformation();
-
         testCurrentField = findViewById(R.id.testCurrentField);
         username = findViewById(R.id.userName);
         usersTeam = findViewById(R.id.usersTeam);
         progressBar = findViewById(R.id.progress_bar);
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ProfileActivity.this, FriendListActivity.class));
-            }
-        });
-
         UserName = user.getDisplayName();
         username.setText(UserName);
 
-
-
         loadChanges();
-    }
+        loadUserInformation();
+        }
 
         public void loadChanges() {
 
-            //final String friendText = getString(R.string.friend);
-            //final String friendsText = getString(R.string.friends);
-            reference = FirebaseFirestore.getInstance().collection("Users").document(uid);
-            //reference.collection("Friends").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            //    @Override
-            //    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-            //        if (task.getResult().size() == 1) {
-            //            friends.setText(String.valueOf(task.getResult().size()) + " " + friendText);
-            //        } else {
-            //            friends.setText(String.valueOf(task.getResult().size()) + " " + friendsText);
-            //
-            //        }
-            //    }
-            //});
+        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-            reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+
                     testCurrentField.setVisibility(View.VISIBLE);
                     gradient.setVisibility(View.VISIBLE);
-                    rep.setVisibility(View.VISIBLE);
-                    badges.setVisibility(View.VISIBLE);
+                    reputation.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
 
+                    final DocumentSnapshot documentSnapshot = task.getResult();
+                    setTitle(documentSnapshot.get("username").toString());
+                    int userRole = documentSnapshot.getLong("userRole").intValue();
+                    int userPosition = documentSnapshot.getLong("position").intValue();
+                    int trainingCountText = documentSnapshot.getLong("trainingCount").intValue();
+                    trainingCount.setText(getResources().getString(R.string.training, Long.toString(trainingCountText)));
+                    String userRoleString = userRoleArray[userRole];
 
-                    if (task.isSuccessful()) {
-                        final DocumentSnapshot documentSnapshot = task.getResult();
-                        setTitle(documentSnapshot.get("username").toString());
-                        bioText.setText(documentSnapshot.get("userBio").toString());
-                        String userRole = documentSnapshot.get("userRole").toString();
-                        String userPosition = documentSnapshot.get("position").toString();
-                        if (userPosition.equals("")) {
-                            roleText.setText(getResources().getString(R.string.player_position_role_not_given, userRole));
-                        }else {
-                            roleText.setText("WAIT");
-                        }
-
-                        if (!documentSnapshot.get("currentFieldName").toString().equals("")) {
-
-                            Map<String, Object> map = documentSnapshot.getData();
-                            Date checkDate = (Date) map.get("timestamp");
-                            Date currentTime = Calendar.getInstance().getTime();
-                            long diff = currentTime.getTime() - checkDate.getTime();
-                            long seconds = diff / 1000;
-                            long minutes = seconds / 60;
-                            long hours = minutes / 60;
-                            long days = hours / 24;
-
-                            if (hours < 1) {
-                                placeHolder = minutes;
-                                placeHolder2 = placeHolder + " " + "minutes";
-                            } else if (days < 1) {
-                                placeHolder = hours;
-                                placeHolder2 = placeHolder + " " + "hours";
-                            } else {
-                                placeHolder = days;
-                            }
-
-
-
-                            testCurrentField.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    String venueID = documentSnapshot.get("currentFieldID").toString();
-//
-                                    Intent intent = new Intent(ProfileActivity.this, DetailFieldActivity.class);
-                                    intent.putExtra("ID", venueID);
-                                    intent.putExtra("name", currentField);
-                                    startActivity(intent);
-                                }
-                            });
-
-                            currentField = documentSnapshot.get("currentFieldName").toString();
-                            testCurrentField.setText("Last seen at:" + " " + currentField + "," + " " + placeHolder2 + " " + "ago");
-                        } else {
-                            testCurrentField.setText("Not at any field");
-                        }
-
-                        if (documentSnapshot.get("User's team") != null) {
-                            UserTeam = documentSnapshot.get("User's team").toString();
-                            usersTeam.setText(UserTeam);
-                        } else {
-                            usersTeam.setText("Not at any team");
-                        }
-
-                        String reputation = documentSnapshot.get("userReputation").toString();
-                        rept.setText(reputation);
-
-                    } else {
-                        Log.d(TAG, "no such file");
+                    if (userPosition == -1) {
+                        roleText.setText(getResources().getString(R.string.player_position_role_not_given, userRoleString));
+                    }else{
+                        String userPositionString = userPositionArray[userRole];
+                        roleText.setText(getResources().getString(R.string.player_position_role_given, userRoleString, userPositionString));
                     }
 
+                    if (!documentSnapshot.get("currentFieldName").toString().equals("")) {
+
+                        Map<String, Object> map = documentSnapshot.getData();
+                        Date checkDate = (Date) map.get("timestamp");
+                        Date currentTime = Calendar.getInstance().getTime();
+                        long diff = currentTime.getTime() - checkDate.getTime();
+                        long seconds = diff / 1000;
+                        long minutes = seconds / 60;
+                        long hours = minutes / 60;
+                        long days = hours / 24;
+
+                        if (hours < 1) {
+                            placeHolder = minutes;
+                            placeHolder2 = placeHolder + " " + getResources().getString(R.string.minutes);
+                        } else if (days < 1) {
+                            placeHolder = hours;
+                            placeHolder2 = placeHolder + " " + getResources().getString(R.string.hours);
+                        } else {
+                            placeHolder = days;
+                            placeHolder2 = placeHolder + " " + getResources().getString(R.string.days);
+                        }
+                        currentField = documentSnapshot.get("currentFieldName").toString();
+                        testCurrentField.setText(getResources().getString(R.string.last_seen_at, currentField, placeHolder2));
+
+
+                        testCurrentField.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final String fieldID = documentSnapshot.get("currentFieldID").toString();
+                                db.collection("Fields").document(fieldID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        DocumentSnapshot ds = task.getResult();
+                                        String fieldArea = ds.get("fieldArea").toString();
+                                        String fieldAddress = ds.get("fieldAddress").toString();
+                                        String goalCount = ds.get("goalCount").toString();
+                                        String fieldType= ds.get("fieldType").toString();
+                                        String accessType = ds.get("accessType").toString();
+                                        String creator = ds.get("creator").toString();
+                                        String creatorName = ds.get("creatorName").toString();
+                                        Intent intent = new Intent(ProfileActivity.this, DetailFieldActivity.class);
+                                        intent.putExtra("fieldID", fieldID);
+                                        intent.putExtra("fieldName", currentField);
+                                        intent.putExtra("fieldArea", fieldArea);
+                                        intent.putExtra("fieldAddress", fieldAddress);
+                                        intent.putExtra("goalCount", goalCount);
+                                        intent.putExtra("fieldType", fieldType);
+                                        intent.putExtra("fieldAccessType", accessType);
+                                        intent.putExtra("creator", creator);
+                                        intent.putExtra("creatorName", creatorName);
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        testCurrentField.setText(getResources().getString(R.string.not_at_any_field));
+                    }
+                    if (documentSnapshot.get("usersTeam") != null) {
+                        UserTeam = documentSnapshot.get("usersTeam").toString();
+                        usersTeam.setText(UserTeam);
+                        usersTeam.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(ProfileActivity.this, TeamActivity.class));
+                            }
+                        });
+                    } else {
+                        usersTeam.setText(getResources().getString(R.string.not_at_team));
+                    }
+                    String reputation = documentSnapshot.get("userReputation").toString();
+                    reputationText.setText(getResources().getString(R.string.reputation, reputation));
+                    } else {
+                    Log.d(TAG, "no such file");
+                    Snackbar.make(findViewById(R.id.profileActivity), getResources().getString(R.string.error_occurred_loading_document), Snackbar.LENGTH_SHORT).show();
                 }
-            });
-        }
-
-
-
-
-
-
-
-
-
-
-    public void onExploreClick(View view) {
-        Intent intent = new Intent(this, SearchActivity.class);
-        startActivity(intent);
+            }
+        });
     }
 
-    public void onProfileClick(View view){
-    }
 
-    
 
     public void onFeedClick(View view){
         LinearLayout activityBar = findViewById(R.id.activityBar);
@@ -269,18 +258,18 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
 
     }
 
-
-    @Override
-    public void onClick(View v) {
+        @Override
+        public void onClick(View v) {
         switch (v.getId()){
-            case R.id.badges:
-                startActivity(new Intent(ProfileActivity.this, BadgesActivity.class));
-                break;
+
             case R.id.rep:
                 startActivity(new Intent(ProfileActivity.this, ReputationActivity.class));
                 break;
             case R.id.fields_plus:
                 startActivity(new Intent(ProfileActivity.this, FieldsPlusStartActivity.class));
+                break;
+            case R.id.friends:
+                startActivity(new Intent(ProfileActivity.this, FriendListActivity.class));
                 break;
         }
     }

@@ -121,10 +121,23 @@
     <string name="pending_players">Pending players</string>
     <string name="write">Write</string>
     <string name="message_player">Message Player</string>
-    <string name="player_position_role_given">%1$s, %1$s</string>
+    <string name="player_position_role_given">%1$s, %2$s</string>
     <string name="player_position_role_not_given">%1$s</string>
-
-
+    <string name="minutes"> minutes</string>
+    <string name="hours"> hours</string>
+    <string name="days"> days</string>
+    <string name="last_seen_at">Last seen at: %1$s, %2$s ago</string>
+    <string name="error_occurred_loading_document">An error occurred while loading data. Please check your internet connection and try again </string>
+    <string name="not_at_any_field">Not at any field</string>
+    <string name="not_at_team">Not at any team</string>
+    <string name="training">%1$s Trainings</string>
+    <string name="profile_image">Profile image</string>
+    <string name="badge">Badge</string>
+    <string name="feed_button">Feed button</string>
+    <string name="profile_button">Profile button</string>
+    <string name="reputation">%1$s Reputation</string>
+    <string name="feed">Feed</string>
+    <string name="profile">Profile</string>
 
     <string-array name="role_spinner">
         <item>Player</item>

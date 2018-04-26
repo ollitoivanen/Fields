@@ -193,7 +193,6 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                         intent.putExtra("usersTeamID", model.getUsersTeamID());
                         intent.putExtra("userRole", model.getUserRole());
                         intent.putExtra("userReputation", model.getUserReputation());
-                        intent.putExtra("userBio", model.getUserBio());
                         intent.putExtra("position", model.getPosition());
                         startActivity(intent);
                     }
@@ -240,7 +239,7 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getApplicationContext(), DetailFieldActivity.class);
-                        intent.putExtra("fieldName2", model.getFieldName());
+                        intent.putExtra("fieldName", model.getFieldName());
                         intent.putExtra("fieldAddress", model.getFieldAddress());
                         intent.putExtra("fieldArea", model.getFieldArea());
                         intent.putExtra("fieldType", model.getFieldType());

@@ -117,7 +117,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
         final String passwordString = passwordSignUp.getText().toString().trim();
         final String usernameString = username.getText().toString().trim();
         final String realNameString = realName.getText().toString().trim();
-        final String userRole = roleSpinner.getSelectedItem().toString();
+        final int userRole = roleSpinner.getSelectedItemPosition();
 
         if (realNameString.isEmpty()){
             realName.setError("Please give real name");
@@ -174,7 +174,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                                 String uid = user.getUid();
 
                                 UserMap userMap = new UserMap(usernameString, uid, "",
-                                        "", null, realNameString, userRole, "0", "", "", null, 0);
+                                        "", null, realNameString, userRole, "0",  -1, null, 0);
                                 db.collection("Users").document(uid).set(userMap);
 
                                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()

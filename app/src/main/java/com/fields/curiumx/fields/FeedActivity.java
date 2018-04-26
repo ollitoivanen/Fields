@@ -41,14 +41,12 @@ public class FeedActivity extends Activity {
     TextView textView;
     Button logoutButton;
     FirebaseAuth mAuth;
-    int REQUEST_CHECK_SETTINGS;
     FirebaseAuth.AuthStateListener mAuthListener;
     TextView teamCardView;
     TextView searchCardView;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
 
 
 
@@ -73,14 +71,14 @@ public class FeedActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
         setTitle("Feed");
+        feedButton = findViewById(R.id.feed_button);
+        feedButton.setImageDrawable(getResources().getDrawable(R.drawable.home_green));
 
 
 
 
         textView = findViewById(R.id.textview);
         mAuth = FirebaseAuth.getInstance();
-        feedButton = findViewById(R.id.feed_button);
-        feedButton.setImageDrawable(getResources().getDrawable(R.drawable.home_green));
         searchCardView = findViewById(R.id.search);
         searchCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,17 +119,6 @@ public class FeedActivity extends Activity {
     }
 
 
-    public void onExploreClick(View view) {
-        Intent intent = new Intent(this, SearchActivity.class);
-        startActivity(intent);
-    }
-
-    public void onFeedClick(View view){
-    }
-
-
-
-
     public void onProfileClick(View view){
         LinearLayout activityBar = findViewById(R.id.activityBar);
         Intent intent = new Intent(this, ProfileActivity.class);
@@ -141,6 +128,9 @@ public class FeedActivity extends Activity {
 
 
     }
+
+
+
 
 
 }

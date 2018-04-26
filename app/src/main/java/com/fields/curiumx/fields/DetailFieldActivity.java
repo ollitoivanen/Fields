@@ -145,7 +145,7 @@ public class DetailFieldActivity extends Activity {
 
 
         Bundle venue = getIntent().getExtras();
-        fieldName1 = venue.getString("fieldName2");
+        fieldName1 = venue.getString("fieldName");
         fieldAddress = venue.getString("fieldAddress");
         fieldArea = venue.getString("fieldArea");
         fieldType = venue.getString("fieldType");

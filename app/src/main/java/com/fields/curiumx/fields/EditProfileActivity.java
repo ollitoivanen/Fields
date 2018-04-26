@@ -76,6 +76,9 @@ public class EditProfileActivity extends Activity {
         progressBar.setVisibility(View.VISIBLE);
         setTitle("Edit Profile");
 
+        final int playerPosition = positionSpinner.getSelectedItemPosition();
+        final int userRole = roleSpinner.getSelectedItemPosition();
+
         db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -83,9 +86,9 @@ public class EditProfileActivity extends Activity {
                 DocumentSnapshot ds = task.getResult();
                 String comparePosition = ds.get("position").toString();
                 String compareRole = ds.get("userRole").toString();
-                int spinnerPosition = adapter.getPosition(comparePosition);
+                int spinnerPosition = playerPosition;
                 positionSpinner.setSelection(spinnerPosition);
-                int spinnerPosition2 = adapter1.getPosition(compareRole);
+                int spinnerPosition2 = userRole;
                 roleSpinner.setSelection(spinnerPosition2);
 
                 String bioText = ds.get("userBio").toString();
@@ -135,8 +138,8 @@ public class EditProfileActivity extends Activity {
     }
 
     public void saveChanges() {
-        String playerPosition = positionSpinner.getSelectedItem().toString();
-        String userRole = roleSpinner.getSelectedItem().toString();
+        int playerPosition = positionSpinner.getSelectedItemPosition();
+        int userRole = roleSpinner.getSelectedItemPosition();
 
         final String displayNameString = displayNameChange.getText().toString().trim();
         final String bioText = bio.getText().toString();
@@ -150,7 +153,7 @@ public class EditProfileActivity extends Activity {
         }else {
             progressBar.setVisibility(View.VISIBLE);
             db.collection("Users").document(uid).update("displayName", displayNameString,
-                    "position", playerPosition, "userBio", bioText, "userRole", userRole)
+                    "position", playerPosition, "userRole", userRole)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
