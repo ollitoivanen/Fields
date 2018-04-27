@@ -78,7 +78,6 @@ public class FeedActivity extends Activity {
 
 
         textView = findViewById(R.id.textview);
-        mAuth = FirebaseAuth.getInstance();
         searchCardView = findViewById(R.id.search);
         searchCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,14 +107,7 @@ public class FeedActivity extends Activity {
             }
         };
 
-        logoutButton = findViewById(R.id.logoutButton);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mAuth.signOut();
 
-                }
-            });
     }
 
 

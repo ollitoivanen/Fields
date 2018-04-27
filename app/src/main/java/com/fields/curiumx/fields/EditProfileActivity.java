@@ -35,10 +35,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class EditProfileActivity extends Activity {
-    EditText bio;
+
+    TextView press_text;
+    TextView realname_text;
     Spinner roleSpinner;
     Spinner positionSpinner;
     EditText displayNameChange;
+    TextView position_text;
+    TextView role_text;
     Button saveUserButton;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -50,11 +54,18 @@ public class EditProfileActivity extends Activity {
     TextView customizeButton;
     private static final int CHOOSE_IMAGE = 101;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+
+        press_text = findViewById(R.id.press_text);
+        realname_text = findViewById(R.id.realname_text);
+        displayNameChange = findViewById(R.id.display_name_change1);
+        position_text = findViewById(R.id.position_text);
+        role_text = findViewById(R.id.role_text);
+
+
         customizeButton = findViewById(R.id.customize_button);
         customizeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,39 +77,43 @@ public class EditProfileActivity extends Activity {
         final ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this, R.array.role_spinner, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         roleSpinner.setAdapter(adapter1);
-        bio = findViewById(R.id.bio_edit_text);
         positionSpinner = findViewById(R.id.player_position);
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.position_spinner, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         positionSpinner.setAdapter(adapter);
         imageView = findViewById(R.id.profilePhotoEdit);
         progressBar = findViewById(R.id.progress_bar_edit);
-        progressBar.setVisibility(View.VISIBLE);
+        saveUserButton = findViewById(R.id.save_button);
+        saveUserButton.setEnabled(false);
         setTitle("Edit Profile");
 
-        final int playerPosition = positionSpinner.getSelectedItemPosition();
-        final int userRole = roleSpinner.getSelectedItemPosition();
+
 
         db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 progressBar.setVisibility(View.GONE);
+                press_text.setVisibility(View.VISIBLE);
+                realname_text.setVisibility(View.VISIBLE);
+                displayNameChange.setVisibility(View.VISIBLE);
+                position_text.setVisibility(View.VISIBLE);
+                role_text.setVisibility(View.VISIBLE);
+                customizeButton.setVisibility(View.VISIBLE);
+                roleSpinner.setVisibility(View.VISIBLE);
+                positionSpinner.setVisibility(View.VISIBLE);
+                imageView.setVisibility(View.VISIBLE);
+                saveUserButton.setVisibility(View.VISIBLE);
+                saveUserButton.setEnabled(true);
                 DocumentSnapshot ds = task.getResult();
-                String comparePosition = ds.get("position").toString();
-                String compareRole = ds.get("userRole").toString();
-                int spinnerPosition = playerPosition;
-                positionSpinner.setSelection(spinnerPosition);
-                int spinnerPosition2 = userRole;
-                roleSpinner.setSelection(spinnerPosition2);
+                int comparePosition = ds.getLong("position").intValue();
+                int compareRole = ds.getLong("userRole").intValue();
+                positionSpinner.setSelection(comparePosition);
+                roleSpinner.setSelection(compareRole);
 
-                String bioText = ds.get("userBio").toString();
-                bio.setText(bioText);
                 Bundle info = getIntent().getExtras();
                 String displayName = info.getString("DisplayName");
 
-                displayNameChange = findViewById(R.id.display_name_change1);
                 displayNameChange.setText(displayName);
-                saveUserButton = findViewById(R.id.save_button);
                 saveUserButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -121,10 +136,6 @@ public class EditProfileActivity extends Activity {
 
     private void loadUserInformation() {
 
-
-
-
-
         if (user != null) {
             if (user.getPhotoUrl() != null) {
                 Glide.with(this)
@@ -142,43 +153,41 @@ public class EditProfileActivity extends Activity {
         int userRole = roleSpinner.getSelectedItemPosition();
 
         final String displayNameString = displayNameChange.getText().toString().trim();
-        final String bioText = bio.getText().toString();
 
         if (displayNameString.isEmpty()) {
             displayNameChange.setError("Please enter valid name");
             displayNameChange.requestFocus();
-        }else if (bioText.length()>100){
-            bio.setError("character limit is 100");
-            bio.requestFocus();
-        }else {
-            progressBar.setVisibility(View.VISIBLE);
-            db.collection("Users").document(uid).update("displayName", displayNameString,
-                    "position", playerPosition, "userRole", userRole)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
+        }else{
+                progressBar.setVisibility(View.VISIBLE);
+                saveUserButton.setEnabled(false);
+                db.collection("Users").document(uid).update("displayName", displayNameString,
+                        "position", playerPosition, "userRole", userRole)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
 
-                                UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(displayNameString)
-                                        .build();
-                                user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Toast.makeText(getApplicationContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                                        progressBar.setVisibility(View.GONE);
-                                        finish();
-                                    }
-                                });
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Something went wrong. Please try again", Toast.LENGTH_SHORT).show();
+                                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(displayNameString)
+                                            .build();
+                                    user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(getApplicationContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                                            progressBar.setVisibility(View.GONE);
+
+                                            finish();
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Something went wrong. Please try again", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                    });
+                        });
+
+            }
 
         }
-
-    }
 
     private void showImageChooser() {
         Intent intent = new Intent();
@@ -221,7 +230,7 @@ public class EditProfileActivity extends Activity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 1, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveUserButton.setEnabled(false);

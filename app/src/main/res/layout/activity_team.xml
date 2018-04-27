@@ -12,35 +12,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:elevation="1dp"
         android:paddingBottom="16dp"
-        android:elevation="1dp">
+        android:visibility="gone">
 
-    <FrameLayout
-        android:id="@+id/team_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <FrameLayout
+            android:id="@+id/team_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:elevation="5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:elevation="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
-        <ImageView
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:src="@drawable/profile_round" />
+            <ImageView
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:src="@drawable/profile_round" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/teamImage"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:elevation="6dp"
-            android:src="@drawable/field_photo3" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/teamImage"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:elevation="6dp"
+                android:src="@drawable/field_photo3" />
 
-    </FrameLayout>
+        </FrameLayout>
 
 
         <TextView
@@ -103,40 +104,40 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/team_photo" />
 
-    <TextView
-        android:id="@+id/teamEventCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_view"
-        app:layout_constraintStart_toEndOf="@id/teamLevel"
-        android:text="event count"
-        android:padding="5dp"
-        android:paddingEnd="7dp"
-        android:paddingStart="7dp"
-        android:textStyle="bold"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        <TextView
+            android:id="@+id/teamEventCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_view"
+            android:padding="5dp"
+            android:paddingEnd="7dp"
+            android:paddingStart="7dp"
+            android:text="event count"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/teamLevel"
 
 
-        app:layout_constraintTop_toBottomOf="@id/team_photo"/>
+            app:layout_constraintTop_toBottomOf="@id/team_photo" />
 
 
-    <TextView
-        android:id="@+id/teamPlayerCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_view"
-        android:text="player count"
-        android:padding="5dp"
-        android:paddingEnd="7dp"
-        android:paddingStart="7dp"
-        android:textStyle="bold"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        <TextView
+            android:id="@+id/teamPlayerCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_view"
+            android:padding="5dp"
+            android:paddingEnd="7dp"
+            android:paddingStart="7dp"
+            android:text="player count"
+            android:textStyle="bold"
 
 
-        app:layout_constraintStart_toEndOf="@id/teamEventCount"
-        app:layout_constraintTop_toBottomOf="@id/team_photo"/>
+            app:layout_constraintStart_toEndOf="@id/teamEventCount"
+            app:layout_constraintTop_toBottomOf="@id/team_photo" />
 
         <ImageView
             android:id="@+id/dropdown1"
@@ -154,11 +155,10 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@color/colorPrimary"
+        android:elevation="0.25dp"
         android:orientation="vertical"
         android:visibility="invisible"
-        android:elevation="0.25dp"
-        app:layout_constraintBottom_toBottomOf="@id/basicInfoContainer"
-        >
+        app:layout_constraintBottom_toBottomOf="@id/basicInfoContainer">
 
         <TextView
             android:id="@+id/homeFieldText"
@@ -191,7 +191,6 @@
             android:visibility="gone" />
 
 
-
     </LinearLayout>
 
     <TextView
@@ -203,8 +202,9 @@
         android:text="@string/events"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/add_event_image"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/basicInfoContainer" />
 
     <ImageView
@@ -212,24 +212,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="12dp"
         android:src="@drawable/ic_add"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/events_text"
-        app:layout_constraintTop_toBottomOf="@id/basicInfoContainer" />
+        app:layout_constraintBottom_toBottomOf="@id/events_text"
+        app:layout_constraintTop_toTopOf="@id/events_text"/>
 
 
     <com.fields.curiumx.fields.EmptyRecyclerView
         android:id="@+id/eventRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/events_text"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="8dp"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/events_text">
 
     </com.fields.curiumx.fields.EmptyRecyclerView>
 
-
+    <TextView
+        android:id="@+id/empty_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_events_coming"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/events_text" />
 
 
     <ProgressBar
@@ -240,7 +251,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

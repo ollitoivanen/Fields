@@ -13,6 +13,7 @@
         android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="@string/press_text"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profilePhotoEdit" />
@@ -24,68 +25,58 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="4dp"
         android:text="@string/realname"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/press_text" />
-
 
 
     <EditText
         android:id="@+id/display_name_change1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/realname_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
         android:maxLength="28"
-        />
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/realname_text" />
 
     <TextView
         android:id="@+id/position_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="@string/playing_position"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bio_edit_text" />
-
+        app:layout_constraintTop_toBottomOf="@+id/display_name_change1" />
 
 
     <Spinner
         android:id="@+id/player_position"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/position_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="25dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="8dp"
-        />
-
-    <TextView
-        android:id="@+id/bio_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/bio"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/display_name_change1" />
+        app:layout_constraintTop_toBottomOf="@id/position_text" />
 
     <Spinner
         android:id="@+id/role_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/role_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="25dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="8dp"
-        />
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/role_text" />
 
     <TextView
         android:id="@+id/role_text"
@@ -94,29 +85,17 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:text="@string/imtext"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/player_position"
-        />
-
-    <EditText
-        android:id="@+id/bio_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/bio_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:singleLine="true"
-        android:maxLength="30"
-        />
+        app:layout_constraintTop_toBottomOf="@id/player_position" />
 
     <Button
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="save"
         android:backgroundTint="@color/colorPrimary"
+        android:text="save"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -125,6 +104,7 @@
         android:layout_height="70dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/profileim"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -142,7 +122,9 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:text="@string/custimize_profile_text"
+        android:textColor="@color/blacknot"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/save_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,6 +142,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
 </android.support.constraint.ConstraintLayout>

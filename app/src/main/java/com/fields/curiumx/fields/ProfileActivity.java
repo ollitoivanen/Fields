@@ -60,9 +60,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
     String[] userRoleArray;
     String [] userPositionArray;
 
-
-
-
     private void loadUserInformation() {
 
         if (user != null) {
@@ -82,6 +79,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.edit_profile, menu);
+        inflater.inflate(R.menu.settings_user, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -92,6 +90,11 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
                 Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
                 intent.putExtra("DisplayName",user.getDisplayName());
                 startActivity(intent);
+                break;
+            case R.id.settings_user:
+                Intent intent1 = new Intent(ProfileActivity.this, SettingsActivity.class);
+                startActivity(intent1);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -101,6 +104,8 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
         progressBar.setVisibility(View.GONE);
         loadChanges();
         loadUserInformation();
+        UserName = user.getDisplayName();
+        username.setText(UserName);
         super.onRestart();
     }
 
@@ -120,13 +125,15 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
         profileImage = findViewById(R.id.profilePhoto);
         fields_plus = findViewById(R.id.fields_plus);
         reputation = findViewById(R.id.rep);
+        trainingCount = findViewById(R.id.trainings);
+
         reputation.setOnClickListener(this);
         fields_plus.setOnClickListener(this);
         friends.setOnClickListener(this);
+        trainingCount.setOnClickListener(this);
 
         gradient = findViewById(R.id.gradient);
         roleText = findViewById(R.id.position_role_text);
-        trainingCount = findViewById(R.id.trainings);
         testCurrentField = findViewById(R.id.testCurrentField);
         username = findViewById(R.id.userName);
         usersTeam = findViewById(R.id.usersTeam);
@@ -149,7 +156,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
                     testCurrentField.setVisibility(View.VISIBLE);
                     gradient.setVisibility(View.VISIBLE);
                     reputation.setVisibility(View.VISIBLE);
+                    fields_plus.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
+
 
                     final DocumentSnapshot documentSnapshot = task.getResult();
                     setTitle(documentSnapshot.get("username").toString());
@@ -162,7 +171,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
                     if (userPosition == -1) {
                         roleText.setText(getResources().getString(R.string.player_position_role_not_given, userRoleString));
                     }else{
-                        String userPositionString = userPositionArray[userRole];
+                        String userPositionString = userPositionArray[userPosition];
                         roleText.setText(getResources().getString(R.string.player_position_role_given, userRoleString, userPositionString));
                     }
 
@@ -246,8 +255,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
         });
     }
 
-
-
     public void onFeedClick(View view){
         LinearLayout activityBar = findViewById(R.id.activityBar);
         Intent intent = new Intent(this, FeedActivity.class);
@@ -257,9 +264,8 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
 
 
     }
-
-        @Override
-        public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
         switch (v.getId()){
 
             case R.id.rep:
@@ -271,6 +277,8 @@ public class ProfileActivity extends Activity implements View.OnClickListener{
             case R.id.friends:
                 startActivity(new Intent(ProfileActivity.this, FriendListActivity.class));
                 break;
+            case R.id.trainings:
+                startActivity(new Intent(ProfileActivity.this, AllTrainingsActivity.class));
         }
     }
 }

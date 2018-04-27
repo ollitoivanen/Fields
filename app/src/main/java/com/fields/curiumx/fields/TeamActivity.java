@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -61,10 +62,12 @@ public class TeamActivity extends Activity {
     TextView teamLevel;
     TextView teamTextName;
     TextView teamTextCountry;
+    TextView teamEventsText;
     ImageView teamImage;
     ImageView addEventImage;
     TextView playerCount;
     ProgressBar progressBar;
+    TextView emptyText;
     Boolean down1;
     ImageView dropIm1;
     LinearLayout drop2;
@@ -72,6 +75,7 @@ public class TeamActivity extends Activity {
     TextView homefieldDrop;
     TextView leaderDrop;
     TextView workStyleDrop;
+    ConstraintLayout basicInfoCont;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     @BindView(R.id.eventRecycler)
     EmptyRecyclerView eventRecycler;
@@ -117,6 +121,8 @@ public class TeamActivity extends Activity {
         playerCount = findViewById(R.id.teamPlayerCount);
         down1 = false;
         eventRecycler = findViewById(R.id.eventRecycler);
+        emptyText = findViewById(R.id.empty_text);
+        eventRecycler.setEmptyView(emptyText);
         init();
 
 
@@ -128,6 +134,8 @@ public class TeamActivity extends Activity {
         leaderDrop = findViewById(R.id.leader_text);
         workStyleDrop = findViewById(R.id.workstyle_text);
         country_map = findViewById(R.id.country_map);
+        teamEventsText = findViewById(R.id.events_text);
+        basicInfoCont = findViewById(R.id.basicInfoContainer);
         addEventImage = findViewById(R.id.add_event_image);
         addEventImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,7 +209,6 @@ public class TeamActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Team");
         progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
 
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -213,8 +220,17 @@ public class TeamActivity extends Activity {
 
                     startActivity(new Intent(TeamActivity.this, NoTeamActivity.class));
                     progressBar.setVisibility(View.GONE);
+                    finish();
 
                 } else {
+                    basicInfoCont.setVisibility(View.VISIBLE);
+                    addEventImage.setVisibility(View.VISIBLE);
+                    teamEventsText.setVisibility(View.VISIBLE);
+                    eventRecycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+
+
 
                      teamID1 = documentSnapshot.get("usersTeamID").toString();
 
@@ -300,6 +316,7 @@ public class TeamActivity extends Activity {
                             db.collection("Teams").document(teamID1).collection("TeamUsers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
                                     int amountOfPlayers = task.getResult().size();
                                     if (task.getResult().size()==1){
                                         playerCount.setText(Integer.toString(amountOfPlayers) + " " + "Player");
@@ -378,14 +395,17 @@ public class TeamActivity extends Activity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         Toast.makeText(getApplicationContext(), "Left team", Toast.LENGTH_LONG).show();
                         startActivity(intent);
+                        finish();
                     }
                 });
+                break;
 
             case R.id.pending_player:
                 Intent intent = new Intent(TeamActivity.this, PendingPlayerActivity.class);
                 intent.putExtra("teamID", teamID1);
                 intent.putExtra("teamName", nameBoi);
                 startActivity(intent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

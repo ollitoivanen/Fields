@@ -138,6 +138,8 @@
     <string name="reputation">%1$s Reputation</string>
     <string name="feed">Feed</string>
     <string name="profile">Profile</string>
+    <string name="team">Team</string>
+    <string name="no_events_coming">No upcoming events</string>
 
     <string-array name="role_spinner">
         <item>Player</item>

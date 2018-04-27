@@ -20,9 +20,8 @@
             android:id="@+id/position_role_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="4dp"
-            android:elevation="3dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:textStyle="bold"
             android:visibility="visible"
@@ -37,9 +36,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/rounded_view"
-            android:elevation="5dp"
+            android:elevation="4dp"
             android:padding="10dp"
             android:text="@string/friends"
             android:textStyle="bold"
@@ -53,9 +52,9 @@
             android:id="@+id/trainings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/rounded_view"
-            android:elevation="5dp"
+            android:elevation="4dp"
             android:padding="10dp"
             android:textStyle="bold"
             android:visibility="visible"
@@ -67,7 +66,7 @@
             android:id="@+id/profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:elevation="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +83,6 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center"
-
                 android:src="@drawable/profileim"
                 android:visibility="visible" />
         </FrameLayout>
@@ -94,7 +92,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:elevation="4dp"
             android:text="@string/username"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             android:textSize="20sp"
@@ -108,7 +105,8 @@
             android:id="@+id/team_with_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
+            android:elevation="4dp"
             android:background="@drawable/rounded_view"
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -116,6 +114,7 @@
             app:layout_constraintTop_toBottomOf="@+id/userName">
 
             <ImageView
+                android:contentDescription="@string/team"
                 android:id="@+id/team_icon"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
@@ -133,7 +132,6 @@
                 android:layout_marginBottom="2dp"
                 android:layout_marginEnd="4dp"
                 android:layout_marginStart="4dp"
-                android:text="team"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:visibility="visible"
@@ -180,7 +178,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
-            android:text="1000"
             android:layout_marginBottom="2dp"
 
             />
@@ -226,20 +223,21 @@
         android:id="@+id/fields_plus"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@drawable/rounded_view"
         android:backgroundTint="@color/premium_yellow"
-        android:elevation="3dp"
+        android:elevation="2dp"
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/fields_plus"
         android:textColor="@color/blacknot"
         android:textStyle="bold"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/activityBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="463dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <LinearLayout
@@ -257,6 +255,7 @@
 
 
         <ImageButton
+            android:contentDescription="@string/feed_button"
             android:id="@+id/feed_button"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
@@ -269,6 +268,7 @@
 
 
         <ImageButton
+            android:contentDescription="@string/profile_button"
             android:id="@+id/profile_button"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
