@@ -6,22 +6,17 @@ public class TeamMap {
     private String teamNameText;
     private String teamCountryText;
     private String teamID;
-    private String homeField;
-    private String leader;
-    private String workStyle;
-    private String level;
+    private int level;
 
     public TeamMap() {
 
     }
 
-    public TeamMap(String teamNameText, String teamCountryText, String teamID, String homeField, String leader, String workStyle, String level){
+    public TeamMap(String teamNameText, String teamCountryText, String teamID, int level){
         this.teamNameText = teamNameText;
         this.teamCountryText = teamCountryText;
         this.teamID = teamID;
-        this.homeField = homeField;
-        this.leader = leader;
-        this.workStyle = workStyle;
+
         this.level = level;
     }
 
@@ -33,15 +28,9 @@ public class TeamMap {
         return teamCountryText;
     }
 
-    public String getHomeField() {
-        return homeField;
-    }
 
-    public String getLeader() {
-        return leader;
-    }
 
-    public String getLevel() {
+    public int getLevel() {
         return level;
     }
 
@@ -49,7 +38,4 @@ public class TeamMap {
         return teamID;
     }
 
-    public String getWorkStyle() {
-        return workStyle;
-    }
 }

@@ -95,7 +95,10 @@
         <activity android:name=".PendingPlayerActivity" />
         <activity android:name=".UserChatActivity" />
         <activity android:name=".AllTrainingsActivity" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".PlayerCountActivity" />
+        <activity android:name=".TeamChatActivity" />
+        <activity android:name=".EditTeamActivity"></activity>
     </application>
 
 </manifest>

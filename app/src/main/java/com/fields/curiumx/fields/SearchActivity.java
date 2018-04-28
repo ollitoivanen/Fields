@@ -136,10 +136,8 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                         intent.putExtra("name", model.getTeamNameText());
                         intent.putExtra("country", model.getTeamCountryText());
                         intent.putExtra("teamID", model.getTeamID());
-                        intent.putExtra("homefield", model.getHomeField());
-                        intent.putExtra("leader", model.getLeader());
+
                         intent.putExtra("level", model.getLevel());
-                        intent.putExtra("workStyle", model.getWorkStyle());
                         startActivity(intent);
                     }
                 });

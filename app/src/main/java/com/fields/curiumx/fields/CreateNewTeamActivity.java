@@ -134,8 +134,7 @@ public class CreateNewTeamActivity extends Activity {
                                         uploadImageToFirebaseStorage();
                                     }
                                     TeamMap data1 = new TeamMap(teamNameText, teamCountryText,
-                                           teamID ,"",user.getDisplayName(), "free",
-                                            level.getSelectedItem().toString());
+                                           teamID , level.getSelectedItemPosition());
                                     db.collection("Teams").document(teamID).set(data1);
 
                                    MemberMap memberMap = new MemberMap(username, user.getUid());

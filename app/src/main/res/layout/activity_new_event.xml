@@ -51,68 +51,72 @@
         />
 
     <TextView
+        android:id="@+id/from_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/from"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/training_start_date"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
         android:id="@+id/training_start_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/training_time_text"
-        app:layout_constraintStart_toEndOf="@id/training_start_date"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/from_text"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="32dp"
         android:textStyle="bold"
         android:textSize="20sp"
         android:text="Time"
         />
 
     <TextView
+        android:id="@+id/to_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/to"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/training_start_time"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
         android:id="@+id/training_end_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="Endt time"
+        android:text="End time"
         android:textSize="20sp"
-
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/training_end_date"
-        app:layout_constraintTop_toBottomOf="@id/training_start_time" />
-
-    <TextView
-        android:id="@+id/training_end_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:text="End date"
-
-        android:textSize="20sp"
-        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/training_start_date" />
+        android:layout_marginStart="32dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/to_text"
+        />
 
 
     <TextView
         android:id="@+id/location_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:text="@string/event_location"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/training_end_date"
-        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/training_end_time"
         android:layout_marginTop="8dp"
-
-        />
+     />
 
     <TextView
         android:id="@+id/chosen_field_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/location_text"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:textSize="20sp"
         android:textStyle="bold"
-        />
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/location_text" />
 
     <Button
         android:id="@+id/choose_field_button"
@@ -129,12 +133,11 @@
 
     <Button
         android:id="@+id/publish_button"
-        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/publish"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/colorPrimary"/>
+       android:backgroundTint="@color/colorPrimary"/>
 
     <TextView
         android:id="@+id/error_message"

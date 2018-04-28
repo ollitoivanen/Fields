@@ -34,7 +34,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_settings_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/editor/ic_show_chart_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -45,8 +45,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="imageAsset" value="$USER_HOME$/Downloads/account-edit/holo_dark/drawable-xxxhdpi/ic_account_edit.png" />
-                                      <entry key="outputName" value="ic_settings" />
-                                      <entry key="themeColor" value="3bd774" />
+                                      <entry key="outputName" value="ic_level" />
                                     </map>
                                   </option>
                                 </PersistentState>

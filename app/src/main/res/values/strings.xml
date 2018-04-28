@@ -140,6 +140,14 @@
     <string name="profile">Profile</string>
     <string name="team">Team</string>
     <string name="no_events_coming">No upcoming events</string>
+    <string name="players">Players</string>
+    <string name="team_chat">Team chat</string>
+    <string name="edit_team">Edit team</string>
+    <string name="today">Today</string>
+    <string name="training_time">%1$s - %2$s</string>
+    <string name="event_field">at %1$s</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
 
     <string-array name="role_spinner">
         <item>Player</item>

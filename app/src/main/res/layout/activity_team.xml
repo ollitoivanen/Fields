@@ -71,7 +71,7 @@
             app:layout_constraintTop_toBottomOf="@id/teamName">
 
             <ImageView
-                android:layout_width="21dp"
+                android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/location_icon" />
 
@@ -79,119 +79,69 @@
                 android:id="@+id/teamCountry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
                 android:gravity="center_horizontal"
-                android:paddingEnd="4dp"
                 android:text="Team country"
                 android:textStyle="bold" />
 
 
         </LinearLayout>
 
-
-        <TextView
-            android:id="@+id/teamLevel"
+        <LinearLayout
+            android:id="@+id/level_map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_view"
+            android:elevation="2dp"
             android:padding="5dp"
-            android:paddingEnd="7dp"
-            android:paddingStart="7dp"
-            android:text="team level"
-            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/team_photo" />
+            app:layout_constraintTop_toBottomOf="@id/team_photo">
 
-        <TextView
-            android:id="@+id/teamEventCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_view"
-            android:padding="5dp"
-            android:paddingEnd="7dp"
-            android:paddingStart="7dp"
-            android:text="event count"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/teamLevel"
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_level" />
 
-
-            app:layout_constraintTop_toBottomOf="@id/team_photo" />
+            <TextView
+                android:id="@+id/teamLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/rounded_view"
+                android:text="team level"
+                android:textStyle="bold" />
+        </LinearLayout>
 
 
         <TextView
             android:id="@+id/teamPlayerCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_view"
+            android:elevation="2dp"
             android:padding="5dp"
-            android:paddingEnd="7dp"
-            android:paddingStart="7dp"
-            android:text="player count"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:text="@string/players"
             android:textStyle="bold"
 
 
-            app:layout_constraintStart_toEndOf="@id/teamEventCount"
+            app:layout_constraintBottom_toBottomOf="@id/basicInfoContainer"
+            app:layout_constraintStart_toEndOf="@id/level_map"
             app:layout_constraintTop_toBottomOf="@id/team_photo" />
 
-        <ImageView
-            android:id="@+id/dropdown1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_dropdown"
-            app:layout_constraintBottom_toBottomOf="@id/basicInfoContainer"
-            app:layout_constraintEnd_toEndOf="@id/basicInfoContainer" />
 
     </android.support.constraint.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/drop2"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/colorPrimary"
-        android:elevation="0.25dp"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/basicInfoContainer">
 
-        <TextView
-            android:id="@+id/homeFieldText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:text="home field"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/leader_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:text="leader"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/workstyle_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:text="work style"
-            android:textStyle="bold"
-            android:visibility="gone" />
-
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/events_text"

@@ -27,9 +27,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,15 +40,14 @@ public class NewEventActivity extends Activity {
     static final int TIME_DIALOG_ID = 1111;
     TextView trainingStartTime;
     TextView trainingStartDate;
+    String trainingStartDateSave;
     TextView trainingEndTime;
-    TextView trainingEndDate;
     TextView error;
     TextView error2;
     Button chooseFieldButton;
     Button publishButton;
     TextView chosenFieldText;
-    Boolean startBool;
-    Boolean endBool;
+
     Boolean startTime = true;
     Boolean endTime = true;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -55,8 +56,12 @@ public class NewEventActivity extends Activity {
     final Calendar c = Calendar.getInstance();
     final Calendar cEnd = Calendar.getInstance();
 
+
     String chosenFieldNameIntent;
     ProgressBar progressBar12;
+
+    String eventTimeStart;
+    String eventTimeEnd;
 
 
     private int hr;
@@ -79,24 +84,15 @@ public class NewEventActivity extends Activity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            if (startBool){
 
-                c.set(Calendar.YEAR, year);
-                c.set(Calendar.MONTH, monthOfYear);
-                c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                updateLabel();
-            }else {
-
-                cEnd.set(Calendar.YEAR, year);
-                cEnd.set(Calendar.MONTH, monthOfYear);
-                cEnd.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                updateLabel();
-            }
-
+            c.set(Calendar.YEAR, year);
+            c.set(Calendar.MONTH, monthOfYear);
+            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            cEnd.set(Calendar.YEAR, year);
+            cEnd.set(Calendar.MONTH, monthOfYear);
+            cEnd.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
         }
-
     };
 
     @Override
@@ -134,14 +130,16 @@ public class NewEventActivity extends Activity {
                             DocumentSnapshot ds = task.getResult();
                             String ref = ds.get("usersTeamID").toString();
                             String eventID = Long.toString(c.getTimeInMillis());
-                            String eventTimeStart = trainingStartTime.getText().toString();
-                            String eventTimeEnd = trainingEndTime.getText().toString();
+                            eventTimeStart = trainingStartTime.getText().toString();
+                            eventTimeEnd = trainingEndTime.getText().toString();
+
+
                             if (chosenFieldNameIntent == null) {
                                 chosenFieldNameIntent = "";
                             }
                             EventMap eventMap = new EventMap(eventID,
-                                    typeSpinner.getSelectedItem().toString(),
-                                    eventTimeStart, eventTimeEnd, chosenFieldNameIntent, trainingStartDate.getText().toString());
+                                    typeSpinner.getSelectedItemPosition(),
+                                    eventTimeStart, eventTimeEnd, chosenFieldNameIntent, trainingStartDateSave, trainingStartDate.getText().toString());
                             db.collection("Teams").document(ref).collection("Team's Events")
                                     .document(Long.toString(c.getTimeInMillis())).set(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -163,45 +161,30 @@ public class NewEventActivity extends Activity {
         });
         trainingStartTime = findViewById(R.id.training_start_time);
         trainingStartDate = findViewById(R.id.training_start_date);
-        trainingEndDate = findViewById(R.id.training_end_date);
         trainingEndTime = findViewById(R.id.training_end_time);
         chosenFieldText = findViewById(R.id.chosen_field_name);
         chosenFieldText.setVisibility(View.GONE);
 
         Date currentTime = Calendar.getInstance().getTime();
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
+        SimpleDateFormat dateFormatSave = new SimpleDateFormat("EEE dd MMM", Locale.US);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM");
         trainingStartDate.setText(dateFormat.format(currentTime));
+        trainingStartDateSave = dateFormatSave.format(currentTime);
         trainingStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 error.setVisibility(View.GONE);
                 error2.setVisibility(View.GONE);
 
-
-                startBool = true;
-                endBool = false;
                 new DatePickerDialog(NewEventActivity.this, date, c
                         .get(Calendar.YEAR), c.get(Calendar.MONTH),
                         c.get(Calendar.DAY_OF_MONTH)).show();
                 }
         });
 
-        trainingEndDate.setText(dateFormat.format(currentTime));
-        trainingEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                error.setVisibility(View.GONE);
-                error2.setVisibility(View.GONE);
 
-                endBool = true;
-                startBool = false;
-                new DatePickerDialog(NewEventActivity.this, date, cEnd
-                        .get(Calendar.YEAR), cEnd.get(Calendar.MONTH),
-                        cEnd.get(Calendar.DAY_OF_MONTH)).show();
-                }
-        });
 
         hr = c.get(Calendar.HOUR_OF_DAY);
         min = c.get(Calendar.MINUTE);
@@ -258,16 +241,13 @@ public class NewEventActivity extends Activity {
     }
 
     private void updateLabel() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM");
-        if (startBool){
-            startBool = false;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
+        SimpleDateFormat dateFormatSave = new SimpleDateFormat("EEE dd MMM", Locale.US);
 
-            trainingStartDate.setText(dateFormat.format(c.getTime()));
-            }else {
-            endBool = false;
-            trainingEndDate.setText(dateFormat.format(cEnd.getTime()));
+        trainingStartDate.setText(dateFormat.format(c.getTime()));
+        trainingStartDateSave = dateFormatSave.format(c.getTime());
 
-        }
+
     }
 
     private TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {

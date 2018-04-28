@@ -1,16 +1,13 @@
 package com.fields.curiumx.fields;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -20,8 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -32,33 +27,34 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TeamActivity extends Activity {
-    String nameBoi;
+import static com.firebase.ui.auth.ui.phone.SubmitConfirmationCodeFragment.TAG;
+
+public class TeamActivity extends Activity implements View.OnClickListener{
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
+    String teamName;
+    String teamCountry;
     TextView teamLevel;
     TextView teamTextName;
     TextView teamTextCountry;
@@ -68,13 +64,7 @@ public class TeamActivity extends Activity {
     TextView playerCount;
     ProgressBar progressBar;
     TextView emptyText;
-    Boolean down1;
-    ImageView dropIm1;
-    LinearLayout drop2;
     LinearLayout country_map;
-    TextView homefieldDrop;
-    TextView leaderDrop;
-    TextView workStyleDrop;
     ConstraintLayout basicInfoCont;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     @BindView(R.id.eventRecycler)
@@ -83,15 +73,22 @@ public class TeamActivity extends Activity {
     LinearLayoutManager linearLayoutManager;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String teamID1;
+    int level;
+    String teamLevelString;
+    String[] teamLevelArray;
+    String eventTypeString;
+    String[] eventArray;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.leave_team, menu);
         inflater.inflate(R.menu.pending_players, menu);
+        inflater.inflate(R.menu.chat, menu);
+        inflater.inflate(R.menu.edit_team, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
     public class eventHolder extends EmptyRecyclerView.ViewHolder {
 
@@ -117,98 +114,29 @@ public class TeamActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
+
         final DocumentReference docRef = db.collection("Users").document(uid);
         playerCount = findViewById(R.id.teamPlayerCount);
-        down1 = false;
-        eventRecycler = findViewById(R.id.eventRecycler);
-        emptyText = findViewById(R.id.empty_text);
-        eventRecycler.setEmptyView(emptyText);
-        init();
-
-
-
-        ButterKnife.bind(this);
-        dropIm1 = findViewById(R.id.dropdown1);
-        drop2 = findViewById(R.id.drop2);
-        homefieldDrop = findViewById(R.id.homeFieldText);
-        leaderDrop = findViewById(R.id.leader_text);
-        workStyleDrop = findViewById(R.id.workstyle_text);
         country_map = findViewById(R.id.country_map);
         teamEventsText = findViewById(R.id.events_text);
         basicInfoCont = findViewById(R.id.basicInfoContainer);
         addEventImage = findViewById(R.id.add_event_image);
-        addEventImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(TeamActivity.this, NewEventActivity.class));
-            }
-        });
-
-
-        dropIm1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!down1) {
-                    down1 = true;
-                    drop2.setVisibility(View.VISIBLE);
-                    drop2.animate().translationY(drop2.getHeight()).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-
-                            homefieldDrop.setVisibility(View.VISIBLE);
-                            homefieldDrop.setAlpha(0.0f);
-                            homefieldDrop.animate().alpha(1.0f);
-
-                            leaderDrop.setVisibility(View.VISIBLE);
-                            leaderDrop.setAlpha(0.0f);
-                            leaderDrop.animate().alpha(1.0f);
-
-                            workStyleDrop.setVisibility(View.VISIBLE);
-                            workStyleDrop.setAlpha(0.0f);
-                            workStyleDrop.animate().alpha(1.0f);
-
-
-                            super.onAnimationEnd(animation);
-                        }
-                    });
-                } else {
-                    down1 = false;
-
-                    drop2.animate().translationY(0).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-
-                            homefieldDrop.setVisibility(View.GONE);
-
-
-                            leaderDrop.setVisibility(View.GONE);
-
-
-                            workStyleDrop.setVisibility(View.GONE);
-
-
-
-                            drop2.setVisibility(View.INVISIBLE);
-
-                            super.onAnimationEnd(animation);
-
-                        }
-                    });
-
-                }
-            }
-        });
-
-
-
         teamLevel  =findViewById(R.id.teamLevel);
         teamTextName = findViewById(R.id.teamName);
         teamTextCountry = findViewById(R.id.teamCountry);
         teamImage = findViewById(R.id.teamImage);
+        progressBar = findViewById(R.id.progress_bar);
+        eventRecycler = findViewById(R.id.eventRecycler);
+        emptyText = findViewById(R.id.empty_text);
+        playerCount.setOnClickListener(this);
+        addEventImage.setOnClickListener(this);
+        eventRecycler.setEmptyView(emptyText);
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Team");
-        progressBar = findViewById(R.id.progress_bar);
+        init();
+        ButterKnife.bind(this);
+
 
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -223,31 +151,14 @@ public class TeamActivity extends Activity {
                     finish();
 
                 } else {
-                    basicInfoCont.setVisibility(View.VISIBLE);
-                    addEventImage.setVisibility(View.VISIBLE);
-                    teamEventsText.setVisibility(View.VISIBLE);
-                    eventRecycler.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
 
 
+                    teamID1 = documentSnapshot.get("usersTeamID").toString();
 
-
-                     teamID1 = documentSnapshot.get("usersTeamID").toString();
 
                     db.collection("Teams").document(teamID1).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
-                            DocumentSnapshot documentSnapshot1 = task.getResult();
-                            nameBoi = documentSnapshot1.get("teamNameText").toString();
-                            final String countryBoi = documentSnapshot1.get("teamCountryText").toString();
-                            String homeField = documentSnapshot1.get("homeField").toString();
-                            String leader = documentSnapshot1.get("leader").toString();
-                            String level = documentSnapshot1.get("level").toString();
-                            String workStyle = documentSnapshot1.get("workStyle").toString();
-                            teamTextName.setText(nameBoi);
-                            teamTextCountry.setText(countryBoi);
-
 
 
                             Query query = db.collection("Teams").document(teamID1).collection("Team's Events");
@@ -258,26 +169,18 @@ public class TeamActivity extends Activity {
 
                             adapter = new FirestoreRecyclerAdapter<EventMap, eventHolder>(response) {
                                 @Override
-                                public void onBindViewHolder(eventHolder holder, int position, final EventMap model) {
+                                public void onBindViewHolder(@NonNull eventHolder holder, int position, @NonNull final EventMap model) {
 
-                                    Date currentTime = Calendar.getInstance().getTime();
-
-
-
-
-
-                                    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM");
-                                    String compareDate = dateFormat.format(currentTime);
-                                    if (compareDate.equals(model.getEventStartDate())){
-                                        holder.textDate.setText("Today");
-                                    }else {
-                                        holder.textDate.setText(model.getEventStartDate());
-                                    }
-                                    holder.textType.setText(model.getEventType());
-                                    holder.textTime.setText(model.getEventTimeStart() + "- " + model.getEventTimeEnd());
+                                    //Add date
+                                    eventArray = getResources().getStringArray(R.array.event_type_array);
+                                    eventTypeString = eventArray[model.getEventType()];
+                                    holder.textType.setText(eventTypeString);
+                                    holder.textTime.setText(getResources().getString(R.string.training_time,
+                                            model.getEventTimeStart(), model.getEventTimeEnd()));
                                     if (!model.getEventField().equals("")) {
-                                        holder.textPlace.setText("at " + model.getEventField());
-                                    }
+                                        holder.textPlace.setText(getResources().getString(R.string.event_field, model.getEventField()));
+                                    }else  holder.textPlace.setVisibility(View.GONE);
+                                    holder.textDate.setText(model.getEventStartDateLocale());
                                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -312,29 +215,20 @@ public class TeamActivity extends Activity {
                             eventRecycler.setAdapter(adapter);
                             adapter.startListening();
 
-
-                            db.collection("Teams").document(teamID1).collection("TeamUsers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                                    int amountOfPlayers = task.getResult().size();
-                                    if (task.getResult().size()==1){
-                                        playerCount.setText(Integer.toString(amountOfPlayers) + " " + "Player");
-                                    }else {
-                                        playerCount.setText(Integer.toString(amountOfPlayers) + " " + "Players");
-                                    }
-                                }
-                            });
-
-
-                            teamLevel.setText("Level:" + " " + level);
-                            if (homeField.isEmpty()){
-                                homefieldDrop.setText("Home field: Not set");
-                            }else {
-                                homefieldDrop.setText("Home field:" + " " + homeField);
-                                }
-                            leaderDrop.setText("Leader:" + " " + leader);
-                            workStyleDrop.setText("Work style:" + " " + workStyle);
+                            DocumentSnapshot documentSnapshot1 = task.getResult();
+                            teamName = documentSnapshot1.get("teamNameText").toString();
+                            teamCountry = documentSnapshot1.get("teamCountryText").toString();
+                            level = documentSnapshot1.getLong("level").intValue();
+                            teamLevelArray = getResources().getStringArray(R.array.level_array);
+                            teamLevelString = teamLevelArray[level];
+                            teamTextName.setText(teamName);
+                            teamTextCountry.setText(teamCountry);
+                            teamLevel.setText(teamLevelString);
+                            basicInfoCont.setVisibility(View.VISIBLE);
+                            addEventImage.setVisibility(View.VISIBLE);
+                            teamEventsText.setVisibility(View.VISIBLE);
+                            eventRecycler.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
 
                             country_map.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -342,7 +236,7 @@ public class TeamActivity extends Activity {
                                     Intent intent = new Intent();
                                     intent.setAction(Intent.ACTION_VIEW);
                                     intent.setPackage("com.google.android.apps.maps");
-                                    intent.setData(Uri.parse("https://www.google.com/maps/search/?api=1&query=" + countryBoi));
+                                    intent.setData(Uri.parse("https://www.google.com/maps/search/?api=1&query=" + teamCountry));
                                     startActivity(intent);
                                 }
                             });
@@ -371,8 +265,8 @@ public class TeamActivity extends Activity {
         });
 
 
-
     }
+
     public void init(){
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         eventRecycler.setLayoutManager(linearLayoutManager);
@@ -403,10 +297,31 @@ public class TeamActivity extends Activity {
             case R.id.pending_player:
                 Intent intent = new Intent(TeamActivity.this, PendingPlayerActivity.class);
                 intent.putExtra("teamID", teamID1);
-                intent.putExtra("teamName", nameBoi);
+                intent.putExtra("teamName", teamName);
                 startActivity(intent);
+                break;
+
+            case R.id.chat_team:
+                startActivity(new Intent(TeamActivity.this, TeamChatActivity.class));
+                break;
+
+            case R.id.edit_team:
+                startActivity(new Intent(TeamActivity.this, EditTeamActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.teamPlayerCount:
+                startActivity(new Intent(TeamActivity.this, PlayerCountActivity.class));
+                break;
+            case R.id.add_event_image:
+                startActivity(new Intent(TeamActivity.this, NewEventActivity.class));
+                break;
+
+        }
     }
 }

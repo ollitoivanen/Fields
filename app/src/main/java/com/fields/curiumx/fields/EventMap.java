@@ -1,24 +1,26 @@
 package com.fields.curiumx.fields;
 
 public class EventMap {
-    String eventID;
-    String eventType;
-    String eventTimeStart;
-    String eventTimeEnd;
-    String eventField;
-    String eventStartDate;
+     String eventID;
+     int eventType;
+     String eventTimeStart;
+     String eventTimeEnd;
+     String eventField;
+     String eventStartDate;
+     String eventStartDateLocale;
 
     public EventMap(){
 
     }
 
-    public EventMap(String eventID, String eventType, String eventTimeStart, String eventTimeEnd, String eventField, String eventStartDate){
+    public EventMap(String eventID, int eventType, String eventTimeStart, String eventTimeEnd, String eventField, String eventStartDate, String eventStartDateLocale){
         this.eventID = eventID;
         this.eventType = eventType;
         this.eventTimeStart = eventTimeStart;
         this.eventField = eventField;
         this.eventTimeEnd = eventTimeEnd;
         this.eventStartDate = eventStartDate;
+        this.eventStartDateLocale = eventStartDateLocale;
     }
 
     public String getEventField() {
@@ -33,7 +35,7 @@ public class EventMap {
         return eventTimeStart;
     }
 
-    public String getEventType() {
+    public int getEventType() {
         return eventType;
     }
 
@@ -43,5 +45,9 @@ public class EventMap {
 
     public String getEventStartDate() {
         return eventStartDate;
+    }
+
+    public String getEventStartDateLocale() {
+        return eventStartDateLocale;
     }
 }
