@@ -121,38 +121,43 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/take_part"
-        app:layout_constraintTop_toBottomOf="@id/divs">
+        app:layout_constraintTop_toBottomOf="@id/divs"
+        >
 
         <Button
             android:id="@+id/in_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
 
             android:layout_height="wrap_content"
             android:layout_weight="1"
 
-            android:background="@color/colorPrimary"
-            android:text="@string/in" />
+            android:background="@drawable/rounded_view"
+            android:text="@string/in"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginBottom="2dp"/>
 
         <Button
             android:id="@+id/half_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
 
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/DividerColor"
-            android:text="@string/open" />
+            android:background="@drawable/rounded_view"
+            android:text="@string/open"
+            android:textColor="@color/blacknot"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="2dp"/>
 
         <Button
             android:id="@+id/out_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/FSQStrawberry"
+            android:background="@drawable/rounded_view"
             android:text="@string/out"
-
+            android:layout_marginStart="4dp"
+            android:textColor="@color/red_out"
+            android:layout_marginBottom="2dp"
             />
     </LinearLayout>
 

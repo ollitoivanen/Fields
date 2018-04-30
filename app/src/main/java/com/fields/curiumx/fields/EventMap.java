@@ -7,20 +7,18 @@ public class EventMap {
      String eventTimeEnd;
      String eventField;
      String eventStartDate;
-     String eventStartDateLocale;
 
     public EventMap(){
 
     }
 
-    public EventMap(String eventID, int eventType, String eventTimeStart, String eventTimeEnd, String eventField, String eventStartDate, String eventStartDateLocale){
+    public EventMap(String eventID, int eventType, String eventTimeStart, String eventTimeEnd, String eventField, String eventStartDate){
         this.eventID = eventID;
         this.eventType = eventType;
         this.eventTimeStart = eventTimeStart;
         this.eventField = eventField;
         this.eventTimeEnd = eventTimeEnd;
         this.eventStartDate = eventStartDate;
-        this.eventStartDateLocale = eventStartDateLocale;
     }
 
     public String getEventField() {
@@ -45,9 +43,5 @@ public class EventMap {
 
     public String getEventStartDate() {
         return eventStartDate;
-    }
-
-    public String getEventStartDateLocale() {
-        return eventStartDateLocale;
     }
 }

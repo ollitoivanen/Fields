@@ -201,16 +201,16 @@
     </string-array>
 
     <string-array name="level_array">
-        <item>1st Div</item>
-        <item>2nd Div</item>
-        <item>3rd Div</item>
-        <item>4th Div</item>
-        <item>5th Div</item>
-        <item>6th Div</item>
-        <item>7th Div</item>
-        <item>8th Div</item>
-        <item>9th Div</item>
-        <item>Sunday Div</item>
+        <item>1st Division</item>
+        <item>2nd Division</item>
+        <item>3rd Division</item>
+        <item>4th Division</item>
+        <item>5th Division</item>
+        <item>6th Division</item>
+        <item>7th Division</item>
+        <item>8th Division</item>
+        <item>9th Division</item>
+        <item>Sunday Division</item>
     </string-array>
 
     <string-array name="event_type_array">

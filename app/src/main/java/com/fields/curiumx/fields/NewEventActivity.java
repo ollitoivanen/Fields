@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -62,6 +63,7 @@ public class NewEventActivity extends Activity {
 
     String eventTimeStart;
     String eventTimeEnd;
+
 
 
     private int hr;
@@ -128,8 +130,8 @@ public class NewEventActivity extends Activity {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             DocumentSnapshot ds = task.getResult();
-                            String ref = ds.get("usersTeamID").toString();
-                            String eventID = Long.toString(c.getTimeInMillis());
+                            final String ref = ds.get("usersTeamID").toString();
+                            final String eventID = Long.toString(c.getTimeInMillis());
                             eventTimeStart = trainingStartTime.getText().toString();
                             eventTimeEnd = trainingEndTime.getText().toString();
 
@@ -139,11 +141,15 @@ public class NewEventActivity extends Activity {
                             }
                             EventMap eventMap = new EventMap(eventID,
                                     typeSpinner.getSelectedItemPosition(),
-                                    eventTimeStart, eventTimeEnd, chosenFieldNameIntent, trainingStartDateSave, trainingStartDate.getText().toString());
+                                    eventTimeStart, eventTimeEnd, chosenFieldNameIntent,
+                                    trainingStartDateSave);
                             db.collection("Teams").document(ref).collection("Team's Events")
-                                    .document(Long.toString(c.getTimeInMillis())).set(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    .document(Long.toString(c.getTimeInMillis()))
+                                    .set(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
+
+
                                     progressBar12.setVisibility(View.GONE);
                                     publishButton.setEnabled(true);
                                     Toast.makeText(getApplicationContext(), "Event created successfully", Toast.LENGTH_SHORT).show();

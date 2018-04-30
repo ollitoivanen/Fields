@@ -30,7 +30,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Text;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -68,20 +72,49 @@ public class DetailEventActivity extends Activity implements View.OnClickListene
             case R.id.in_button:
                 Map<String, Object> map = new HashMap<>();
                 map.put("member_status", event_member_status_in);
-                db.collection("Teams").document(teamID).collection("Team's Events").document(eventID).collection("Event Members").document(uid).set(map);
-                Toast.makeText(getApplicationContext(), "In", Toast.LENGTH_SHORT).show();
+                db.collection("Teams").document(teamID).collection("Team's Events")
+                        .document(eventID).collection("Event Members").document(uid).set(map);
+
+                        in.setBackground(getResources().getDrawable(R.drawable.rounded_view_green));
+                        in.setTextColor(getResources().getColor(R.color.cardview_light_background));
+
+                        out.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                        out.setTextColor(getResources().getColor(R.color.red_out));
+
+                        open.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                        open.setTextColor(getResources().getColor(R.color.blacknot));
+
+
                 break;
             case R.id.out_button:
                 Map<String, Object> map1 = new HashMap<>();
                 map1.put("member_status", event_member_status_out);
                 db.collection("Teams").document(teamID).collection("Team's Events").document(eventID).collection("Event Members").document(uid).set(map1);
-                Toast.makeText(getApplicationContext(), "Out", Toast.LENGTH_SHORT).show();
+
+                                in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                in.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+                                out.setBackground(getResources().getDrawable(R.drawable.rounded_view_red));
+                                out.setTextColor(getResources().getColor(R.color.cardview_light_background));
+
+                                open.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                open.setTextColor(getResources().getColor(R.color.blacknot));
+
                 break;
             case R.id.half_button:
                 Map<String, Object> map2 = new HashMap<>();
                 map2.put("member_status", event_member_status_open);
                 db.collection("Teams").document(teamID).collection("Team's Events").document(eventID).collection("Event Members").document(uid).set(map2);
-                Toast.makeText(getApplicationContext(), "Open", Toast.LENGTH_SHORT).show();
+
+                                in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                in.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+                                out.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                out.setTextColor(getResources().getColor(R.color.red_out));
+
+                                open.setBackground(getResources().getDrawable(R.drawable.rounded_view_gray));
+                                open.setTextColor(getResources().getColor(R.color.cardview_light_background));
+
                 break;
         }
     }
@@ -124,7 +157,7 @@ public class DetailEventActivity extends Activity implements View.OnClickListene
         Bundle info = getIntent().getExtras();
         String type  = info.getString("type");
         String place = info.getString("place");
-        String date = info.getString("date");
+        String dateSave = info.getString("date");
         String timeStart = info.getString("timeStart");
         String timeEnd = info.getString("timeEnd");
         eventID = info.getString("eventID");
@@ -151,19 +184,59 @@ public class DetailEventActivity extends Activity implements View.OnClickListene
                     holder.nameTaking.setText(model.getUsernameMember());
             }
 
+
+
             db.collection("Teams").document(teamID).collection("Team's Events")
                     .document(eventID).collection("Event Members").document(model.uidMember)
                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    DocumentSnapshot ds = task.getResult();
-                    if (ds.get("member_status").equals("1")){
-                        holder.nameTaking.setTextColor(getResources().getColor(R.color.colorPrimary));
-                    }else if (ds.get("member_status").equals("2")){
-                        holder.nameTaking.setTextColor(getResources().getColor(R.color.FSQStrawberry));
+                    if (!task.getResult().exists()) {
+                        Map<String, Object> mapOpen = new HashMap<>();
+                        mapOpen.put("member_status", event_member_status_open);
+                        db.collection("Teams").document(teamID).collection("Team's Events")
+                                .document(eventID).collection("Event Members").document(model.uidMember).set(mapOpen).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                            }
+                        });
+                    } else {
+                        DocumentSnapshot ds = task.getResult();
+                        if (ds.get("member_status").equals("1")) {
+                            holder.nameTaking.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            in.setBackground(getResources().getDrawable(R.drawable.rounded_view_green));
+                            in.setTextColor(getResources().getColor(R.color.cardview_light_background));
+
+                            out.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                            out.setTextColor(getResources().getColor(R.color.red_out));
+
+                            open.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                            open.setTextColor(getResources().getColor(R.color.blacknot));
+                        } else if (ds.get("member_status").equals("2")) {
+                            holder.nameTaking.setTextColor(getResources().getColor(R.color.red_out));
+                            in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                            in.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+                            out.setBackground(getResources().getDrawable(R.drawable.rounded_view_red));
+                            out.setTextColor(getResources().getColor(R.color.cardview_light_background));
+
+                            open.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                            open.setTextColor(getResources().getColor(R.color.blacknot));
+                        }else {
+                            in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                            in.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+                            out.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                            out.setTextColor(getResources().getColor(R.color.red_out));
+
+                            open.setBackground(getResources().getDrawable(R.drawable.rounded_view_gray));
+                            open.setTextColor(getResources().getColor(R.color.cardview_light_background));
                         }
+                    }
                 }
             });
+
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -229,7 +302,18 @@ public class DetailEventActivity extends Activity implements View.OnClickListene
 
 
         detailType.setText(type);
-        detailDate.setText(date);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.US);
+        try {
+            Date dateSaveToDate = dateFormat.parse(dateSave);
+            SimpleDateFormat timeFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
+            String finalDateSave = timeFormat.format(dateSaveToDate);
+            detailDate.setText(finalDateSave);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         if (place.equals("")){
             detailPlace.setText(getResources().getString(R.string.location_not_given));
         }else {

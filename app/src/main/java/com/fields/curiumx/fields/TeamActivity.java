@@ -79,14 +79,14 @@ public class TeamActivity extends Activity implements View.OnClickListener{
     String eventTypeString;
     String[] eventArray;
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.leave_team, menu);
+        inflater.inflate(R.menu.chat_team, menu);
         inflater.inflate(R.menu.pending_players, menu);
-        inflater.inflate(R.menu.chat, menu);
         inflater.inflate(R.menu.edit_team, menu);
+        inflater.inflate(R.menu.leave_team, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -137,8 +137,6 @@ public class TeamActivity extends Activity implements View.OnClickListener{
         init();
         ButterKnife.bind(this);
 
-
-
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -152,14 +150,10 @@ public class TeamActivity extends Activity implements View.OnClickListener{
 
                 } else {
 
-
                     teamID1 = documentSnapshot.get("usersTeamID").toString();
-
-
                     db.collection("Teams").document(teamID1).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
 
                             Query query = db.collection("Teams").document(teamID1).collection("Team's Events");
 
@@ -171,21 +165,30 @@ public class TeamActivity extends Activity implements View.OnClickListener{
                                 @Override
                                 public void onBindViewHolder(@NonNull eventHolder holder, int position, @NonNull final EventMap model) {
 
-                                    //Add date
                                     eventArray = getResources().getStringArray(R.array.event_type_array);
                                     eventTypeString = eventArray[model.getEventType()];
                                     holder.textType.setText(eventTypeString);
-                                    holder.textTime.setText(getResources().getString(R.string.training_time,
-                                            model.getEventTimeStart(), model.getEventTimeEnd()));
+
+                                    String dateSave = model.eventStartDate;
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.US);
+                                    try {
+                                        Date dateSaveToDate = dateFormat.parse(dateSave);
+                                        SimpleDateFormat timeFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
+                                        String finalDateSave = timeFormat.format(dateSaveToDate);
+                                        holder.textDate.setText(finalDateSave);
+                                        } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+
                                     if (!model.getEventField().equals("")) {
                                         holder.textPlace.setText(getResources().getString(R.string.event_field, model.getEventField()));
                                     }else  holder.textPlace.setVisibility(View.GONE);
-                                    holder.textDate.setText(model.getEventStartDateLocale());
+                                    holder.textTime.setText(getResources().getString(R.string.training_time, model.getEventTimeStart(), model.getEventTimeEnd()));
                                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             Intent intent = new Intent(TeamActivity.this, DetailEventActivity.class);
-                                            intent.putExtra("type", model.getEventType());
+                                            intent.putExtra("type", eventTypeString);
                                             intent.putExtra("place", model.getEventField());
                                             intent.putExtra("date", model.getEventStartDate());
                                             intent.putExtra("timeEnd", model.getEventTimeEnd());
@@ -193,8 +196,7 @@ public class TeamActivity extends Activity implements View.OnClickListener{
                                             intent.putExtra("eventID", model.getEventID());
                                             intent.putExtra("teamID", teamID1);
                                             startActivity(intent);
-
-                                        }
+                                            }
                                     });
                                 }
 
@@ -306,7 +308,12 @@ public class TeamActivity extends Activity implements View.OnClickListener{
                 break;
 
             case R.id.edit_team:
-                startActivity(new Intent(TeamActivity.this, EditTeamActivity.class));
+                Intent intent1 = new Intent(TeamActivity.this, EditTeamActivity.class);
+                intent1.putExtra("teamID", teamID1);
+                intent1.putExtra("teamName", teamName);
+                intent1.putExtra("teamCountry", teamCountry);
+                intent1.putExtra("level", level);
+                startActivity(intent1);
                 break;
         }
         return super.onOptionsItemSelected(item);
