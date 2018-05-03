@@ -159,7 +159,10 @@
     <string name="team_created_successfully">Team created successfully</string>
     <string name="create_new_team">Create New Team</string>
     <string name="create_team">Create Team</string>
+    <string name="you_arent_in_any_team">You aren\'t in any team. Join a team now or create a new one to get the best out of Fields! </string>
+    <string name="join_existing_team">Join existing team</string>
     <string name="stay">Stay</string>
+
 
     <string-array name="role_spinner">
         <item>Player</item>

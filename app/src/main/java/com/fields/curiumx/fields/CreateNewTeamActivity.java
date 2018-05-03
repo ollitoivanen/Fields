@@ -64,8 +64,6 @@ public class CreateNewTeamActivity extends AppCompatActivity {
     ConstraintLayout root;
     TextInputLayout teamUsernameInput;
     TextInputLayout teamFullNameInput;
-
-
     private static final int CHOOSE_IMAGE = 101;
 
     @Override
@@ -172,7 +170,7 @@ public class CreateNewTeamActivity extends AppCompatActivity {
                                 //Check if user is already in a team
                                 if (documentSnapshot.get("usersTeam") == null) {
                                     progressBar.setVisibility(View.VISIBLE);
-                                    teamID = UUID.randomUUID().toString();
+                                    teamID = UUID.randomUUID().toString().substring(24);
 
                                     if (uriFieldImage != null){
                                         uploadImageToFirebaseStorage();

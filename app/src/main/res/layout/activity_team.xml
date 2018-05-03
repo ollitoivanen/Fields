@@ -56,7 +56,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="16dp"
-            android:text="TeamName"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/team_photo"
@@ -270,7 +269,8 @@
         app:fabSize="normal"
         android:clickable="true"
         app:layout_constraintBottom_toTopOf="@id/activityBar"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
 
 
     <ProgressBar
@@ -281,6 +281,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </android.support.constraint.ConstraintLayout>

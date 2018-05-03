@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -154,6 +155,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
                 DocumentSnapshot documentSnapshot = task.getResult();
 
                 teamID1 = documentSnapshot.get("usersTeamID").toString();
@@ -173,9 +175,9 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
 
                                 if (model.getEventStartDateInMillis() - System.currentTimeMillis() < 0) {
 
-                                        db.collection("Teams").document(teamID1)
-                                                .collection("Team's Events")
-                                                .document(model.getEventID()).delete();
+                                    db.collection("Teams").document(teamID1)
+                                            .collection("Team's Events")
+                                            .document(model.getEventID()).delete();
 
                                 } else {
                                     eventArray = getResources().getStringArray(R.array.event_type_array);
@@ -246,6 +248,8 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                 teamEventsText.setVisibility(View.VISIBLE);
                                 eventRecycler.setEmptyView(emptyConstraint);
                                 eventRecycler.setVisibility(View.VISIBLE);
+                                chatFloat.setVisibility(View.VISIBLE);
+
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     Glide.with(getApplicationContext())
@@ -257,9 +261,6 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
 
                             }
                         });
-
-
-
 
 
                         country_map.setOnClickListener(new View.OnClickListener() {
@@ -275,11 +276,13 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                         });
 
 
-
                     }
                 });
 
-
+            }else{
+                    Snackbar.make(findViewById(R.id.team_activity), getResources()
+                            .getString(R.string.error_occurred_loading_document), Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -406,7 +409,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(TeamActivity.this, NewEventActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;
-                
+
             case R.id.chat_float:
                 startActivity(new Intent(TeamActivity.this, TeamChatActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);

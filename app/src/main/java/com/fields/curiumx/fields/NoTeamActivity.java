@@ -19,12 +19,15 @@ public class NoTeamActivity extends AppCompatActivity {
         setContentView(R.layout.activity_no_team);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(getResources().getString(R.string.join_team));
         createNewTeamButton = findViewById(R.id.createNewTeamButton);
         joinTeamButton = findViewById(R.id.joinTeamButton);
         createNewTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(NoTeamActivity.this, CreateNewTeamActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 finish();
             }
         });
@@ -33,6 +36,8 @@ public class NoTeamActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(NoTeamActivity.this, SearchActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
             }
         });
     }
