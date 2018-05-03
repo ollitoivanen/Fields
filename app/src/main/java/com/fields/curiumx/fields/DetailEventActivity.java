@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -40,7 +41,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailEventActivity extends Activity implements View.OnClickListener{
+public class DetailEventActivity extends AppCompatActivity implements View.OnClickListener{
     TextView detailType;
     TextView detailPlace;
     TextView detailTime;
@@ -157,7 +158,7 @@ public class DetailEventActivity extends Activity implements View.OnClickListene
         Bundle info = getIntent().getExtras();
         String type  = info.getString("type");
         String place = info.getString("place");
-        String dateSave = info.getString("date");
+        Date dateSave = (Date) info.getSerializable("date");
         String timeStart = info.getString("timeStart");
         String timeEnd = info.getString("timeEnd");
         eventID = info.getString("eventID");
@@ -303,16 +304,9 @@ public class DetailEventActivity extends Activity implements View.OnClickListene
 
         detailType.setText(type);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.US);
-        try {
-            Date dateSaveToDate = dateFormat.parse(dateSave);
-            SimpleDateFormat timeFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
-            String finalDateSave = timeFormat.format(dateSaveToDate);
-            detailDate.setText(finalDateSave);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
+        String date = dateFormat.format(dateSave);
+        detailDate.setText(date);
 
         if (place.equals("")){
             detailPlace.setText(getResources().getString(R.string.location_not_given));

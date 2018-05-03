@@ -7,6 +7,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -36,7 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-public class NewEventActivity extends Activity {
+public class NewEventActivity extends AppCompatActivity {
     Spinner typeSpinner;
     static final int TIME_DIALOG_ID = 1111;
     TextView trainingStartTime;
@@ -142,7 +143,7 @@ public class NewEventActivity extends Activity {
                             EventMap eventMap = new EventMap(eventID,
                                     typeSpinner.getSelectedItemPosition(),
                                     eventTimeStart, eventTimeEnd, chosenFieldNameIntent,
-                                    trainingStartDateSave);
+                                    c.getTime(), c.getTimeInMillis());
                             db.collection("Teams").document(ref).collection("Team's Events")
                                     .document(Long.toString(c.getTimeInMillis()))
                                     .set(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {

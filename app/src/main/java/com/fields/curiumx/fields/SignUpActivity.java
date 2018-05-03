@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
@@ -45,7 +46,7 @@ import org.w3c.dom.Text;
 
 import java.nio.file.Path;
 
-public class SignUpActivity extends Activity implements View.OnClickListener{
+public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
     EditText emailSignUp, passwordSignUp, username, realName;
     Spinner roleSpinner;
@@ -115,7 +116,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
     public void registerUser() {
         final String emailString = emailSignUp.getText().toString().trim();
         final String passwordString = passwordSignUp.getText().toString().trim();
-        final String usernameString = username.getText().toString().trim();
+        final String usernameString = username.getText().toString().trim().toLowerCase();
         final String realNameString = realName.getText().toString().trim();
         final int userRole = roleSpinner.getSelectedItemPosition();
 
@@ -124,31 +125,31 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
             realName.requestFocus();
         }
 
-        if (emailString.isEmpty()) {
+        else if (emailString.isEmpty()) {
             emailSignUp.setError("Email is required");
             emailSignUp.requestFocus();
             return;
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()) {
+        else if (!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()) {
             emailSignUp.setError("Please enter a valid email");
             emailSignUp.requestFocus();
             return;
         }
 
-        if (passwordString.isEmpty()) {
+        else if (passwordString.isEmpty()) {
             passwordSignUp.setError("Password is required");
             passwordSignUp.requestFocus();
             return;
         }
 
-        if (passwordString.length() < 6) {
+        else if (passwordString.length() < 6) {
             passwordSignUp.setError("Minimum length of password should be 6");
             passwordSignUp.requestFocus();
             return;
         }
 
-        if (usernameString.isEmpty()){
+        else if (usernameString.isEmpty()){
             username.setError("Name is required");
             username.requestFocus();
             return;
@@ -178,7 +179,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
                                 db.collection("Users").document(uid).set(userMap);
 
                                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(realNameString)
+                                        .setDisplayName(usernameString)
                                         .build();
                                 user.updateProfile(profileChangeRequest);
 

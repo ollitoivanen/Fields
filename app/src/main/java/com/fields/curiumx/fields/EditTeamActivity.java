@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -16,7 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class EditTeamActivity extends Activity {
+public class EditTeamActivity extends AppCompatActivity {
     ImageView teamPhotoEdit;
     Uri uriTeamImage;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -58,7 +59,7 @@ public class EditTeamActivity extends Activity {
                             .load(storageRef)
                             .into(teamPhotoEdit);
                 }else {
-                    teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.team_defult));
+                    teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
                 }
 
             }

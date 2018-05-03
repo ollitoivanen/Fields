@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="FieldsThemeAppCompat" parent="Theme.AppCompat.Light" >
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:colorBackground">@color/Background_Fields</item>
+    </style>
 
 
 </resources>

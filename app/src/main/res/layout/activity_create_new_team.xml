@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fields.curiumx.fields.CreateNewTeamActivity">
+    tools:context="com.fields.curiumx.fields.CreateNewTeamActivity"
+    android:id="@+id/createNewTeamActivity"
+   >
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/teamPhoto"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/field_photo3"
+        android:src="@drawable/team_basic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,17 +32,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/teamPhoto"
          />
-
-    <EditText
-        android:id="@+id/teamName"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/teamUsernameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Team name"
         app:layout_constraintTop_toBottomOf="@id/press_text_team"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginEnd="16dp"
+        >
+
+    <EditText
+        android:id="@+id/teamUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/team_username"
+        android:inputType="text"
+        android:maxLength="28"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/teamFullNameInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/teamUsernameInput"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        >
+
+    <EditText
+        android:id="@+id/teamFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/team_full_name"
+        android:inputType="text"
+        android:maxLength="28"
+        />
+    </android.support.design.widget.TextInputLayout>
 
     <TextView
         android:id="@+id/team_country_text"
@@ -50,19 +83,20 @@
         android:layout_marginTop="8dp"
         android:text="@string/team_country"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/teamName" />
+        app:layout_constraintTop_toBottomOf="@id/teamFullNameInput"
+        />
 
     <Spinner
         android:id="@+id/teamCountry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/team_country_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
 
-        />
+        app:layout_constraintTop_toBottomOf="@id/team_country_text" />
 
     <TextView
         android:id="@+id/level_text"
@@ -89,8 +123,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/colorPrimary"
-        android:text="create team"/>
+        android:background="@drawable/fields_button_states"
+        android:text="@string/create_team"/>
 
     <ProgressBar
         android:id="@+id/pr1"

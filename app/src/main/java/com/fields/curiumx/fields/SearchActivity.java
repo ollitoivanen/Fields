@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NavUtils;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +39,7 @@ import java.io.InputStream;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SearchActivity extends Activity implements View.OnClickListener{
+public class SearchActivity extends AppCompatActivity implements View.OnClickListener{
     TextView textView;
     SearchView search;
     String text;

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -48,7 +49,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailTeamActivity extends Activity {
+public class DetailTeamActivity extends AppCompatActivity {
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
@@ -261,11 +262,11 @@ public class DetailTeamActivity extends Activity {
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM");
                 String compareDate = dateFormat.format(currentTime);
-                if (compareDate.equals(model.getEventStartDate())){
-                    holder.textDate.setText("Today");
-                }else {
-                    holder.textDate.setText(model.getEventStartDate());
-                }
+               // if (compareDate.equals(model.getEventStartDate())){
+               //     holder.textDate.setText("Today");
+               // }else {
+               //     holder.textDate.setText(model.getEventStartDate());
+               // }
                 holder.textType.setText(model.getEventType());
                 holder.textTime.setText(model.getEventTimeStart() + "- " + model.getEventTimeEnd());
                 if (!model.getEventField().equals("")) {

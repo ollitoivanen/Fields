@@ -5,8 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,11 +25,13 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.common.api.ResolvableApiException;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -35,18 +40,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class FeedActivity extends Activity {
+public class FeedActivity extends AppCompatActivity {
 
     ImageButton feedButton;
     TextView textView;
     Button logoutButton;
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
-    TextView teamCardView;
+    CardView teamCardView;
+    CardView teamCardViewNoTeam;
     TextView searchCardView;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String uid;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
 
 
 
@@ -86,13 +93,7 @@ public class FeedActivity extends Activity {
             }
         });
 
-        teamCardView = findViewById(R.id.team);
-        teamCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(FeedActivity.this, TeamActivity.class));
-            }
-        });
+
 
 
 
@@ -103,13 +104,90 @@ public class FeedActivity extends Activity {
                 if (firebaseAuth.getCurrentUser() == null){
                     finish();
                     startActivity(new Intent(FeedActivity.this, SignUpActivity.class));
+                }else {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    uid = user.getUid();
+                    teamCardView = findViewById(R.id.teamCard);
+                    teamCardViewNoTeam = findViewById(R.id.teamCardNoTeam);
+
+                    db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                            DocumentSnapshot ds = task.getResult();
+                            if (ds.get("usersTeam")==null){
+                                teamCardViewNoTeam.setVisibility(View.VISIBLE);
+                                teamCardViewNoTeam.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        startActivity(new Intent(FeedActivity.this, NoTeamActivity.class));
+                                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                        finish();
+
+                                    }
+                                });
+                            }else {
+
+                                teamCardView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(FeedActivity.this, TeamActivity.class);
+                                        startActivity(intent);
+                                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                    }
+                                });
+
+                            }
+
+                        }
+                    });
+
+
                 }
             }
         };
 
 
+
+
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                DocumentSnapshot ds = task.getResult();
+                if (ds.get("usersTeam") == null) {
+                    teamCardViewNoTeam.setVisibility(View.VISIBLE);
+                    teamCardViewNoTeam.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(FeedActivity.this, NoTeamActivity.class));
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                            finish();
+
+
+                        }
+                    });
+                } else {
+
+                    teamCardView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(FeedActivity.this, TeamActivity.class);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                        }
+                    });
+
+                }
+            }
+        });
+    }
 
     public void onProfileClick(View view){
         LinearLayout activityBar = findViewById(R.id.activityBar);

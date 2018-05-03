@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import static android.content.ContentValues.TAG;
 
-public class ForgotPasswordActivity extends Activity {
+public class ForgotPasswordActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String emailAddress;

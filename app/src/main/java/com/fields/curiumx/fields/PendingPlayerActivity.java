@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -29,7 +30,7 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PendingPlayerActivity extends Activity {
+public class PendingPlayerActivity extends AppCompatActivity {
     @BindView(R.id.pending_recycler)
     EmptyRecyclerView pendingRecycler;
     private FirestoreRecyclerAdapter adapter;

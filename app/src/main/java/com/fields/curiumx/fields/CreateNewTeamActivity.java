@@ -7,7 +7,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,13 +46,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class CreateNewTeamActivity extends Activity {
+public class CreateNewTeamActivity extends AppCompatActivity {
     ImageView teamImage;
     Uri uriFieldImage;
     ProgressBar progressBar;
     String teamImageUrl;
-
-    EditText teamName;
+    EditText teamUsername;
+    EditText teamFullName;
+    TextView press_text;
     Spinner teamCountry;
     Button saveTeamButton;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -51,36 +61,68 @@ public class CreateNewTeamActivity extends Activity {
     String uid = user.getUid();
     Spinner level;
     String teamID;
+    ConstraintLayout root;
+    TextInputLayout teamUsernameInput;
+    TextInputLayout teamFullNameInput;
+
+
     private static final int CHOOSE_IMAGE = 101;
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_team);
         teamImage = findViewById(R.id.teamPhoto);
+        press_text = findViewById(R.id.press_text_team);
+        setTitle(getResources().getString(R.string.create_new_team));
+        press_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageChooser();
+            }
+        });
         teamImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showImageChooser();
             }
         });
-        teamName = findViewById(R.id.teamName);
+        teamUsername = findViewById(R.id.teamUsername);
+        teamFullName = findViewById(R.id.teamFullName);
         teamCountry  = findViewById(R.id.teamCountry);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         saveTeamButton = findViewById(R.id.saveTeamButton);
+        root = findViewById(R.id.createNewTeamActivity);
+        teamUsernameInput = findViewById(R.id.teamUsernameInput);
+        teamFullNameInput = findViewById(R.id.teamFullNameInput);
+
+        teamUsername.addTextChangedListener(new MyTextWatcher(teamUsername));
+        teamFullName.addTextChangedListener(new MyTextWatcher(teamFullName));
+
         saveTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveTeamButton.setEnabled(false);
                 saveTeam();
             }
         });
         progressBar = findViewById(R.id.pr1);
+
+        //Filters spaces from username
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                String filtered = "";
+                for (int i = start; i < end; i++) {
+                    char character = source.charAt(i);
+                    if (!Character.isWhitespace(character)) {
+                        filtered += character;
+                    }
+                }
+                return filtered;
+            }
+        };
+        teamUsername.setFilters(new InputFilter[]{filter});
 
         level = findViewById(R.id.level);
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource
@@ -95,29 +137,29 @@ public class CreateNewTeamActivity extends Activity {
 
     }
 
-
-
     public void saveTeam(){
-        final String teamNameText = teamName.getText().toString();
+        final String teamUsernameText = teamUsername.getText().toString().toLowerCase().trim();
+        final String teamFullNameText = teamFullName.getText().toString().trim();
         final String teamCountryText = teamCountry.getSelectedItem().toString();
         final String username = user.getDisplayName();
 
-        if (teamNameText.isEmpty()) {
-            teamName.setError("Team name is required");
-            teamName.requestFocus();
+        if (teamUsernameText.isEmpty()) {
+            teamUsernameInput.setError(getResources().getString(R.string.error_team_username));
+            teamUsername.requestFocus();
+            saveTeamButton.setEnabled(true);
+        }else if (teamFullNameText.isEmpty()){
+            teamFullNameInput.setError(getResources().getString(R.string.error_team_full_name));
+            teamFullName.requestFocus();
+            saveTeamButton.setEnabled(true);
 
-        }else if (teamNameText.equals(" ")){
-            teamName.setError("Team name is required");
-            teamName.requestFocus();
-
-            //Check if team with the same name already exists
         }else {
-            db.collection("Teams").document(teamNameText).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            db.collection("Teams").document(teamUsernameText).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.getResult().exists()) {
-                        teamName.setError("Team with same name already exists");
-                        teamName.requestFocus();
+                        teamUsernameInput.setError(getResources().getString(R.string.error_team_exists));
+                        teamUsername.requestFocus();
+                        saveTeamButton.setEnabled(true);
 
                     } else {
                         //If team with same name doesn't exist, save it
@@ -129,11 +171,13 @@ public class CreateNewTeamActivity extends Activity {
 
                                 //Check if user is already in a team
                                 if (documentSnapshot.get("usersTeam") == null) {
+                                    progressBar.setVisibility(View.VISIBLE);
                                     teamID = UUID.randomUUID().toString();
+
                                     if (uriFieldImage != null){
                                         uploadImageToFirebaseStorage();
                                     }
-                                    TeamMap data1 = new TeamMap(teamNameText, teamCountryText,
+                                    TeamMap data1 = new TeamMap(teamUsernameText, teamCountryText,
                                            teamID , level.getSelectedItemPosition());
                                     db.collection("Teams").document(teamID).set(data1);
 
@@ -141,23 +185,34 @@ public class CreateNewTeamActivity extends Activity {
 
                                     db.collection("Teams").document(teamID).collection("TeamUsers").document(uid).set(memberMap);
 
-                                    db.collection("Users").document(uid).update("usersTeamID", teamID);
-                                    db.collection("Users").document(uid).update("usersTeam", teamNameText)
+                                    db.collection("Users").document(uid).update("usersTeamID", teamID,
+                                            "usersTeam", teamUsernameText)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
                                                         Intent intent = new Intent(CreateNewTeamActivity.this, TeamActivity.class);
                                                         startActivity(intent);
-                                                        Toast.makeText(getApplicationContext(), "Team created successfully", Toast.LENGTH_LONG).show();
+                                                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                                        Toast.makeText(getApplicationContext(),
+                                                                getResources().getString(R.string.team_created_successfully), Toast.LENGTH_LONG).show();
                                                         finish();
+
+                                                    }else {
+                                                        String error = getResources().getString(R.string.error_occurred_creating_team);
+                                                        Snackbar.make(root ,error, Snackbar.LENGTH_LONG).show();
+                                                        saveTeamButton.setEnabled(true);
+
 
                                                     }
                                                 }
                                             });
 
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "You are already in a team", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.you_are_in_team), Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(CreateNewTeamActivity.this, FeedActivity.class));
+                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                    finish();
                                 }
                             }
                         });
@@ -203,7 +258,7 @@ public class CreateNewTeamActivity extends Activity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 1, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveTeamButton.setEnabled(false);
@@ -227,10 +282,49 @@ public class CreateNewTeamActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                startActivity(new Intent(CreateNewTeamActivity.this, NoTeamActivity.class));
+                finish();
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(CreateNewTeamActivity.this, NoTeamActivity.class));
+        finish();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    private class MyTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()){
+                case R.id.teamUsername:
+                    teamUsernameInput.setErrorEnabled(false);
+                    break;
+                case R.id.teamFullName:
+                    teamFullNameInput.setErrorEnabled(false);
+
+            }
+        }
+    }
+
+
 
 }

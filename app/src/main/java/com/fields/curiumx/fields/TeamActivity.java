@@ -2,23 +2,36 @@ package com.fields.curiumx.fields;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.transition.Fade;
+import android.transition.Transition;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +63,7 @@ import butterknife.ButterKnife;
 
 import static com.firebase.ui.auth.ui.phone.SubmitConfirmationCodeFragment.TAG;
 
-public class TeamActivity extends Activity implements View.OnClickListener{
+public class TeamActivity extends AppCompatActivity implements View.OnClickListener{
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
     String teamName;
@@ -63,7 +76,7 @@ public class TeamActivity extends Activity implements View.OnClickListener{
     ImageView addEventImage;
     TextView playerCount;
     ProgressBar progressBar;
-    TextView emptyText;
+    ConstraintLayout emptyConstraint;
     LinearLayout country_map;
     ConstraintLayout basicInfoCont;
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -78,11 +91,11 @@ public class TeamActivity extends Activity implements View.OnClickListener{
     String[] teamLevelArray;
     String eventTypeString;
     String[] eventArray;
+    FloatingActionButton chatFloat;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.chat_team, menu);
         inflater.inflate(R.menu.pending_players, menu);
         inflater.inflate(R.menu.edit_team, menu);
         inflater.inflate(R.menu.leave_team, menu);
@@ -115,24 +128,25 @@ public class TeamActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
 
+        chatFloat = findViewById(R.id.chat_float);
         final DocumentReference docRef = db.collection("Users").document(uid);
         playerCount = findViewById(R.id.teamPlayerCount);
         country_map = findViewById(R.id.country_map);
         teamEventsText = findViewById(R.id.events_text);
         basicInfoCont = findViewById(R.id.basicInfoContainer);
         addEventImage = findViewById(R.id.add_event_image);
-        teamLevel  =findViewById(R.id.teamLevel);
+        teamLevel = findViewById(R.id.teamLevel);
         teamTextName = findViewById(R.id.teamName);
         teamTextCountry = findViewById(R.id.teamCountry);
         teamImage = findViewById(R.id.teamImage);
-        progressBar = findViewById(R.id.progress_bar);
+        progressBar = findViewById(R.id.progress_bar_team);
         eventRecycler = findViewById(R.id.eventRecycler);
-        emptyText = findViewById(R.id.empty_text);
+        emptyConstraint = findViewById(R.id.empty_constraint);
         playerCount.setOnClickListener(this);
         addEventImage.setOnClickListener(this);
-        eventRecycler.setEmptyView(emptyText);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        chatFloat.setOnClickListener(this);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Team");
         init();
         ButterKnife.bind(this);
@@ -141,48 +155,41 @@ public class TeamActivity extends Activity implements View.OnClickListener{
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot documentSnapshot = task.getResult();
-                progressBar.setVisibility(View.GONE);
-                if (documentSnapshot.get("usersTeam") == null) {
 
-                    startActivity(new Intent(TeamActivity.this, NoTeamActivity.class));
-                    progressBar.setVisibility(View.GONE);
-                    finish();
+                teamID1 = documentSnapshot.get("usersTeamID").toString();
+                db.collection("Teams").document(teamID1).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                } else {
+                        Query query = db.collection("Teams").document(teamID1).collection("Team's Events");
 
-                    teamID1 = documentSnapshot.get("usersTeamID").toString();
-                    db.collection("Teams").document(teamID1).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        final FirestoreRecyclerOptions<EventMap> response = new FirestoreRecyclerOptions.Builder<EventMap>()
+                                .setQuery(query, EventMap.class)
+                                .build();
 
-                            Query query = db.collection("Teams").document(teamID1).collection("Team's Events");
+                        adapter = new FirestoreRecyclerAdapter<EventMap, eventHolder>(response) {
+                            @Override
+                            public void onBindViewHolder(@NonNull eventHolder holder, int position, @NonNull final EventMap model) {
 
-                            FirestoreRecyclerOptions<EventMap> response = new FirestoreRecyclerOptions.Builder<EventMap>()
-                                    .setQuery(query, EventMap.class)
-                                    .build();
+                                if (model.getEventStartDateInMillis() - System.currentTimeMillis() < 0) {
 
-                            adapter = new FirestoreRecyclerAdapter<EventMap, eventHolder>(response) {
-                                @Override
-                                public void onBindViewHolder(@NonNull eventHolder holder, int position, @NonNull final EventMap model) {
+                                        db.collection("Teams").document(teamID1)
+                                                .collection("Team's Events")
+                                                .document(model.getEventID()).delete();
 
+                                } else {
                                     eventArray = getResources().getStringArray(R.array.event_type_array);
                                     eventTypeString = eventArray[model.getEventType()];
                                     holder.textType.setText(eventTypeString);
 
-                                    String dateSave = model.eventStartDate;
-                                    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.US);
-                                    try {
-                                        Date dateSaveToDate = dateFormat.parse(dateSave);
-                                        SimpleDateFormat timeFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
-                                        String finalDateSave = timeFormat.format(dateSaveToDate);
-                                        holder.textDate.setText(finalDateSave);
-                                        } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
+                                    Date dateSave = model.getEventStartDate();
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
+                                    String date = dateFormat.format(dateSave);
+                                    holder.textDate.setText(date);
 
                                     if (!model.getEventField().equals("")) {
                                         holder.textPlace.setText(getResources().getString(R.string.event_field, model.getEventField()));
-                                    }else  holder.textPlace.setVisibility(View.GONE);
+                                    } else holder.textPlace.setVisibility(View.GONE);
                                     holder.textTime.setText(getResources().getString(R.string.training_time, model.getEventTimeStart(), model.getEventTimeEnd()));
                                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -196,76 +203,110 @@ public class TeamActivity extends Activity implements View.OnClickListener{
                                             intent.putExtra("eventID", model.getEventID());
                                             intent.putExtra("teamID", teamID1);
                                             startActivity(intent);
-                                            }
+                                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+                                        }
                                     });
                                 }
+                            }
 
-                                @Override
-                                public eventHolder onCreateViewHolder(ViewGroup group, int i) {
-                                    View view = LayoutInflater.from(group.getContext())
-                                            .inflate(R.layout.event_item, group, false);
-                                    return new eventHolder(view);
+                            @Override
+                            public eventHolder onCreateViewHolder(ViewGroup group, int i) {
+                                View view = LayoutInflater.from(group.getContext())
+                                        .inflate(R.layout.event_item, group, false);
+                                return new eventHolder(view);
+                            }
+
+                            @Override
+                            public void onError(FirebaseFirestoreException e) {
+                                Log.e("error", e.getMessage());
+                            }
+
+                        };
+
+                        adapter.notifyDataSetChanged();
+                        eventRecycler.setAdapter(adapter);
+                        adapter.startListening();
+
+                        DocumentSnapshot documentSnapshot1 = task.getResult();
+                        teamName = documentSnapshot1.get("teamNameText").toString();
+                        teamCountry = documentSnapshot1.get("teamCountryText").toString();
+                        level = documentSnapshot1.getLong("level").intValue();
+                        teamLevelArray = getResources().getStringArray(R.array.level_array);
+                        teamLevelString = teamLevelArray[level];
+                        teamTextName.setText(teamName);
+                        teamTextCountry.setText(teamCountry);
+                        teamLevel.setText(teamLevelString);
+                        final StorageReference storageRef = storage.getReference().child("teampics/" + teamID1 + ".jpg");
+                        storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                basicInfoCont.setVisibility(View.VISIBLE);
+                                addEventImage.setVisibility(View.VISIBLE);
+                                teamEventsText.setVisibility(View.VISIBLE);
+                                eventRecycler.setEmptyView(emptyConstraint);
+                                eventRecycler.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.GONE);
+                                if (task.isSuccessful()) {
+                                    Glide.with(getApplicationContext())
+                                            .load(storageRef)
+                                            .into(teamImage);
+                                } else {
+                                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
                                 }
 
-                                @Override
-                                public void onError(FirebaseFirestoreException e) {
-                                    Log.e("error", e.getMessage());
-                                }
-                            };
-
-                            adapter.notifyDataSetChanged();
-                            eventRecycler.setAdapter(adapter);
-                            adapter.startListening();
-
-                            DocumentSnapshot documentSnapshot1 = task.getResult();
-                            teamName = documentSnapshot1.get("teamNameText").toString();
-                            teamCountry = documentSnapshot1.get("teamCountryText").toString();
-                            level = documentSnapshot1.getLong("level").intValue();
-                            teamLevelArray = getResources().getStringArray(R.array.level_array);
-                            teamLevelString = teamLevelArray[level];
-                            teamTextName.setText(teamName);
-                            teamTextCountry.setText(teamCountry);
-                            teamLevel.setText(teamLevelString);
-                            basicInfoCont.setVisibility(View.VISIBLE);
-                            addEventImage.setVisibility(View.VISIBLE);
-                            teamEventsText.setVisibility(View.VISIBLE);
-                            eventRecycler.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.GONE);
-
-                            country_map.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent();
-                                    intent.setAction(Intent.ACTION_VIEW);
-                                    intent.setPackage("com.google.android.apps.maps");
-                                    intent.setData(Uri.parse("https://www.google.com/maps/search/?api=1&query=" + teamCountry));
-                                    startActivity(intent);
-                                }
-                            });
-
-                            final StorageReference storageRef = storage.getReference().child("teampics/"+teamID1+".jpg");
-                            storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()){
-                                        Glide.with(getApplicationContext())
-                                                .load(storageRef)
-                                                .into(teamImage);
-                                    }else {
-                                        teamImage.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
-                                    }
-
-                                }
-                            });
-
-                        }
-                    });
+                            }
+                        });
 
 
-                }
+
+
+
+                        country_map.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent();
+                                intent.setAction(Intent.ACTION_VIEW);
+                                intent.setPackage("com.google.android.apps.maps");
+                                intent.setData(Uri.parse("https://www.google.com/maps/search/?api=1&query=" + teamCountry));
+                                startActivity(intent);
+                                adapter.stopListening();
+                            }
+                        });
+
+
+
+                    }
+                });
+
+
             }
         });
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        adapter.stopListening();
+        eventRecycler.setAdapter(null);
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+
+        eventRecycler.setAdapter(null);
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        adapter.startListening();
+        eventRecycler.setAdapter(adapter);
 
     }
 
@@ -280,20 +321,51 @@ public class TeamActivity extends Activity implements View.OnClickListener{
         switch (item.getItemId()) {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 return true;
             case R.id.leave:
-                db.collection("Users").document(uid).update("usersTeamID", null);
-                db.collection("Teams").document(teamID1).collection("TeamUsers").document(uid).delete();
-                db.collection("Users").document(uid).update("usersTeam", null).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(TeamActivity.this );
+                View mView = getLayoutInflater().inflate(R.layout.leave_team_popup, null);
+                Button leaveButton = mView.findViewById(R.id.leave);
+                leaveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Intent intent = new Intent(TeamActivity.this, NoTeamActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        Toast.makeText(getApplicationContext(), "Left team", Toast.LENGTH_LONG).show();
-                        startActivity(intent);
-                        finish();
+                    public void onClick(View v) {
+                        db.collection("Users").document(uid).update("usersTeamID", null);
+                        db.collection("Teams").document(teamID1).collection("TeamUsers").document(uid).delete();
+                        db.collection("Users").document(uid).update("usersTeam", null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Intent intent = new Intent(TeamActivity.this, NoTeamActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                Toast.makeText(getApplicationContext(), "Left team", Toast.LENGTH_LONG).show();
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                finish();
+                            }
+
+
+
+                        });
                     }
                 });
+
+
+                alertDialog.setView(mView);
+                final AlertDialog dialog = alertDialog.create();
+                dialog.show();
+
+                Button stayButton = mView.findViewById(R.id.stay);
+                stayButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.cancel();
+                        }
+                });
+
+
+
+
                 break;
 
             case R.id.pending_player:
@@ -301,11 +373,11 @@ public class TeamActivity extends Activity implements View.OnClickListener{
                 intent.putExtra("teamID", teamID1);
                 intent.putExtra("teamName", teamName);
                 startActivity(intent);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 break;
 
-            case R.id.chat_team:
-                startActivity(new Intent(TeamActivity.this, TeamChatActivity.class));
-                break;
+
 
             case R.id.edit_team:
                 Intent intent1 = new Intent(TeamActivity.this, EditTeamActivity.class);
@@ -314,6 +386,8 @@ public class TeamActivity extends Activity implements View.OnClickListener{
                 intent1.putExtra("teamCountry", teamCountry);
                 intent1.putExtra("level", level);
                 startActivity(intent1);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -324,11 +398,46 @@ public class TeamActivity extends Activity implements View.OnClickListener{
         switch (v.getId()){
             case R.id.teamPlayerCount:
                 startActivity(new Intent(TeamActivity.this, PlayerCountActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+
                 break;
             case R.id.add_event_image:
                 startActivity(new Intent(TeamActivity.this, NewEventActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                break;
+                
+            case R.id.chat_float:
+                startActivity(new Intent(TeamActivity.this, TeamChatActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;
 
         }
+    }
+
+    public void onProfileClick(View view) {
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, ProfileActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
+        adapter.stopListening();
+    }
+
+    public void onFeedClick(View view){
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, FeedActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
+        adapter.stopListening();
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
     }
 }

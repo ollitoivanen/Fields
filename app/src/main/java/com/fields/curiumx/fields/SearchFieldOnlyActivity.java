@@ -3,6 +3,7 @@ package com.fields.curiumx.fields;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +24,7 @@ import com.google.firebase.firestore.Query;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SearchFieldOnlyActivity extends Activity implements View.OnClickListener {
+public class SearchFieldOnlyActivity extends AppCompatActivity implements View.OnClickListener {
 
     String text;
     TextView textView;

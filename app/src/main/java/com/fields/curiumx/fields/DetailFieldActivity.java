@@ -18,6 +18,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,7 +49,7 @@ import com.google.firebase.storage.StorageReference;
 
 import static java.lang.String.valueOf;
 
-public class DetailFieldActivity extends Activity {
+public class DetailFieldActivity extends AppCompatActivity {
 
 
 

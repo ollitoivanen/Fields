@@ -4,15 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/team_activity"
 
     tools:context="com.fields.curiumx.fields.TeamActivity">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Background_Fields"/>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/basicInfoContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:elevation="1dp"
+        android:elevation="4dp"
         android:paddingBottom="16dp"
         android:visibility="gone">
 
@@ -181,20 +187,94 @@
 
     </com.fields.curiumx.fields.EmptyRecyclerView>
 
-    <TextView
-        android:id="@+id/empty_text"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/empty_constraint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_events_coming"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/events_text" />
+        app:layout_constraintTop_toBottomOf="@id/events_text"
+        app:layout_constraintVertical_bias="0.3">
+
+        <TextView
+            android:id="@+id/empty_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_events_coming"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/empty_image" />
+
+        <ImageView
+            android:id="@+id/empty_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/field_outline"
+            app:layout_constraintBottom_toTopOf="@id/empty_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/activityBar"
+        android:transitionName="bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageButton
+            android:id="@+id/feed_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/cardview_light_background"
+            android:onClick="onFeedClick"
+            android:src="@drawable/home_icon" />
+
+
+
+        <ImageButton
+            android:id="@+id/profile_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/cardview_light_background"
+            android:onClick="onProfileClick"
+            android:src="@drawable/person_icon" />
+
+
+
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/chat_float"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_chat"
+        app:fabSize="normal"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@id/activityBar"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/progress_bar_team"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 

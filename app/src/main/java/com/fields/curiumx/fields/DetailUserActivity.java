@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,7 +36,7 @@ import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
-public class DetailUserActivity extends Activity {
+public class DetailUserActivity extends AppCompatActivity {
 
     FloatingActionButton chatUser;
     FirebaseFirestore db = FirebaseFirestore.getInstance();

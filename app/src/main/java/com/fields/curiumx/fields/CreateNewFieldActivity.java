@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +40,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class CreateNewFieldActivity extends Activity {
+public class CreateNewFieldActivity extends AppCompatActivity {
     private static final int CHOOSE_IMAGE = 101;
     ImageView fieldImage;
     Uri uriFieldImage;

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +34,7 @@ import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
-public class ProfileActivity extends Activity implements View.OnClickListener{
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
     ImageButton profileButton;
     TextView testCurrentField;

@@ -2,8 +2,9 @@ package com.fields.curiumx.fields;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-public class AllTrainingsActivity extends Activity {
+public class AllTrainingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

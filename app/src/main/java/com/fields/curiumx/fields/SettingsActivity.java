@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends AppCompatActivity {
 
     Button logoutButton;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
