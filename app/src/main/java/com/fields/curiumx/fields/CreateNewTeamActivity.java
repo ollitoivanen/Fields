@@ -65,6 +65,10 @@ public class CreateNewTeamActivity extends AppCompatActivity {
     TextInputLayout teamUsernameInput;
     TextInputLayout teamFullNameInput;
     private static final int CHOOSE_IMAGE = 101;
+    String teamUsernameText;
+    String teamFullNameText;
+    int teamCountryText;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,10 +140,10 @@ public class CreateNewTeamActivity extends AppCompatActivity {
     }
 
     public void saveTeam(){
-        final String teamUsernameText = teamUsername.getText().toString().toLowerCase().trim();
-        final String teamFullNameText = teamFullName.getText().toString().trim();
-        final String teamCountryText = teamCountry.getSelectedItem().toString();
-        final String username = user.getDisplayName();
+         teamUsernameText = teamUsername.getText().toString().toLowerCase().trim();
+         teamFullNameText = teamFullName.getText().toString().trim();
+         teamCountryText = teamCountry.getSelectedItemPosition();
+         username = user.getDisplayName();
 
         if (teamUsernameText.isEmpty()) {
             teamUsernameInput.setError(getResources().getString(R.string.error_team_username));
@@ -174,37 +178,10 @@ public class CreateNewTeamActivity extends AppCompatActivity {
 
                                     if (uriFieldImage != null){
                                         uploadImageToFirebaseStorage();
+                                    }else {
+                                        updateData();
                                     }
-                                    TeamMap data1 = new TeamMap(teamUsernameText, teamCountryText,
-                                           teamID , level.getSelectedItemPosition());
-                                    db.collection("Teams").document(teamID).set(data1);
 
-                                   MemberMap memberMap = new MemberMap(username, user.getUid());
-
-                                    db.collection("Teams").document(teamID).collection("TeamUsers").document(uid).set(memberMap);
-
-                                    db.collection("Users").document(uid).update("usersTeamID", teamID,
-                                            "usersTeam", teamUsernameText)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Intent intent = new Intent(CreateNewTeamActivity.this, TeamActivity.class);
-                                                        startActivity(intent);
-                                                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                                                        Toast.makeText(getApplicationContext(),
-                                                                getResources().getString(R.string.team_created_successfully), Toast.LENGTH_LONG).show();
-                                                        finish();
-
-                                                    }else {
-                                                        String error = getResources().getString(R.string.error_occurred_creating_team);
-                                                        Snackbar.make(root ,error, Snackbar.LENGTH_LONG).show();
-                                                        saveTeamButton.setEnabled(true);
-
-
-                                                    }
-                                                }
-                                            });
 
                                 } else {
                                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.you_are_in_team), Toast.LENGTH_LONG).show();
@@ -245,29 +222,26 @@ public class CreateNewTeamActivity extends AppCompatActivity {
 
     private void uploadImageToFirebaseStorage() {
 
-        StorageReference fieldImageRef =
+        final StorageReference fieldImageRef =
                 FirebaseStorage.getInstance().getReference("teampics/" + teamID + ".jpg");
-        StorageMetadata storageMetadata = new StorageMetadata.Builder()
-                .setCustomMetadata("creatorUid", uid)
-                .setCustomMetadata("fieldID", teamID)
-                .build();
+
 
         if (uriFieldImage != null) {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 1, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveTeamButton.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
-                UploadTask uploadTask = fieldImageRef.putBytes(data1, storageMetadata);
+                UploadTask uploadTask = fieldImageRef.putBytes(data1);
                 uploadTask.addOnSuccessListener(CreateNewTeamActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressBar.setVisibility(View.GONE);
                         saveTeamButton.setEnabled(true);
-                        teamImageUrl = taskSnapshot.getDownloadUrl().toString();
+                        updateData();
                     }
                 });
             } catch (IOException e) {
@@ -323,6 +297,38 @@ public class CreateNewTeamActivity extends AppCompatActivity {
         }
     }
 
+    public void updateData(){
+        TeamMap data1 = new TeamMap(teamUsernameText, teamFullNameText, teamCountryText,
+                teamID , level.getSelectedItemPosition());
+        db.collection("Teams").document(teamID).set(data1);
+
+        MemberMap memberMap = new MemberMap(username, user.getUid());
+
+        db.collection("Teams").document(teamID).collection("TeamUsers").document(uid).set(memberMap);
+
+        db.collection("Users").document(uid).update("usersTeamID", teamID,
+                "usersTeam", teamUsernameText)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Intent intent = new Intent(CreateNewTeamActivity.this, TeamActivity.class);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                            Toast.makeText(getApplicationContext(),
+                                    getResources().getString(R.string.team_created_successfully), Toast.LENGTH_LONG).show();
+                            finish();
+
+                        }else {
+                            String error = getResources().getString(R.string.error_occurred_creating_team);
+                            Snackbar.make(root ,error, Snackbar.LENGTH_LONG).show();
+                            saveTeamButton.setEnabled(true);
+
+
+                        }
+                    }
+                });
+    }
 
 
 }

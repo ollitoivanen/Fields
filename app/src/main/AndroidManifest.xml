@@ -2,18 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fields.curiumx.fields">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Optional permission for Analytics to run. -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Permissions required for GCM -->
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_fields"
@@ -44,9 +32,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".SignInActivity"
-            android:label="@string/sign_in" />
-        <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".ProfileActivity" />
+            android:label="@string/sign_in"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ForgotPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ProfileActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".TeamActivity"
             android:screenOrientation="portrait"
             >
@@ -55,14 +46,16 @@
                 android:value=".FeedActivity"
                 />
         </activity>
-        <activity android:name=".CreateNewTeamActivity">
+        <activity android:name=".CreateNewTeamActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TeamActivity" />
         </activity>
         <activity
             android:name=".SearchActivity"
-            android:label="@string/search_hint">
+            android:label="@string/search_hint"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -76,21 +69,32 @@
         </activity>
         <activity
             android:name=".DetailTeamActivity"
-            android:label="test">
+            android:label="test"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SearchActivity" />
         </activity>
-        <activity android:name=".DetailUserActivity" />
-        <activity android:name=".FriendListActivity" />
-        <activity android:name=".EditProfileActivity" />
-        <activity android:name=".CustomizeProfileActivity" />
-        <activity android:name=".ReputationActivity" />
-        <activity android:name=".FieldsPlusStartActivity" />
-        <activity android:name=".CreateNewFieldActivity" />
-        <activity android:name=".EditFieldActivity" />
-        <activity android:name=".TrainingActivity" />
-        <activity android:name=".TrainingSummaryActivity" />
+        <activity android:name=".DetailUserActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FriendListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".EditProfileActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CustomizeProfileActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ReputationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FieldsPlusStartActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CreateNewFieldActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".EditFieldActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".TrainingActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".TrainingSummaryActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".NoTeamActivity"
             android:screenOrientation="portrait"
             >
@@ -99,17 +103,45 @@
                 android:value=".FeedActivity"
                 />
         </activity>
-        <activity android:name=".NewEventActivity" />
-        <activity android:name=".SearchFieldOnlyActivity" />
-        <activity android:name=".DetailEventActivity" />
-        <activity android:name=".PendingPlayerActivity" />
-        <activity android:name=".UserChatActivity" />
-        <activity android:name=".AllTrainingsActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".PlayerCountActivity" />
-        <activity android:name=".TeamChatActivity" />
-        <activity android:name=".EditTeamActivity" />
-        <activity android:name=".WelcomeActivity"></activity>
+        <activity android:name=".NewEventActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TeamActivity"
+                />
+        </activity>
+        <activity android:name=".SearchFieldOnlyActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".DetailEventActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TeamActivity"
+                />
+        </activity>
+        <activity android:name=".PendingPlayerActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TeamActivity"
+                />
+        </activity>
+        <activity android:name=".UserChatActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AllTrainingsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SettingsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PlayerCountActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".TeamChatActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".EditTeamActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".WelcomeActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

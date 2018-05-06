@@ -122,8 +122,8 @@ public class DetailFieldActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_detail);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         imTrainingHereButton = findViewById(R.id.imTrainingHereButton);
         imTrainingHereNoMore = findViewById(R.id.imTrainingHereNoMoreButton);
         amountOfPeople = findViewById(R.id.amountOfPeople);

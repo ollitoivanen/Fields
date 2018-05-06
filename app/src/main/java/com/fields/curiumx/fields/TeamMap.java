@@ -3,8 +3,9 @@ package com.fields.curiumx.fields;
 
 
 public class TeamMap {
-    private String teamNameText;
-    private String teamCountryText;
+    private String teamUsernameText;
+    private String teamFullNameText;
+    private int teamCountryText;
     private String teamID;
     private int level;
 
@@ -12,23 +13,21 @@ public class TeamMap {
 
     }
 
-    public TeamMap(String teamNameText, String teamCountryText, String teamID, int level){
-        this.teamNameText = teamNameText;
+    public TeamMap(String teamUsernameText, String teamFullNameText, int teamCountryText, String teamID, int level){
+        this.teamUsernameText = teamUsernameText;
         this.teamCountryText = teamCountryText;
         this.teamID = teamID;
-
+        this.teamFullNameText = teamFullNameText;
         this.level = level;
     }
 
-    public String getTeamNameText(){
-        return teamNameText;
+    public String getTeamUsernameText() {
+        return teamUsernameText;
     }
 
-    public String getTeamCountryText(){
+    public int getTeamCountryText(){
         return teamCountryText;
     }
-
-
 
     public int getLevel() {
         return level;
@@ -38,4 +37,7 @@ public class TeamMap {
         return teamID;
     }
 
+    public String getTeamFullNameText() {
+        return teamFullNameText;
+    }
 }

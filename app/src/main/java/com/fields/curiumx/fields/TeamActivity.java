@@ -1,12 +1,8 @@
 package com.fields.curiumx.fields;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,26 +14,21 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
-import android.transition.Fade;
-import android.transition.Transition;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -52,23 +43,20 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.firebase.ui.auth.ui.phone.SubmitConfirmationCodeFragment.TAG;
 
 public class TeamActivity extends AppCompatActivity implements View.OnClickListener{
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
     String teamName;
-    String teamCountry;
+    int teamCountry;
+    String teamFullName;
     TextView teamLevel;
     TextView teamTextName;
     TextView teamTextCountry;
@@ -90,9 +78,12 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
     int level;
     String teamLevelString;
     String[] teamLevelArray;
+    String[] teamCountryArray;
     String eventTypeString;
     String[] eventArray;
+    String teamCountryString;
     FloatingActionButton chatFloat;
+    StorageReference teamImageRef;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -129,6 +120,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
 
+        teamCountryArray = getResources().getStringArray(R.array.country_list);
         chatFloat = findViewById(R.id.chat_float);
         final DocumentReference docRef = db.collection("Users").document(uid);
         playerCount = findViewById(R.id.teamPlayerCount);
@@ -231,33 +223,50 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                         adapter.startListening();
 
                         DocumentSnapshot documentSnapshot1 = task.getResult();
-                        teamName = documentSnapshot1.get("teamNameText").toString();
-                        teamCountry = documentSnapshot1.get("teamCountryText").toString();
+                        teamName = documentSnapshot1.get("teamUsernameText").toString();
+                        teamCountry = documentSnapshot1.getLong("teamCountryText").intValue();
+                        teamFullName = documentSnapshot1.get("teamFullNameText").toString();
                         level = documentSnapshot1.getLong("level").intValue();
                         teamLevelArray = getResources().getStringArray(R.array.level_array);
                         teamLevelString = teamLevelArray[level];
-                        teamTextName.setText(teamName);
-                        teamTextCountry.setText(teamCountry);
+                        teamCountryString = teamCountryArray[teamCountry];
+
+                        setTitle(teamName);
+                        teamTextName.setText(teamFullName);
+                        teamTextCountry.setText(teamCountryString);
                         teamLevel.setText(teamLevelString);
-                        final StorageReference storageRef = storage.getReference().child("teampics/" + teamID1 + ".jpg");
-                        storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        teamImageRef = FirebaseStorage.getInstance()
+                                        .getReference().child("teampics/"+teamID1+".jpg");
+
+                        teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                             @Override
                             public void onComplete(@NonNull Task<Uri> task) {
-                                basicInfoCont.setVisibility(View.VISIBLE);
-                                addEventImage.setVisibility(View.VISIBLE);
-                                teamEventsText.setVisibility(View.VISIBLE);
-                                eventRecycler.setEmptyView(emptyConstraint);
-                                eventRecycler.setVisibility(View.VISIBLE);
-                                chatFloat.setVisibility(View.VISIBLE);
+
 
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
-                                    Glide.with(getApplicationContext())
-                                            .load(storageRef)
-                                            .into(teamImage);
+                                    GlideApp.with(TeamActivity.this)
+                                            .load(teamImageRef)
+                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                            .skipMemoryCache(true)
+                                            .into(teamImage).waitForLayout();
+                                    basicInfoCont.setVisibility(View.VISIBLE);
+                                    addEventImage.setVisibility(View.VISIBLE);
+                                    teamEventsText.setVisibility(View.VISIBLE);
+                                    eventRecycler.setEmptyView(emptyConstraint);
+                                    eventRecycler.setVisibility(View.VISIBLE);
+                                    chatFloat.setVisibility(View.VISIBLE);
+
                                 } else {
                                     teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
-                                }
+                                    basicInfoCont.setVisibility(View.VISIBLE);
+                                    addEventImage.setVisibility(View.VISIBLE);
+                                    teamEventsText.setVisibility(View.VISIBLE);
+                                    eventRecycler.setEmptyView(emptyConstraint);
+                                    eventRecycler.setVisibility(View.VISIBLE);
+                                    chatFloat.setVisibility(View.VISIBLE);
+
+                                    }
 
                             }
                         });
@@ -310,6 +319,27 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
         super.onRestart();
         adapter.startListening();
         eventRecycler.setAdapter(adapter);
+        teamImageRef =
+                FirebaseStorage.getInstance()
+                        .getReference().child("teampics/" + teamID1 + ".jpg");
+        teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+
+
+                progressBar.setVisibility(View.GONE);
+                if (task.isSuccessful()) {
+                    GlideApp.with(TeamActivity.this)
+                            .load(teamImageRef)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(teamImage);
+                } else {
+                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+                }
+
+            }
+        });
 
     }
 
@@ -387,6 +417,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                 intent1.putExtra("teamID", teamID1);
                 intent1.putExtra("teamName", teamName);
                 intent1.putExtra("teamCountry", teamCountry);
+                intent1.putExtra("teamFullName", teamFullName);
                 intent1.putExtra("level", level);
                 startActivity(intent1);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);

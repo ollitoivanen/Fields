@@ -1,14 +1,14 @@
 package com.fields.curiumx.fields;
 
-import android.app.Activity;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,10 +23,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -39,13 +35,11 @@ public class PendingPlayerActivity extends AppCompatActivity {
     String teamID;
     String teamName;
 
-
     public void init(){
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         pendingRecycler.setLayoutManager(linearLayoutManager);
         db = FirebaseFirestore.getInstance();
     }
-
 
     public class pendingHolder extends EmptyRecyclerView.ViewHolder {
 
@@ -66,21 +60,20 @@ public class PendingPlayerActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_player);
         pendingRecycler = findViewById(R.id.pending_recycler);
-
-
-init();
-
-
+        setTitle(getResources().getString(R.string.pending_players));
+        pendingRecycler.setEmptyView(findViewById(R.id.empty));
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        init();
         Bundle info = getIntent().getExtras();
         teamID = info.getString("teamID");
         teamName = info.getString("teamName");
-
+        pendingRecycler.setEmptyView(findViewById(R.id.empty));
 
         Query query = db.collection("Teams").document(teamID).collection("Pending Members");
 
@@ -165,4 +158,23 @@ init();
         adapter.startListening();
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
 }

@@ -67,8 +67,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ButterKnife.bind(this);
         init();
 
@@ -127,14 +127,14 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         adapter = new FirestoreRecyclerAdapter<TeamMap, teamHolder>(response) {
             @Override
             public void onBindViewHolder(teamHolder holder, int position, final TeamMap model) {
-                holder.textName.setText(model.getTeamNameText());
+                holder.textName.setText(model.getTeamUsernameText());
                 holder.textCountry.setText(model.getTeamCountryText());
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getApplicationContext(), DetailTeamActivity.class);
-                        intent.putExtra("name", model.getTeamNameText());
+                        intent.putExtra("name", model.getTeamUsernameText());
                         intent.putExtra("country", model.getTeamCountryText());
                         intent.putExtra("teamID", model.getTeamID());
 

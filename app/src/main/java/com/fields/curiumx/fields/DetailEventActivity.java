@@ -1,18 +1,19 @@
 package com.fields.curiumx.fields;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,11 +28,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,7 +44,6 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
     TextView detailPlace;
     TextView detailTime;
     TextView detailDate;
-    ImageView crossRed;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
@@ -61,11 +58,50 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
     String event_member_status_out = "2";
     String event_member_status_open = "0";
 
-
-
     Button in;
     Button out;
     Button open;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+       inflater.inflate(R.menu.delete_event, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.delete_event:
+                progressBar.setVisibility(View.VISIBLE);
+                db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot ds = task.getResult();
+                        String teamID = ds.get("usersTeamID").toString();
+
+                        db.collection("Teams").document(teamID).collection("Team's Events")
+                                .document(eventID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getApplicationContext(), "Event deleted", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(DetailEventActivity.this, TeamActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                            }
+                                });
+                    }
+                });
+                break;
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onClick(View v) {
@@ -120,14 +156,10 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-
     public class partHolder extends EmptyRecyclerView.ViewHolder {
 
         @BindView(R.id.nameTaking)
         TextView nameTaking;
-
-
-
 
         public partHolder(View itemView) {
             super(itemView);
@@ -135,13 +167,11 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-
     public void init(){
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         takingPartRecycler.setLayoutManager(linearLayoutManager);
         db = FirebaseFirestore.getInstance();
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +184,9 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
         out.setOnClickListener(this);
         open = findViewById(R.id.half_button);
         open.setOnClickListener(this);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(getResources().getString(R.string.event_details));
 
         Bundle info = getIntent().getExtras();
         String type  = info.getString("type");
@@ -270,35 +303,6 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
         detailPlace = findViewById(R.id.eventPlaceDetail);
         detailTime = findViewById(R.id.eventTimeDetail);
         progressBar = findViewById(R.id.prgress_delete);
-        crossRed =findViewById(R.id.crossRed);
-        crossRed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                crossRed.setEnabled(false);
-                progressBar.setVisibility(View.VISIBLE);
-                db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                       DocumentSnapshot ds = task.getResult();
-                       String teamID = ds.get("usersTeamID").toString();
-
-                       db.collection("Teams").document(teamID).collection("Team's Events")
-                               .document(eventID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                           @Override
-                           public void onComplete(@NonNull Task<Void> task) {
-                               crossRed.setEnabled(true);
-                               progressBar.setVisibility(View.GONE);
-                               Toast.makeText(getApplicationContext(), "Event deleted", Toast.LENGTH_SHORT).show();
-                               Intent intent = new Intent(DetailEventActivity.this, TeamActivity.class);
-                               intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                               startActivity(intent);
-
-                           }
-                       });
-                    }
-                });
-            }
-        });
 
 
 
@@ -313,8 +317,37 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
         }else {
             detailPlace.setText(place);
         }
-        detailTime.setText(timeStart + "- " + timeEnd);
+        detailTime.setText(getResources().getString(R.string.training_time, timeStart, timeEnd));
 
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        adapter.startListening();
+        takingPartRecycler.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStop() {
+        adapter.stopListening();
+        takingPartRecycler.setAdapter(null);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        adapter.stopListening();
+        takingPartRecycler.setAdapter(null);
+        super.onDestroy();
+    }
+
+
 }

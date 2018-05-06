@@ -78,18 +78,6 @@
         android:background="@color/colorPrimary"
         app:layout_constraintTop_toBottomOf="@id/eventTimeDetail" />
 
-    <ImageView
-        android:id="@+id/crossRed"
-        android:layout_width="26dp"
-        android:layout_height="25dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_cross_red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
-        />
-
     <TextView
         android:id="@+id/take_part"
         android:layout_width="wrap_content"

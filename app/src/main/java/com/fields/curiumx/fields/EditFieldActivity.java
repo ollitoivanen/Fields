@@ -304,10 +304,11 @@ public class EditFieldActivity extends AppCompatActivity {
                 .build();
 
         if (uriFieldImage != null) {
+
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 1, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveButton1.setEnabled(false);

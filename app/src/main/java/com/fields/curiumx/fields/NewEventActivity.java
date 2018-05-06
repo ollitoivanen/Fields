@@ -7,8 +7,10 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -49,7 +51,6 @@ public class NewEventActivity extends AppCompatActivity {
     Button chooseFieldButton;
     Button publishButton;
     TextView chosenFieldText;
-
     Boolean startTime = true;
     Boolean endTime = true;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -57,11 +58,8 @@ public class NewEventActivity extends AppCompatActivity {
     String uid = user.getUid();
     final Calendar c = Calendar.getInstance();
     final Calendar cEnd = Calendar.getInstance();
-
-
     String chosenFieldNameIntent;
     ProgressBar progressBar12;
-
     String eventTimeStart;
     String eventTimeEnd;
 
@@ -105,13 +103,16 @@ public class NewEventActivity extends AppCompatActivity {
         chooseFieldButton = findViewById(R.id.choose_field_button);
         error = findViewById(R.id.error_message);
         error2 = findViewById(R.id.error_message2);
-
+        setTitle(getResources().getString(R.string.create_new_event));
         progressBar12 = findViewById(R.id.progress_bar1);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         chooseFieldButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(NewEventActivity.this, SearchFieldOnlyActivity.class), 1);
-            }
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                }
         });
 
 
@@ -153,11 +154,10 @@ public class NewEventActivity extends AppCompatActivity {
 
                                     progressBar12.setVisibility(View.GONE);
                                     publishButton.setEnabled(true);
-                                    Toast.makeText(getApplicationContext(), "Event created successfully", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(NewEventActivity.this, TeamActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
-
+                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                                     finish();
                                 }
                             });
@@ -333,5 +333,22 @@ public class NewEventActivity extends AppCompatActivity {
                 trainingEndTime.setText(aTime);
                 }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
