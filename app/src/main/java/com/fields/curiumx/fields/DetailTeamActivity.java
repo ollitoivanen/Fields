@@ -136,7 +136,8 @@ public class DetailTeamActivity extends AppCompatActivity {
 
 
                                    String username = documentSnapshot.get("username").toString();
-                                   PendingMap pendingMap = new PendingMap(user.getUid(), username);
+                                   Boolean fieldsPlus = documentSnapshot.getBoolean("fieldsPlus");
+                                   PendingMap pendingMap = new PendingMap(user.getUid(), username, fieldsPlus);
                                    db.collection("Teams").document(teamID1).collection("Pending Members").document(user.getUid()).set(pendingMap);
                                    db.collection("Users").document(uid).update("usersTeam", "Pending");
                                    joinTeam.setVisibility(View.GONE);

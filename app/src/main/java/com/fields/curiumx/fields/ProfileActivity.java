@@ -278,8 +278,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.friends:
                 startActivity(new Intent(ProfileActivity.this, FriendListActivity.class));
                 break;
-            case R.id.trainings:
-                startActivity(new Intent(ProfileActivity.this, AllTrainingsActivity.class));
+        //    case R.id.trainings:
+        //        startActivity(new Intent(ProfileActivity.this, AllTrainingsActivity.class));
         }
     }
 }

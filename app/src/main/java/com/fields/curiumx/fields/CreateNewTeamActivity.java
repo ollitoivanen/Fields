@@ -69,6 +69,7 @@ public class CreateNewTeamActivity extends AppCompatActivity {
     String teamFullNameText;
     int teamCountryText;
     String username;
+    Boolean memberFieldsPlus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +176,11 @@ public class CreateNewTeamActivity extends AppCompatActivity {
                                 if (documentSnapshot.get("usersTeam") == null) {
                                     progressBar.setVisibility(View.VISIBLE);
                                     teamID = UUID.randomUUID().toString().substring(24);
+                                    if (documentSnapshot.getBoolean("fieldsPlus")){
+                                        memberFieldsPlus = true;
+                                    }else {
+                                        memberFieldsPlus = false;
+                                    }
 
                                     if (uriFieldImage != null){
                                         uploadImageToFirebaseStorage();
@@ -302,7 +308,7 @@ public class CreateNewTeamActivity extends AppCompatActivity {
                 teamID , level.getSelectedItemPosition());
         db.collection("Teams").document(teamID).set(data1);
 
-        MemberMap memberMap = new MemberMap(username, user.getUid());
+        MemberMap memberMap = new MemberMap(username, user.getUid(), memberFieldsPlus);
 
         db.collection("Teams").document(teamID).collection("TeamUsers").document(uid).set(memberMap);
 

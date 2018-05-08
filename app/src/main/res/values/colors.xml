@@ -5,10 +5,10 @@
     <color name="colorAccent">#ff4081</color>
 
     <color name="Background_Fields">#f6f9f3</color>
-    <color name="FieldsBottomBarColor">#fdfffa</color>
+    <color name="white">#ffffff</color>
     <color name="FieldsMenuItemNotSelected">#525051</color>
     <color name="DividerColor">#FFE8E8E8</color>
-    <color name="premium_yellow">#f6ff00</color>
+    <color name="premium_blue">#3facff</color>
     <color name="blacknot">#2d2d2d</color>
     <color name="red_out">#ff3838</color>
 

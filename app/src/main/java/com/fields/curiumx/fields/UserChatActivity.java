@@ -43,7 +43,7 @@ public class UserChatActivity extends AppCompatActivity {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FirestoreRecyclerAdapter adapter;
+    FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     @BindView(R.id.chat_recycler)
     EmptyRecyclerView chatRecycler;
@@ -146,7 +146,7 @@ public class UserChatActivity extends AppCompatActivity {
 
     public void sendMessage() {
         String messageText = messageTextEdit.getText().toString().trim();
-        ChatMap chatMap = new ChatMap(messageText, uid);
+        ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), user.getUid());
         DocumentReference dr;
         if (thisUser){
              dr = db.collection("Users").document(uid).collection(UserMessages)

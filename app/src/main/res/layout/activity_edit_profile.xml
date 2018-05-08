@@ -116,7 +116,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="@drawable/rounded_view"
-        android:backgroundTint="@color/premium_yellow"
+        android:backgroundTint="@color/premium_blue"
         android:elevation="3dp"
         android:gravity="center"
         android:paddingBottom="10dp"

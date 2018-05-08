@@ -40,6 +40,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -84,6 +85,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
     String teamCountryString;
     FloatingActionButton chatFloat;
     StorageReference teamImageRef;
+    Boolean teamFieldsPlus;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,7 +142,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
         chatFloat.setOnClickListener(this);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Team");
+        setTitle(getResources().getString(R.string.team));
         init();
         ButterKnife.bind(this);
 
@@ -227,62 +229,68 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                         teamCountry = documentSnapshot1.getLong("teamCountryText").intValue();
                         teamFullName = documentSnapshot1.get("teamFullNameText").toString();
                         level = documentSnapshot1.getLong("level").intValue();
-                        teamLevelArray = getResources().getStringArray(R.array.level_array);
-                        teamLevelString = teamLevelArray[level];
-                        teamCountryString = teamCountryArray[teamCountry];
-
-                        setTitle(teamName);
-                        teamTextName.setText(teamFullName);
-                        teamTextCountry.setText(teamCountryString);
-                        teamLevel.setText(teamLevelString);
-                        teamImageRef = FirebaseStorage.getInstance()
+                        //
+                        db.collection("Teams").document(teamID1).collection("TeamUsers")
+                                .whereEqualTo("memberFieldsPlus", true).get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.getResult().size()==0){
+                                    teamFieldsPlus = false;
+                                }else {
+                                    teamFieldsPlus = true;
+                                }
+                                //
+                                teamLevelArray = getResources().getStringArray(R.array.level_array);
+                                teamLevelString = teamLevelArray[level];
+                                teamCountryString = teamCountryArray[teamCountry];
+                                setTitle(teamName);
+                                teamTextName.setText(teamFullName);
+                                teamTextCountry.setText(teamCountryString);
+                                teamLevel.setText(teamLevelString);
+                                teamImageRef = FirebaseStorage.getInstance()
                                         .getReference().child("teampics/"+teamID1+".jpg");
-
-                        teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-
-
-                                progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
-                                    GlideApp.with(TeamActivity.this)
-                                            .load(teamImageRef)
-                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                            .skipMemoryCache(true)
-                                            .into(teamImage).waitForLayout();
-                                    basicInfoCont.setVisibility(View.VISIBLE);
-                                    addEventImage.setVisibility(View.VISIBLE);
-                                    teamEventsText.setVisibility(View.VISIBLE);
-                                    eventRecycler.setEmptyView(emptyConstraint);
-                                    eventRecycler.setVisibility(View.VISIBLE);
-                                    chatFloat.setVisibility(View.VISIBLE);
-
-                                } else {
-                                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
-                                    basicInfoCont.setVisibility(View.VISIBLE);
-                                    addEventImage.setVisibility(View.VISIBLE);
-                                    teamEventsText.setVisibility(View.VISIBLE);
-                                    eventRecycler.setEmptyView(emptyConstraint);
-                                    eventRecycler.setVisibility(View.VISIBLE);
-                                    chatFloat.setVisibility(View.VISIBLE);
-
+                                teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        progressBar.setVisibility(View.GONE);
+                                        if (task.isSuccessful()) {
+                                            GlideApp.with(TeamActivity.this)
+                                                    .load(teamImageRef)
+                                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                                    .skipMemoryCache(true)
+                                                    .into(teamImage).waitForLayout();
+                                            basicInfoCont.setVisibility(View.VISIBLE);
+                                            addEventImage.setVisibility(View.VISIBLE);
+                                            teamEventsText.setVisibility(View.VISIBLE);
+                                            eventRecycler.setEmptyView(emptyConstraint);
+                                            eventRecycler.setVisibility(View.VISIBLE);
+                                            chatFloat.setVisibility(View.VISIBLE);
+                                        } else {
+                                            teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+                                            basicInfoCont.setVisibility(View.VISIBLE);
+                                            addEventImage.setVisibility(View.VISIBLE);
+                                            teamEventsText.setVisibility(View.VISIBLE);
+                                            eventRecycler.setEmptyView(emptyConstraint);
+                                            eventRecycler.setVisibility(View.VISIBLE);
+                                            chatFloat.setVisibility(View.VISIBLE);
+                                        }
                                     }
+                                });
 
+                                country_map.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent();
+                                        intent.setAction(Intent.ACTION_VIEW);
+                                        intent.setPackage("com.google.android.apps.maps");
+                                        intent.setData(Uri.parse("https://www.google.com/maps/search/?api=1&query=" + teamCountry));
+                                        startActivity(intent);
+                                        adapter.stopListening();
+                                    }
+                                });
                             }
-                        });
-
-
-                        country_map.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent();
-                                intent.setAction(Intent.ACTION_VIEW);
-                                intent.setPackage("com.google.android.apps.maps");
-                                intent.setData(Uri.parse("https://www.google.com/maps/search/?api=1&query=" + teamCountry));
-                                startActivity(intent);
-                                adapter.stopListening();
-                            }
-                        });
+                                });
 
 
                     }
@@ -442,7 +450,10 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.chat_float:
-                startActivity(new Intent(TeamActivity.this, TeamChatActivity.class));
+                Intent intent = new Intent(TeamActivity.this, TeamChatActivity.class);
+                intent.putExtra("teamFieldsPlus", teamFieldsPlus);
+                intent.putExtra("teamID", teamID1);
+                startActivity(intent);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;
 

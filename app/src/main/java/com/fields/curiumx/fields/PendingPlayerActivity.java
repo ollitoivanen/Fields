@@ -93,7 +93,7 @@ public class PendingPlayerActivity extends AppCompatActivity {
                                     .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    MemberMap memberMap = new MemberMap(model.getUserNamePending(), model.getUserID());
+                                    MemberMap memberMap = new MemberMap(model.getUserNamePending(), model.getUserID(), model.getPendingFieldsPlus());
 
 
                                     Bundle info = getIntent().getExtras();
