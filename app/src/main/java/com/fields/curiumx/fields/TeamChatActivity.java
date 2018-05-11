@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,6 +37,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -45,12 +50,13 @@ public class TeamChatActivity extends AppCompatActivity {
     FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    @BindView(R.id.team_chat_recycler)
     EmptyRecyclerView teamChatRecycler;
     ConstraintLayout messageConstraint;
 
     EditText messageTextEdit;
     Button sendMessageButton;
+    String time;
+
 
 
     Query query;
@@ -66,7 +72,6 @@ public class TeamChatActivity extends AppCompatActivity {
 
         public chatHolder(View view) {
             super(view);
-            ButterKnife.bind(this, itemView);
             messageView = view.findViewById(R.id.messageView_team);
             messageSender = view.findViewById(R.id.message_sender_team);
             time = view.findViewById(R.id.time_message);
@@ -122,9 +127,20 @@ public class TeamChatActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder (chatHolder holder, int position, final ChatMap model){
+                if (!DateFormat.is24HourFormat(getApplicationContext())){
+                    SimpleDateFormat dateFormatPm = new SimpleDateFormat("hh:mm a");
+                    time = dateFormatPm.format(model.getTime());
+
+                }else {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+                    time = simpleDateFormat.format(model.getTime());
+                }
+
 
                 holder.messageView.setText(model.getText());
                 holder.messageSender.setText(model.getSender());
+                holder.time.setText(time);
 
             }
 
@@ -232,7 +248,9 @@ teamChatRecycler.smoothScrollToPosition(50);
     public void sendMessage(){
         String messageText = messageTextEdit.getText().toString().trim();
         if (!messageText.equals("")) {
-            ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), uid);
+            Calendar c = Calendar.getInstance();
+            c.getTime();
+            ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), uid, c.getTime());
             db.collection("Teams").document(teamID).collection("teamMessages")
                     .document(Long.toString(System.currentTimeMillis())).set(chatMap);
             messageTextEdit.setText("");

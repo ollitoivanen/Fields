@@ -47,6 +47,7 @@ import com.google.firebase.storage.StorageReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -167,7 +168,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onBindViewHolder(@NonNull eventHolder holder, int position, @NonNull final EventMap model) {
 
-                                if (model.getEventStartDateInMillis() - System.currentTimeMillis() < 0) {
+                              if (model.getEventStartDateInMillis() - System.currentTimeMillis() < 0) {
 
                                     db.collection("Teams").document(teamID1)
                                             .collection("Team's Events")
@@ -180,7 +181,8 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
 
                                     Date dateSave = model.getEventStartDate();
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
-                                    String date = dateFormat.format(dateSave);
+                                    dateFormat.setTimeZone(TimeZone.getTimeZone("UTF"));
+                                    final String date = dateFormat.format(dateSave);
                                     holder.textDate.setText(date);
 
                                     if (!model.getEventField().equals("")) {
@@ -193,7 +195,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                             Intent intent = new Intent(TeamActivity.this, DetailEventActivity.class);
                                             intent.putExtra("type", eventTypeString);
                                             intent.putExtra("place", model.getEventField());
-                                            intent.putExtra("date", model.getEventStartDate());
+                                            intent.putExtra("date", date);
                                             intent.putExtra("timeEnd", model.getEventTimeEnd());
                                             intent.putExtra("timeStart", model.getEventTimeStart());
                                             intent.putExtra("eventID", model.getEventID());
@@ -439,7 +441,11 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.teamPlayerCount:
-                startActivity(new Intent(TeamActivity.this, PlayerCountActivity.class));
+                int i = 1;
+                Intent intent = new Intent(TeamActivity.this, TeamPlayersActivity.class);
+                intent.putExtra("teamID", teamID1);
+                intent.putExtra("intentForm", i);
+                startActivity(intent);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
 
@@ -450,10 +456,10 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.chat_float:
-                Intent intent = new Intent(TeamActivity.this, TeamChatActivity.class);
-                intent.putExtra("teamFieldsPlus", teamFieldsPlus);
-                intent.putExtra("teamID", teamID1);
-                startActivity(intent);
+                Intent intent1 = new Intent(TeamActivity.this, TeamChatActivity.class);
+                intent1.putExtra("teamFieldsPlus", teamFieldsPlus);
+                intent1.putExtra("teamID", teamID1);
+                startActivity(intent1);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;
 

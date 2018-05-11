@@ -93,8 +93,7 @@
     <string name="currently_training_at">Currently training at..</string>
     <string name="training_time_text">Training time</string>
     <string name="done">Done</string>
-    <string name="im_training_here">I\'m training here</string>
-    <string name="im_not_training_here">End training</string>
+    <string name="start_training_here">Start training here</string>
     <string name="you_earned">You earned</string>
     <string name="level">Team\'s playing level</string>
     <string name="team_country">Team country</string>
@@ -180,7 +179,18 @@
     <string name="plus">Plus</string>
     <string name="plus_comma">Plus!</string>
     <string name="chat">Chat</string>
-
+    <string name="request_sent">Request sent</string>
+    <string name="goals">Goals: %1$s</string>
+    <string name="address">Address: %1$s</string>
+    <string name="access_type">Access Type: %1$s</string>
+    <string name="create_new_field">Create New Field</string>
+    <string name="please_enter_fields_name">Please enter Field name</string>
+    <string name="please_enter_field_city">Please enter the city this Field is located at</string>
+    <string name="please_enter_field_address">Please enter the address of this Field</string>
+    <string name="error_occurred_creating_field">Error occurred creating Field. Please try again</string>
+    <string name="field_created_successfully">Field created successfully!</string>
+    <string name="field_type_info">Field Type: %1$s</string>
+    <string name="info">Info</string>
 
 
     <string-array name="role_spinner">

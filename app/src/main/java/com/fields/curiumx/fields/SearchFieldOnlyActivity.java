@@ -120,7 +120,6 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
                         intent.putExtra("fieldType", model.getFieldType());
                         intent.putExtra("fieldAccessType", model.getAccessType());
                         intent.putExtra("goalCount", model.getGoalCount());
-                        intent.putExtra("creator", model.getCreator());
                         intent.putExtra("fieldID", model.getFieldID());
                         setResult(Activity.RESULT_OK, intent);
                         finish();

@@ -33,20 +33,22 @@
         <activity
             android:name=".SignInActivity"
             android:label="@string/sign_in"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ForgotPasswordActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ProfileActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".TeamActivity"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TeamActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".FeedActivity"
-                />
+                android:value=".FeedActivity" />
         </activity>
-        <activity android:name=".CreateNewTeamActivity"
+        <activity
+            android:name=".CreateNewTeamActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -75,77 +77,91 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SearchActivity" />
         </activity>
-        <activity android:name=".DetailUserActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".FriendListActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".EditProfileActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".CustomizeProfileActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ReputationActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".FieldsPlusStartActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".CreateNewFieldActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".EditFieldActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".TrainingActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".TrainingSummaryActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".NoTeamActivity"
-            android:screenOrientation="portrait"
-            >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".FeedActivity"
-                />
+        <activity
+            android:name=".DetailUserActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FriendListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CustomizeProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ReputationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FieldsPlusStartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CreateNewFieldActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EditFieldActivity"
+            android:screenOrientation="portrait">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".DetailFieldActivity" />
         </activity>
-        <activity android:name=".NewEventActivity"
+        <activity
+            android:name=".TrainingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TrainingSummaryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".NoTeamActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TeamActivity"
-                />
+                android:value=".FeedActivity" />
         </activity>
-        <activity android:name=".SearchFieldOnlyActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".DetailEventActivity"
+        <activity
+            android:name=".NewEventActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TeamActivity"
-                />
+                android:value=".TeamActivity" />
         </activity>
-        <activity android:name=".PendingPlayerActivity"
+        <activity
+            android:name=".SearchFieldOnlyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DetailEventActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TeamActivity"
-                />
+                android:value=".TeamActivity" />
         </activity>
-        <activity android:name=".UserChatActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".SettingsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".PlayerCountActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".TeamChatActivity"
-            android:screenOrientation="portrait"
-            >
+        <activity
+            android:name=".PendingPlayerActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TeamActivity"
-                />
+                android:value=".TeamActivity" />
         </activity>
-        <activity android:name=".EditTeamActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".WelcomeActivity"
+        <activity
+            android:name=".UserChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TeamChatActivity"
             android:screenOrientation="portrait">
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TeamActivity" />
         </activity>
+        <activity
+            android:name=".EditTeamActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".WelcomeActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".TeamPlayersActivity"></activity>
     </application>
 
 </manifest>

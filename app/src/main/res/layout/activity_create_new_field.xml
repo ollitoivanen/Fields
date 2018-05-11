@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreateNewFieldActivity"
+    android:id="@+id/scroll"
     >
+
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -33,101 +35,82 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fieldPhotoEdit" />
 
-        <TextView
-            android:id="@+id/field_name_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/field_name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/press_text" />
-
+<android.support.design.widget.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/field_name_input"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/press_text"
+    android:layout_marginEnd="32dp"
+    android:layout_marginStart="32dp"
+    android:layout_marginTop="8dp">
         <EditText
-            android:id="@+id/display_name_change1"
+            android:id="@+id/field_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/field_name_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:inputType="text"
+            android:hint="@string/field_name"
             android:maxLength="28"
-            />
+            android:lines="1"
+             />
+</android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:id="@+id/field_area_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/field_area"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/display_name_change1" />
 
+<android.support.design.widget.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/field_area_input"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/field_name_input"
+    android:layout_marginEnd="32dp"
+    android:layout_marginStart="32dp"
+    android:layout_marginTop="8dp">
         <EditText
             android:id="@+id/field_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/field_area_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:inputType="text"
+            android:hint="@string/field_area"
             android:maxLength="28"
+            android:lines="1"
             />
+</android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:id="@+id/field_address_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/field_address"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/field_area" />
 
+<android.support.design.widget.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/field_address_input"
+    app:layout_constraintEnd_toStartOf="@id/map"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/field_area_input"
+    android:layout_marginEnd="64dp"
+    android:layout_marginStart="32dp"
+    android:layout_marginTop="8dp">
         <EditText
             android:id="@+id/field_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="64dp"
-            android:layout_marginStart="32dp"
+            android:inputType="text"
+            android:hint="@string/field_address"
             android:maxLength="28"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/field_address_text" />
+            android:lines="1"
+            />
+</android.support.design.widget.TextInputLayout>
 
         <ImageView
             android:id="@+id/map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
             android:src="@drawable/ic_map"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/field_address"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.52" />
-
-        <TextView
-            android:id="@+id/maptext"
-            android:layout_width="59dp"
-            android:layout_height="46dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:gravity="center_horizontal"
-            android:text="@string/tap_to_find"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.51"
-            app:layout_constraintStart_toEndOf="@+id/field_address"
-            app:layout_constraintTop_toBottomOf="@id/map"
-            app:layout_constraintVertical_bias="0.0" />
+            android:contentDescription="@string/goto_map"
+            app:layout_constraintBottom_toTopOf="@+id/field_type"
+            app:layout_constraintStart_toEndOf="@+id/field_address_input"
+            app:layout_constraintTop_toBottomOf="@+id/field_area_input" />
 
         <TextView
             android:id="@+id/field_type_text"
@@ -137,7 +120,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/field_type"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/field_address" />
+            app:layout_constraintTop_toBottomOf="@id/field_address_input" />
 
         <Spinner
             android:id="@+id/field_type"
@@ -198,17 +181,7 @@
             android:layout_marginTop="8dp"
             />
 
-        <Button
-            android:id="@+id/save_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="save"
-            android:backgroundTint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/goal_count"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"/>
+
 
         <ProgressBar
             android:id="@+id/progress_bar_edit1"
@@ -225,9 +198,21 @@
             android:visibility="gone"/>
 
 
-
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_new_field"
+            android:backgroundTint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/goal_count"
+            android:layout_marginTop="8dp"/>
 
 
     </android.support.constraint.ConstraintLayout>
+
+
+
+
 
 </ScrollView>

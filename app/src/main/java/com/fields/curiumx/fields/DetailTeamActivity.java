@@ -1,13 +1,11 @@
 package com.fields.curiumx.fields;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.ActionBar;
-import android.app.Activity;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -17,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -31,20 +28,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,16 +51,11 @@ public class DetailTeamActivity extends AppCompatActivity {
     TextView teamTextName;
     TextView teamTextCountry;
     ImageView teamImage;
-    ImageView addEventImage;
     TextView playerCount;
     ProgressBar progressBar;
-    Boolean down1;
-    ImageView dropIm1;
-    LinearLayout drop2;
+    String eventTypeString;
+    String[] eventArray;
     LinearLayout country_map;
-    TextView homefieldDrop;
-    TextView leaderDrop;
-    TextView workStyleDrop;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     @BindView(R.id.eventRecycler)
     EmptyRecyclerView eventRecycler;
@@ -74,10 +63,12 @@ public class DetailTeamActivity extends AppCompatActivity {
     LinearLayoutManager linearLayoutManager;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String teamID1;
-    String homeField;
-    String countryBoi;
-
+    String teamFullName;
+    int teamCountry;
+    int teamLevelInt;
     TextView joinTeam;
+    String [] countryArray;
+    int i;
 
     public class eventHolder extends EmptyRecyclerView.ViewHolder {
 
@@ -99,40 +90,41 @@ public class DetailTeamActivity extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_team);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         playerCount = findViewById(R.id.teamPlayerCount);
-
-        down1 = false;
         eventRecycler = findViewById(R.id.eventRecycler);
         init();
-
         ButterKnife.bind(this);
-        dropIm1 = findViewById(R.id.dropdown1);
-        drop2 = findViewById(R.id.drop2);
-        homefieldDrop = findViewById(R.id.homeFieldText);
-        leaderDrop = findViewById(R.id.leader_text);
-        workStyleDrop = findViewById(R.id.workstyle_text);
+        playerCount = findViewById(R.id.teamPlayerCount);
+        playerCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                i = 2;
+                Intent intent = new Intent(DetailTeamActivity.this, TeamPlayersActivity.class);
+                intent.putExtra("teamID", teamID1);
+                intent.putExtra("intentForm", i);
+                startActivity(intent);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+            }
+        });
+
+
         country_map = findViewById(R.id.country_map);
-        addEventImage = findViewById(R.id.add_event_image);
         joinTeam = findViewById(R.id.join);
         db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                final DocumentSnapshot documentSnapshot = task.getResult();
-               //Means request is pending
                if (documentSnapshot.get("usersTeam") == null){
                    joinTeam.setVisibility(View.VISIBLE);
                    joinTeam.setOnClickListener(new View.OnClickListener() {
                        @Override
                        public void onClick(View v) {
-                           //Can you avoid
 
 
                                    String username = documentSnapshot.get("username").toString();
@@ -141,7 +133,7 @@ public class DetailTeamActivity extends AppCompatActivity {
                                    db.collection("Teams").document(teamID1).collection("Pending Members").document(user.getUid()).set(pendingMap);
                                    db.collection("Users").document(uid).update("usersTeam", "Pending");
                                    joinTeam.setVisibility(View.GONE);
-                                   Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_LONG).show();
+                           Snackbar.make(findViewById(R.id.detaila), getResources().getString(R.string.request_sent), Snackbar.LENGTH_LONG).show();
 
 
 
@@ -154,88 +146,27 @@ public class DetailTeamActivity extends AppCompatActivity {
         });
 
 
-
-
-        dropIm1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!down1) {
-                    down1 = true;
-                    drop2.setVisibility(View.VISIBLE);
-                    drop2.animate().translationY(drop2.getHeight()).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-
-                            homefieldDrop.setVisibility(View.VISIBLE);
-                            homefieldDrop.setAlpha(0.0f);
-                            homefieldDrop.animate().alpha(1.0f);
-
-                            leaderDrop.setVisibility(View.VISIBLE);
-                            leaderDrop.setAlpha(0.0f);
-                            leaderDrop.animate().alpha(1.0f);
-
-                            workStyleDrop.setVisibility(View.VISIBLE);
-                            workStyleDrop.setAlpha(0.0f);
-                            workStyleDrop.animate().alpha(1.0f);
-
-
-                            super.onAnimationEnd(animation);
-                        }
-                    });
-                } else {
-                    down1 = false;
-
-                    drop2.animate().translationY(0).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-
-                            homefieldDrop.setVisibility(View.GONE);
-
-
-                            leaderDrop.setVisibility(View.GONE);
-
-
-                            workStyleDrop.setVisibility(View.GONE);
-
-
-
-                            drop2.setVisibility(View.INVISIBLE);
-
-                            super.onAnimationEnd(animation);
-
-                        }
-                    });
-
-                }
-            }
-        });
-
-
-
-
-
-
-
-        final String username = user.getDisplayName();
-
         teamLevel  =findViewById(R.id.teamLevel);
         teamTextName = findViewById(R.id.teamName);
         teamTextCountry = findViewById(R.id.teamCountry);
         teamImage = findViewById(R.id.teamImage);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Team");
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         progressBar = findViewById(R.id.progress_bar);
         //progressBar.setVisibility(View.VISIBLE);
 
+        countryArray = getResources().getStringArray(R.array.country_list);
+        String [] levelArray = getResources().getStringArray(R.array.level_array);
+
         Bundle info = getIntent().getExtras();
-        teamTextName.setText(info.getString("name"));
-        countryBoi = info.getString("country");
-        teamTextCountry.setText(info.getString("country"));
-        teamLevel.setText(info.getString("level"));
-       homeField = info.getString("homefield");
-        workStyleDrop.setText(info.getString("workStyle"));
-        leaderDrop.setText(info.getString("leader"));
+        teamCountry = info.getInt("country");
+        teamTextCountry.setText(countryArray[teamCountry]);
+        teamLevelInt = info.getInt("level");
+        teamLevel.setText(levelArray[teamLevelInt]);
+        teamFullName = info.getString("fullname");
+        teamTextName.setText(teamFullName);
+
+
         teamID1 = info.getString("teamID");
 
         setTitle(info.getString("name"));
@@ -255,42 +186,23 @@ public class DetailTeamActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(DetailTeamActivity.eventHolder holder, int position, final EventMap model) {
 
-                Date currentTime = Calendar.getInstance().getTime();
 
+                eventArray = getResources().getStringArray(R.array.event_type_array);
+                eventTypeString = eventArray[model.getEventType()];
+                holder.textType.setText(eventTypeString);
+                Date dateSave = model.getEventStartDate();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
+                dateFormat.setTimeZone(TimeZone.getTimeZone("UTF"));
+                String date = dateFormat.format(dateSave);
+                holder.textDate.setText(date);
 
-
-
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM");
-                String compareDate = dateFormat.format(currentTime);
-               // if (compareDate.equals(model.getEventStartDate())){
-               //     holder.textDate.setText("Today");
-               // }else {
-               //     holder.textDate.setText(model.getEventStartDate());
-               // }
-                holder.textType.setText(model.getEventType());
-                holder.textTime.setText(model.getEventTimeStart() + "- " + model.getEventTimeEnd());
                 if (!model.getEventField().equals("")) {
-                    holder.textPlace.setText("at " + model.getEventField());
-                }
-                /*holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(DetailTeamActivity.this, DetailEventActivity.class);
-                        intent.putExtra("type", model.getEventType());
-                        intent.putExtra("place", model.getEventField());
-                        intent.putExtra("date", model.getEventStartDate());
-                        intent.putExtra("timeEnd", model.getEventTimeEnd());
-                        intent.putExtra("timeStart", model.getEventTimeStart());
-                        intent.putExtra("eventID", model.getEventID());
-                        intent.putExtra("teamID", teamID1);
-                        startActivity(intent);
+                    holder.textPlace.setText(getResources().getString(R.string.event_field, model.getEventField()));
+                } else holder.textPlace.setVisibility(View.GONE);
+                holder.textTime.setText(getResources().getString(R.string.training_time, model.getEventTimeStart(), model.getEventTimeEnd()));
 
-                        //I Do not associate with nigus
-
-                    }
-                });*/
             }
+
 
             @Override
             public DetailTeamActivity.eventHolder onCreateViewHolder(ViewGroup group, int i) {
@@ -310,32 +222,13 @@ public class DetailTeamActivity extends AppCompatActivity {
         adapter.startListening();
 
 
-        db.collection("Teams").document(teamID1).collection("TeamUsers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                int amountOfPlayers = task.getResult().size();
-                if (task.getResult().size()==1){
-                    playerCount.setText(Integer.toString(amountOfPlayers) + " " + "Player");
-                }else {
-                    playerCount.setText(Integer.toString(amountOfPlayers) + " " + "Players");
-                }
-            }
-        });
-
-
-        if (homeField.isEmpty()){
-            homefieldDrop.setText("Home field: Not set");
-        }else {
-            homefieldDrop.setText("Home field:" + " " + homeField);
-        }
-
         country_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.setPackage("com.google.android.apps.maps");
-                intent.setData(Uri.parse("https://www.google.com/maps/search/?api=1&query=" + countryBoi));
+                intent.setData(Uri.parse("https://www.google.com/maps/search/?api=1&query=" + countryArray[teamCountry]));
                 startActivity(intent);
             }
         });
@@ -349,25 +242,20 @@ public class DetailTeamActivity extends AppCompatActivity {
                             .load(storageRef)
                             .into(teamImage);
                 }else {
-                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
+                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
                 }
 
             }
         });
+        }
 
-
-
-
-
-
-
-
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -377,5 +265,32 @@ public class DetailTeamActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         eventRecycler.setLayoutManager(linearLayoutManager);
         db = FirebaseFirestore.getInstance();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+        eventRecycler.setAdapter(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        adapter.stopListening();
+        eventRecycler.setAdapter(null);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        eventRecycler.setAdapter(adapter);
+        adapter.startListening();
     }
 }

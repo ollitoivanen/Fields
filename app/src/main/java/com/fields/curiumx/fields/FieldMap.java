@@ -1,17 +1,14 @@
 package com.fields.curiumx.fields;
 
-import java.lang.ref.SoftReference;
-
 public class FieldMap {
     private String fieldName;
     private String fieldArea;
     private String fieldAddress;
     private String fieldID;
-    private String goalCount;
-    private String fieldType;
-    private String accessType;
-    private String creator;
-    private String creatorName;
+    private int goalCount;
+    private int fieldType;
+    private int accessType;
+
 
 
 
@@ -19,7 +16,7 @@ public class FieldMap {
 
     }
 
-    public FieldMap(String fieldName, String fieldArea, String fieldAddress, String fieldID, String goalCount, String fieldType, String accessType, String creator, String creatorName){
+    public FieldMap(String fieldName, String fieldArea, String fieldAddress, String fieldID, int goalCount, int fieldType, int accessType){
         this.fieldName = fieldName;
         this.fieldArea = fieldArea;
         this.fieldAddress = fieldAddress;
@@ -27,15 +24,14 @@ public class FieldMap {
         this.goalCount = goalCount;
         this.fieldType = fieldType;
         this.accessType = accessType;
-        this.creator = creator;
-        this.creatorName = creatorName;
+
     }
 
     public String getFieldName() {
         return fieldName;
     }
 
-    public String getAccessType() {
+    public int getAccessType() {
         return accessType;
     }
 
@@ -51,19 +47,12 @@ public class FieldMap {
         return fieldID;
     }
 
-    public String getFieldType() {
+    public int getFieldType() {
         return fieldType;
     }
 
-    public String getGoalCount() {
+    public int getGoalCount() {
         return goalCount;
     }
 
-    public String getCreator() {
-        return creator;
-    }
-
-    public String getCreatorName() {
-        return creatorName;
-    }
 }

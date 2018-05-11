@@ -118,7 +118,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         text = search.getQuery().toString();
 
 
-        Query query = db.collection("Teams").whereEqualTo("teamNameText", text);
+        Query query = db.collection("Teams").whereEqualTo("teamUsernameText", text);
 
         FirestoreRecyclerOptions<TeamMap> response = new FirestoreRecyclerOptions.Builder<TeamMap>()
                 .setQuery(query, TeamMap.class)
@@ -128,13 +128,14 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onBindViewHolder(teamHolder holder, int position, final TeamMap model) {
                 holder.textName.setText(model.getTeamUsernameText());
-                holder.textCountry.setText(model.getTeamCountryText());
+                //holder.textCountry.setText(model.getTeamCountryText());
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getApplicationContext(), DetailTeamActivity.class);
                         intent.putExtra("name", model.getTeamUsernameText());
+                        intent.putExtra("fullname", model.getTeamFullNameText());
                         intent.putExtra("country", model.getTeamCountryText());
                         intent.putExtra("teamID", model.getTeamID());
 
@@ -244,7 +245,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                         intent.putExtra("fieldType", model.getFieldType());
                         intent.putExtra("fieldAccessType", model.getAccessType());
                         intent.putExtra("goalCount", model.getGoalCount());
-                        intent.putExtra("creator", model.getCreator());
                         intent.putExtra("fieldID", model.getFieldID());
                         startActivity(intent);
                     }

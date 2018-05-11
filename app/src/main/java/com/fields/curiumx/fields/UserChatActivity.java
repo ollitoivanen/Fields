@@ -146,7 +146,7 @@ public class UserChatActivity extends AppCompatActivity {
 
     public void sendMessage() {
         String messageText = messageTextEdit.getText().toString().trim();
-        ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), user.getUid());
+        ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), user.getUid(), null);
         DocumentReference dr;
         if (thisUser){
              dr = db.collection("Users").document(uid).collection(UserMessages)

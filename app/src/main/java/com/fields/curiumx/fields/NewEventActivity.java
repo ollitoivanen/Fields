@@ -141,6 +141,7 @@ public class NewEventActivity extends AppCompatActivity {
                             if (chosenFieldNameIntent == null) {
                                 chosenFieldNameIntent = "";
                             }
+
                             EventMap eventMap = new EventMap(eventID,
                                     typeSpinner.getSelectedItemPosition(),
                                     eventTimeStart, eventTimeEnd, chosenFieldNameIntent,

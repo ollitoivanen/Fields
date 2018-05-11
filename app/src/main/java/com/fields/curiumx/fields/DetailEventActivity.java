@@ -191,7 +191,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
         Bundle info = getIntent().getExtras();
         String type  = info.getString("type");
         String place = info.getString("place");
-        Date dateSave = (Date) info.getSerializable("date");
+        String date = info.getString("date");
         String timeStart = info.getString("timeStart");
         String timeEnd = info.getString("timeEnd");
         eventID = info.getString("eventID");
@@ -307,9 +307,6 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
 
 
         detailType.setText(type);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
-        String date = dateFormat.format(dateSave);
         detailDate.setText(date);
 
         if (place.equals("")){

@@ -10,9 +10,15 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -44,57 +51,58 @@ import java.util.UUID;
 public class EditFieldActivity extends AppCompatActivity {
     private static final int CHOOSE_IMAGE = 101;
     Uri uriFieldImage;
-
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
     ImageView fieldImage11;
+    TextView pressText;
     FirebaseStorage storage = FirebaseStorage.getInstance();
-
-    String fieldImageUrl;
-
     ProgressBar progressBar;
-
-
     String fieldName;
     String fieldID;
-    String fieldType;
+    int fieldType;
     String fieldAddress;
-    String fieldAccessType;
+    int fieldAccessType;
     String fieldArea;
-    String fieldGoalCount;
-
+    int fieldGoalCount;
     TextView fieldNameT;
     TextView fieldAddressT;
     TextView fieldAreaT;
     Spinner fieldTypeT;
     Spinner fieldAccesTypeT;
     Spinner fieldGoalCountT;
-
     Button saveButton1;
-
-    TextView mapText;
     ImageView map;
-    LayoutInflater layoutInflater;
-    ScrollView editFieldActivity;
-    PopupWindow popupWindow;
+    TextInputLayout fieldNameInput;
+    TextInputLayout fieldAreaInput;
+    TextInputLayout fieldAddressInput;
+    String[] fieldTypeArray;
+    String[] fieldAccessTypeArray;
+    String[] fieldGoalCountArray;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_field);
-
-        setTitle("Edit Field Information");
+        setTitle(getResources().getString(R.string.edit_field));
 
         Bundle data = getIntent().getExtras();
         fieldName  = data.getString("fieldName");
         fieldID = data.getString("fieldID");
-        fieldType = data.getString("fieldType");
+        fieldType = data.getInt("fieldType");
         fieldAddress = data.getString("fieldAddress");
-        fieldAccessType = data.getString("fieldAccessType");
+        fieldAccessType = data.getInt("fieldAccessType");
         fieldArea = data.getString("fieldArea");
-        fieldGoalCount = data.getString("goalCount");
+        fieldGoalCount = data.getInt("goalCount");
         fieldID = data.getString("fieldID");
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        fieldTypeArray = getResources().getStringArray(R.array.field_type_array);
+        fieldAccessTypeArray = getResources().getStringArray(R.array.field_access_type_array);
+        fieldGoalCountArray = getResources().getStringArray(R.array.goal_count_array);
+
 
         fieldImage11 = findViewById(R.id.fieldPhotoEdit11);
         fieldImage11.setOnClickListener(new View.OnClickListener() {
@@ -103,14 +111,31 @@ public class EditFieldActivity extends AppCompatActivity {
                 showImageChooser();
             }
         });
+        pressText = findViewById(R.id.press_text1);
+        pressText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageChooser();
+            }
+        });
+
+        fieldNameInput = findViewById(R.id.field_name_input1);
+        fieldAreaInput = findViewById(R.id.field_area_input1);
+        fieldAddressInput = findViewById(R.id.field_address_input1);
+
+
+
+
 
         final StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
         storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()){
-                    Glide.with(getApplicationContext())
+                    GlideApp.with(getApplicationContext())
                             .load(storageRef)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
                             .into(fieldImage11);
                 }else {
                     fieldImage11.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
@@ -120,13 +145,18 @@ public class EditFieldActivity extends AppCompatActivity {
         });
 
         progressBar = findViewById(R.id.progressBar);
-        fieldNameT = findViewById(R.id.display_name_change11);
+        fieldNameT = findViewById(R.id.field_name1);
         fieldAddressT = findViewById(R.id.field_address1);
         fieldAreaT = findViewById(R.id.field_area1);
         fieldTypeT = findViewById(R.id.field_type1);
         fieldAccesTypeT = findViewById(R.id.access_type1);
         fieldGoalCountT  =findViewById(R.id.goal_count1);
         saveButton1 = findViewById(R.id.save_button1);
+
+
+        fieldNameT.addTextChangedListener(new MyTextWatcher(fieldNameT));
+        fieldAreaT.addTextChangedListener(new MyTextWatcher(fieldAreaT));
+        fieldAddressT.addTextChangedListener(new MyTextWatcher(fieldAddressT));
 
         saveButton1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,43 +167,48 @@ public class EditFieldActivity extends AppCompatActivity {
                 String fieldAdressText = fieldAddressT.getText().toString().trim();
 
                 if (fieldNametext.isEmpty()){
-                    fieldNameT.setError("Please enter valid field name");
+                    fieldNameInput.setError(getResources().getString(R.string.please_enter_fields_name));
                     fieldNameT.requestFocus();
                 }else if (fieldAreaText.isEmpty()){
-                    fieldAreaT.setError("Please enter the city this field is located at");
+                    fieldAreaInput.setError(getResources().getString(R.string.please_enter_field_city));
                     fieldAreaT.requestFocus();
                 }else if (fieldAdressText.isEmpty()){
-                    fieldAddressT.setError("Please enter the address of this field");
+                    fieldAreaInput.setError(getResources().getString(R.string.please_enter_field_address));
+                    fieldAddressT.requestFocus();
                 }else {
 
 
                     if (uriFieldImage != null){
                         uploadImageToFirebaseStorage();
                     }
-
+                    saveButton1.setEnabled(false);
                     final FieldMap fieldMap = new FieldMap(fieldNametext, fieldAreaText, fieldAdressText,
-                            fieldID, fieldGoalCountT.getSelectedItem().toString(),
-                            fieldTypeT.getSelectedItem().toString(), fieldAccesTypeT.getSelectedItem().toString(), uid, user.getDisplayName());
+                            fieldID, fieldGoalCountT.getSelectedItemPosition(),
+                            fieldTypeT.getSelectedItemPosition(), fieldAccesTypeT.getSelectedItemPosition());
                     db.collection("Fields").document(fieldID).set(fieldMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(getApplicationContext(), "Field created successfully!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(EditFieldActivity.this, DetailFieldActivity.class);
-                            intent.putExtra("fieldName2", fieldMap.getFieldName());
-                            intent.putExtra("fieldAddress", fieldMap.getFieldAddress());
-                            intent.putExtra("fieldArea", fieldMap.getFieldArea());
-                            intent.putExtra("fieldType", fieldMap.getFieldType());
-                            intent.putExtra("fieldAccessType", fieldMap.getAccessType());
-                            intent.putExtra("goalCount", fieldMap.getGoalCount());
-                            intent.putExtra("creator", fieldMap.getCreator());
-                            intent.putExtra("creatorName", fieldMap.getCreatorName());
-                            intent.putExtra("fieldID", fieldMap.getFieldID());
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            if (task.isSuccessful()) {
+                                Intent intent = new Intent(EditFieldActivity.this, DetailFieldActivity.class);
+                                intent.putExtra("fieldName", fieldMap.getFieldName());
+                                intent.putExtra("fieldAddress", fieldMap.getFieldAddress());
+                                intent.putExtra("fieldArea", fieldMap.getFieldArea());
+                                intent.putExtra("fieldType", fieldMap.getFieldType());
+                                intent.putExtra("fieldAccessType", fieldMap.getAccessType());
+                                intent.putExtra("goalCount", fieldMap.getGoalCount());
 
-                            startActivity(intent);
-                            finish();
+                                intent.putExtra("fieldID", fieldMap.getFieldID());
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+                                startActivity(intent);
+                                finish();
 
+                            }else {
+                                Snackbar.make(findViewById(R.id.edit_field_activity), getResources()
+                                                .getString(R.string.error_occurred_creating_field),
+                                        Snackbar.LENGTH_SHORT).show();
+                                saveButton1.setEnabled(true);
+                            }
                         }
                     });
 
@@ -181,63 +216,16 @@ public class EditFieldActivity extends AppCompatActivity {
             }
         });
 
-
-
-        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        editFieldActivity = findViewById(R.id.edit_field_activity);
-        final ConstraintLayout popUp = findViewById(R.id.popup);
-        final ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.map_info_popup, popUp);
-        popupWindow = new PopupWindow(container, 1000, 600, false);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        popupWindow.setOutsideTouchable(true);
-
-        popupWindow.setElevation(100);
-
-        mapText = findViewById(R.id.maptext1);
         map = findViewById(R.id.map1);
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                popupWindow.showAtLocation(editFieldActivity, Gravity.CENTER, 0,0 );
-                Button okButton1 = container.findViewById(R.id.okButton1);
-                okButton1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setPackage("com.google.android.apps.maps");
-
-
-
-                        startActivity(intent);
-                        popupWindow.dismiss();
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setPackage("com.google.android.apps.maps");
+                startActivity(intent);
                     }
                 });
-            }
-        });
-        mapText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.showAtLocation(editFieldActivity, Gravity.CENTER, 0,0 );
-                Button okButton1 = container.findViewById(R.id.okButton1);
-                okButton1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setPackage("com.google.android.apps.maps");
-
-                        startActivity(intent);
-                        popupWindow.dismiss();
-                    }
-                });
-
-            }
-        });
-
-
-
 
         final ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource
                 (this, R.array.field_access_type_array, android.R.layout.simple_spinner_item);
@@ -251,25 +239,14 @@ public class EditFieldActivity extends AppCompatActivity {
                 (this, R.array.goal_count_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fieldGoalCountT.setAdapter(adapter);
-
-
-        int spinnerPosition = adapter.getPosition(fieldAccessType);
-        fieldAccesTypeT.setSelection(spinnerPosition);
-        int spinnerPosition1 = adapter.getPosition(fieldGoalCount);
-        fieldGoalCountT.setSelection(spinnerPosition1);
-        int spinnerPosition2 = adapter.getPosition(fieldType);
-        fieldTypeT.setSelection(spinnerPosition2);
+        fieldTypeT.setSelection(fieldType);
+        fieldAccesTypeT.setSelection(fieldAccessType);
+        fieldGoalCountT.setSelection(fieldGoalCount);
 
         fieldNameT.setText(fieldName);
         fieldAddressT.setText(fieldAddress);
         fieldAreaT.setText(fieldArea);
-
-
-
-
-
-
-    }
+        }
 
     private void showImageChooser() {
         Intent intent = new Intent();
@@ -298,33 +275,75 @@ public class EditFieldActivity extends AppCompatActivity {
 
         StorageReference fieldImageRef =
                 FirebaseStorage.getInstance().getReference("fieldpics/" + fieldID + ".jpg");
-        StorageMetadata storageMetadata = new StorageMetadata.Builder()
-                .setCustomMetadata("creatorUid", uid)
-                .setCustomMetadata("fieldID", fieldID)
-                .build();
+
 
         if (uriFieldImage != null) {
 
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 1, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveButton1.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
-                UploadTask uploadTask = fieldImageRef.putBytes(data1, storageMetadata);
+                UploadTask uploadTask = fieldImageRef.putBytes(data1);
                 uploadTask.addOnSuccessListener(EditFieldActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressBar.setVisibility(View.GONE);
                         saveButton1.setEnabled(true);
-                        fieldImageUrl = taskSnapshot.getDownloadUrl().toString();
                     }
                 });
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private class MyTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()){
+                case R.id.field_address1:
+                    fieldAddressInput.setErrorEnabled(false);
+                    break;
+                case R.id.field_area1:
+                    fieldAreaInput.setErrorEnabled(false);
+                    break;
+                case R.id.field_name1:
+                    fieldNameInput.setErrorEnabled(false);
+
+            }
+        }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
     }
 }
