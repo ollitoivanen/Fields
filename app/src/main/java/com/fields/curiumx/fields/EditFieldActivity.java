@@ -138,7 +138,7 @@ public class EditFieldActivity extends AppCompatActivity {
                             .skipMemoryCache(true)
                             .into(fieldImage11);
                 }else {
-                    fieldImage11.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
+                    fieldImage11.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
                 }
 
             }

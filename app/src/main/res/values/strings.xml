@@ -191,6 +191,7 @@
     <string name="field_created_successfully">Field created successfully!</string>
     <string name="field_type_info">Field Type: %1$s</string>
     <string name="info">Info</string>
+    <string name="you_are_training_here">You\'re training here</string>
 
 
     <string-array name="role_spinner">

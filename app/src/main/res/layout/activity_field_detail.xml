@@ -43,7 +43,7 @@
                 android:layout_height="70dp"
                 android:layout_gravity="center"
                 android:elevation="6dp"
-                android:src="@drawable/field_photo3" />
+                android:src="@drawable/field_default" />
 
         </FrameLayout>
 
@@ -134,6 +134,46 @@
             android:src="@drawable/ic_info"
             app:layout_constraintBottom_toBottomOf="@id/gradient2"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/imTrainingHereButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_view"
+            android:elevation="5dp"
+            android:padding="8dp"
+            android:text="@string/start_training_here"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/gradient2"
+            app:layout_constraintEnd_toStartOf="@id/dropdown"
+            app:layout_constraintStart_toEndOf="@id/amountOfPeople"
+            app:layout_constraintTop_toBottomOf="@+id/fieldType" />
+
+        <TextView
+            android:id="@+id/imTrainingHereNoMoreButton"
+            android:layout_width="wrap_content"
+            android:elevation="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_view"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:text="@string/you_are_training_here"
+            android:backgroundTint="@color/FieldsMenuItemNotSelected"
+            android:visibility="visible"
+            android:padding="8dp"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@id/dropdown"
+            app:layout_constraintStart_toEndOf="@id/amountOfPeople"
+            app:layout_constraintTop_toBottomOf="@+id/fieldType"
+
+            />
     </android.support.constraint.ConstraintLayout>
 
 
@@ -141,36 +181,14 @@
 
 
 
-    <Button
-        android:id="@+id/imTrainingHereButton"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="@string/start_training_here"
-        android:textAllCaps="false"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/imTrainingHereNoMoreButton"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:textAllCaps="false"
-        android:text="@string/end_training"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-
-        />
 
     <TextView
         android:id="@+id/events_text_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/events"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:textStyle="bold"
@@ -181,13 +199,55 @@
 
     <com.fields.curiumx.fields.EmptyRecyclerView
         android:id="@+id/field_event_recycler"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="3dp"
         android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/activityBar"
         app:layout_constraintTop_toBottomOf="@id/events_text_field">
 
 
     </com.fields.curiumx.fields.EmptyRecyclerView>
+
+    <LinearLayout
+        android:id="@+id/activityBar"
+        android:transitionName="bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageButton
+            android:id="@+id/feed_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/cardview_light_background"
+            android:onClick="onFeedClick"
+            android:src="@drawable/home_icon" />
+
+
+
+        <ImageButton
+            android:id="@+id/profile_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/cardview_light_background"
+            android:onClick="onProfileClick"
+            android:src="@drawable/person_icon" />
+
+
+
+
+    </LinearLayout>
 
 
     <ProgressBar

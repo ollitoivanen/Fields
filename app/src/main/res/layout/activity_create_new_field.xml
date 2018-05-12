@@ -19,7 +19,7 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginTop="16dp"
-            android:src="@drawable/field_photo3"
+            android:src="@drawable/field_default"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

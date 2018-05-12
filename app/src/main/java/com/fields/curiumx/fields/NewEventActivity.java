@@ -62,6 +62,7 @@ public class NewEventActivity extends AppCompatActivity {
     ProgressBar progressBar12;
     String eventTimeStart;
     String eventTimeEnd;
+    String fieldID;
 
 
 
@@ -133,6 +134,7 @@ public class NewEventActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             DocumentSnapshot ds = task.getResult();
                             final String ref = ds.get("usersTeamID").toString();
+                            final String teamName = ds.get("usersTeam").toString();
                             final String eventID = Long.toString(c.getTimeInMillis());
                             eventTimeStart = trainingStartTime.getText().toString();
                             eventTimeEnd = trainingEndTime.getText().toString();
@@ -140,6 +142,11 @@ public class NewEventActivity extends AppCompatActivity {
 
                             if (chosenFieldNameIntent == null) {
                                 chosenFieldNameIntent = "";
+                            }else{
+                                FieldEventMap fieldEventMap = new FieldEventMap(eventTimeStart,
+                                        eventTimeEnd, c.getTime(), typeSpinner.getSelectedItemPosition(), teamName);
+                                db.collection("Fields").document(fieldID).collection("fieldEvents")
+                                        .document(Long.toString(c.getTimeInMillis())).set(fieldEventMap);
                             }
 
                             EventMap eventMap = new EventMap(eventID,
@@ -215,6 +222,7 @@ public class NewEventActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 chosenFieldText.setVisibility(View.VISIBLE);
                 chosenFieldNameIntent = data.getStringExtra("fieldName2");
+                fieldID = data.getStringExtra("fieldID");
               chosenFieldText.setText(chosenFieldNameIntent);
             }
         }

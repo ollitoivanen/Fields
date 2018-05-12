@@ -7,12 +7,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,6 +26,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,15 +36,26 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static java.lang.String.valueOf;
 
 public class DetailFieldActivity extends AppCompatActivity {
 
-    Button imTrainingHereButton;
-    Button imTrainingHereNoMore;
+    TextView imTrainingHereButton;
+    TextView imTrainingHereNoMore;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     DocumentReference reference;
     String uid = user.getUid();
@@ -57,10 +76,34 @@ public class DetailFieldActivity extends AppCompatActivity {
     TextView fieldTypeView;
     ImageView dropImage;
     ConstraintLayout container;
+    EmptyRecyclerView fieldEventRecycler;
+    private FirestoreRecyclerAdapter adapter;
+    LinearLayoutManager linearLayoutManager;
+    String[] eventArray;
+    String eventTypeString;
 
     String[] fieldTypeArray;
     String[] fieldAccessTypeArray;
     String[] fieldGoalCountArray;
+
+    public class fieldEventHolder extends EmptyRecyclerView.ViewHolder {
+
+        TextView fieldEventTime;
+        TextView fieldEventDate;
+        TextView fieldEventTeam;
+        TextView fieldEventType;
+
+        public fieldEventHolder(View itemView) {
+            super(itemView);
+
+            fieldEventTime = itemView.findViewById(R.id.event_time_field);
+            fieldEventDate = itemView.findViewById(R.id.event_date_field);
+            fieldEventType = itemView.findViewById(R.id.event_type_field);
+            fieldEventTeam = itemView.findViewById(R.id.event_team_field);
+        }
+    }
+
+
 
     @Override
     protected void onRestart() {
@@ -73,6 +116,9 @@ public class DetailFieldActivity extends AppCompatActivity {
                 DocumentSnapshot documentSnapshot = task.getResult();
                 if (documentSnapshot.get("currentFieldID").toString().equals(fieldID)) {
                     imTrainingHereNoMore.setVisibility(View.VISIBLE);
+                    imTrainingHereButton.setVisibility(View.GONE);
+                }else if (documentSnapshot.get("currentFieldID")!=null){
+                    imTrainingHereNoMore.setVisibility(View.GONE);
                     imTrainingHereButton.setVisibility(View.GONE);
                 } else {
                     imTrainingHereButton.setVisibility(View.VISIBLE);
@@ -95,6 +141,8 @@ public class DetailFieldActivity extends AppCompatActivity {
         setContentView(R.layout.activity_field_detail);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        fieldEventRecycler = findViewById(R.id.field_event_recycler);
+        init();
         imTrainingHereButton = findViewById(R.id.imTrainingHereButton);
         imTrainingHereNoMore = findViewById(R.id.imTrainingHereNoMoreButton);
         amountOfPeople = findViewById(R.id.amountOfPeople);
@@ -165,7 +213,7 @@ public class DetailFieldActivity extends AppCompatActivity {
                             .skipMemoryCache(true)
                             .into(fieldPhoto);
                 }else {
-                    fieldPhoto.setImageDrawable(getResources().getDrawable(R.drawable.field_photo3));
+                    fieldPhoto.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
                 }
 
             }
@@ -196,6 +244,9 @@ public class DetailFieldActivity extends AppCompatActivity {
                 if (documentSnapshot.get("currentFieldID").toString().equals(fieldID)) {
                     imTrainingHereNoMore.setVisibility(View.VISIBLE);
                     imTrainingHereButton.setVisibility(View.GONE);
+                }else if (documentSnapshot.get("currentFieldID")!=null){
+                    imTrainingHereNoMore.setVisibility(View.GONE);
+                    imTrainingHereButton.setVisibility(View.GONE);
                 } else {
                     imTrainingHereButton.setVisibility(View.VISIBLE);
                     imTrainingHereNoMore.setVisibility(View.GONE);
@@ -214,6 +265,8 @@ public class DetailFieldActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
             }
         });
+
+        setRecycler();
     }
 
     public void onButtonPressImHere() {
@@ -245,9 +298,7 @@ public class DetailFieldActivity extends AppCompatActivity {
         final Intent intent = new Intent(DetailFieldActivity.this, TrainingActivity.class);
         intent.putExtra("fieldName", fieldName);
 
-        imTrainingHereButton.setVisibility(View.VISIBLE);
         imTrainingHereButton.setEnabled(false);
-        imTrainingHereNoMore.setVisibility(View.GONE);
         startActivity(intent);
         overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
         imTrainingHereButton.setEnabled(true);
@@ -281,5 +332,78 @@ public class DetailFieldActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    public void onProfileClick(View view) {
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, ProfileActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
+    }
+
+    public void onFeedClick(View view){
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, FeedActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
+
+
+
+    }
+
+    public void init(){
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        fieldEventRecycler.setLayoutManager(linearLayoutManager);
+        db = FirebaseFirestore.getInstance();
+    }
+
+    public void setRecycler(){
+        Query query = db.collection("Fields").document(fieldID).collection("fieldEvents");
+
+        final FirestoreRecyclerOptions<FieldEventMap> response = new FirestoreRecyclerOptions.Builder<FieldEventMap>()
+                .setQuery(query, FieldEventMap.class)
+                .build();
+
+        adapter = new FirestoreRecyclerAdapter<FieldEventMap, fieldEventHolder>(response) {
+            @Override
+            public void onBindViewHolder(@NonNull fieldEventHolder holder, int position, @NonNull final FieldEventMap model) {
+
+
+                    eventArray = getResources().getStringArray(R.array.event_type_array);
+                    eventTypeString = eventArray[model.getFieldEventType()];
+                    holder.fieldEventType.setText(eventTypeString);
+
+                    Date dateSave = model.getFieldEventDate();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM", Locale.getDefault());
+                    dateFormat.setTimeZone(TimeZone.getTimeZone("UTF"));
+                    final String date = dateFormat.format(dateSave);
+                    holder.fieldEventDate.setText(date);
+                    holder.fieldEventTeam.setText(model.getFieldEventTeam());
+
+                    holder.fieldEventTime.setText(getResources().
+                            getString(R.string.training_time, model.getFieldEventTimeStart(), model.getFieldEventTimeEnd()));
+
+                }
+
+
+            @Override
+            public fieldEventHolder onCreateViewHolder(ViewGroup group, int i) {
+                View view = LayoutInflater.from(group.getContext())
+                        .inflate(R.layout.field_event_list, group, false);
+                return new fieldEventHolder(view);
+            }
+
+            @Override
+            public void onError(FirebaseFirestoreException e) {
+                Log.e("error", e.getMessage());
+            }
+
+        };
+
+        adapter.notifyDataSetChanged();
+        fieldEventRecycler.setAdapter(adapter);
+        adapter.startListening();
     }
 }
