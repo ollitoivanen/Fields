@@ -1,13 +1,17 @@
 package com.fields.curiumx.fields;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,16 +23,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -38,10 +41,10 @@ import java.io.IOException;
 public class EditProfileActivity extends AppCompatActivity {
 
     TextView press_text;
-    TextView realname_text;
     Spinner roleSpinner;
     Spinner positionSpinner;
-    EditText displayNameChange;
+    EditText usernameEdit;
+    EditText realNameEdit;
     TextView position_text;
     TextView role_text;
     Button saveUserButton;
@@ -54,18 +57,34 @@ public class EditProfileActivity extends AppCompatActivity {
     ProgressBar progressBar;
     TextView customizeButton;
     private static final int CHOOSE_IMAGE = 101;
+    String[] userRoleArray;
+    String [] userPositionArray;
+    String username;
+    String realName;
+    int position;
+    int role;
+    TextInputLayout usernameInput;
+    TextInputLayout realNameInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        userRoleArray = getResources().getStringArray(R.array.role_spinner);
+        userPositionArray = getResources().getStringArray(R.array.position_spinner);
 
         press_text = findViewById(R.id.press_text);
-        realname_text = findViewById(R.id.realname_text);
-        displayNameChange = findViewById(R.id.display_name_change1);
-        position_text = findViewById(R.id.position_text);
-        role_text = findViewById(R.id.role_text);
+        usernameEdit = findViewById(R.id.username_edit);
+        realNameEdit = findViewById(R.id.real_name_edit);
 
+        usernameInput = findViewById(R.id.username_input);
+        realNameInput = findViewById(R.id.real_name_input);
+
+        usernameEdit.addTextChangedListener(new MyTextWatcher(usernameEdit));
+        realNameEdit.addTextChangedListener(new MyTextWatcher(realNameEdit));
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         customizeButton = findViewById(R.id.customize_button);
         customizeButton.setOnClickListener(new View.OnClickListener() {
@@ -85,62 +104,48 @@ public class EditProfileActivity extends AppCompatActivity {
         imageView = findViewById(R.id.profilePhotoEdit);
         progressBar = findViewById(R.id.progress_bar_edit);
         saveUserButton = findViewById(R.id.save_button);
-        saveUserButton.setEnabled(false);
-        setTitle("Edit Profile");
+        setTitle(getResources().getString(R.string.edit_team));
 
-
-
-        db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                progressBar.setVisibility(View.GONE);
-                press_text.setVisibility(View.VISIBLE);
-                realname_text.setVisibility(View.VISIBLE);
-                displayNameChange.setVisibility(View.VISIBLE);
-                position_text.setVisibility(View.VISIBLE);
-                role_text.setVisibility(View.VISIBLE);
-                customizeButton.setVisibility(View.VISIBLE);
-                roleSpinner.setVisibility(View.VISIBLE);
-                positionSpinner.setVisibility(View.VISIBLE);
-                imageView.setVisibility(View.VISIBLE);
-                saveUserButton.setVisibility(View.VISIBLE);
-                saveUserButton.setEnabled(true);
-                DocumentSnapshot ds = task.getResult();
-                int comparePosition = ds.getLong("position").intValue();
-                int compareRole = ds.getLong("userRole").intValue();
-                positionSpinner.setSelection(comparePosition);
-                roleSpinner.setSelection(compareRole);
-
-                Bundle info = getIntent().getExtras();
-                String displayName = info.getString("DisplayName");
-
-                displayNameChange.setText(displayName);
-                saveUserButton.setOnClickListener(new View.OnClickListener() {
+        Bundle info = getIntent().getExtras();
+        username = info.getString("username");
+        realName = info.getString("realName");
+        position = info.getInt("userPosition");
+        role = info.getInt("userRole");
+        usernameEdit.setText(username);
+        realNameEdit.setText(realName);
+        roleSpinner.setSelection(role);
+        if (position!=-1){
+            positionSpinner.setSelection(position);
+        }
+        saveUserButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         saveChanges();
                     }
                 });
-
-                imageView.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         showImageChooser();
                     }
                 });
-
-                loadUserInformation();
-
+        press_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageChooser();
             }
         });
+                loadUserInformation();
     }
 
     private void loadUserInformation() {
 
         if (user != null) {
             if (user.getPhotoUrl() != null) {
-                Glide.with(this)
+                GlideApp.with(this)
                         .load(user.getPhotoUrl().toString())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .into(imageView);
             }else {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
@@ -152,16 +157,20 @@ public class EditProfileActivity extends AppCompatActivity {
     public void saveChanges() {
         int playerPosition = positionSpinner.getSelectedItemPosition();
         int userRole = roleSpinner.getSelectedItemPosition();
+        final String usernameString = usernameEdit.getText().toString().trim();
+        final String realNameString = realNameEdit.getText().toString().trim();
 
-        final String displayNameString = displayNameChange.getText().toString().trim();
 
-        if (displayNameString.isEmpty()) {
-            displayNameChange.setError("Please enter valid name");
-            displayNameChange.requestFocus();
+        if (usernameString.isEmpty()) {
+            usernameInput.setError(getResources().getString(R.string.please_enter_username));
+            usernameEdit.requestFocus();
+        }else if (realNameString.isEmpty()){
+            realNameInput.setError(getResources().getString(R.string.please_enter_real_name));
+            realNameEdit.requestFocus();
         }else{
                 progressBar.setVisibility(View.VISIBLE);
                 saveUserButton.setEnabled(false);
-                db.collection("Users").document(uid).update("displayName", displayNameString,
+                db.collection("Users").document(uid).update("realName", realNameString,
                         "position", playerPosition, "userRole", userRole)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -169,19 +178,22 @@ public class EditProfileActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
 
                                     UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                            .setDisplayName(displayNameString)
+                                            .setDisplayName(usernameString)
                                             .build();
                                     user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            Toast.makeText(getApplicationContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
                                             progressBar.setVisibility(View.GONE);
-
+                                            Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent);
+                                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                                             finish();
                                         }
                                     });
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Something went wrong. Please try again", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), getResources()
+                                            .getString(R.string.error_occurred_loading_document), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -220,9 +232,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         StorageReference profileImageRef =
                 FirebaseStorage.getInstance().getReference("profilepics/" + uid + ".jpg");
-        StorageMetadata storageMetadata = new StorageMetadata.Builder()
-                .setCustomMetadata("uid", uid)
-                .build();
+
         if (user.getPhotoUrl() != null) {
             profileImageRef.delete();
 
@@ -231,12 +241,12 @@ public class EditProfileActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 1, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveUserButton.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
-                UploadTask uploadTask = profileImageRef.putBytes(data1, storageMetadata);
+                UploadTask uploadTask = profileImageRef.putBytes(data1);
                 uploadTask.addOnSuccessListener(EditProfileActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -253,5 +263,51 @@ public class EditProfileActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+
+    private class MyTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()){
+                case R.id.username_edit:
+                    usernameInput.setErrorEnabled(false);
+                    break;
+                case R.id.real_name_edit:
+                    realNameInput.setErrorEnabled(false);
+
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                finish();
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

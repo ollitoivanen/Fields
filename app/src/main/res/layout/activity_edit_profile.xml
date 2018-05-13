@@ -13,34 +13,53 @@
         android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="@string/press_text"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profilePhotoEdit" />
 
-    <TextView
-        android:id="@+id/realname_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/realname"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/press_text" />
-
-
-    <EditText
-        android:id="@+id/display_name_change1"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/username_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:maxLength="28"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/realname_text" />
+        app:layout_constraintTop_toBottomOf="@id/press_text"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp">
+    <EditText
+        android:id="@+id/username_edit"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:maxLength="28"
+        android:visibility="visible"
+        android:hint="@string/username"
+         />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/real_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/username_input"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp">
+    <EditText
+        android:id="@+id/real_name_edit"
+        android:inputType="text"
+        android:hint="@string/realname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:maxLength="28"
+        android:visibility="visible"
+         />
+
+    </android.support.design.widget.TextInputLayout>
 
     <TextView
         android:id="@+id/position_text"
@@ -49,9 +68,9 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:text="@string/playing_position"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/display_name_change1" />
+        app:layout_constraintTop_toBottomOf="@+id/real_name_input" />
 
 
     <Spinner
@@ -61,7 +80,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="8dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/position_text" />
@@ -73,7 +92,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="8dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/role_text" />
@@ -85,7 +104,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:text="@string/imtext"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/player_position" />
 
@@ -93,9 +112,10 @@
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="save"
-        android:visibility="gone"
+        android:background="@drawable/fields_button_states"
+        android:text="@string/fui_button_text_save"
+        android:visibility="visible"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -104,7 +124,7 @@
         android:layout_height="70dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/profileim"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -122,9 +142,9 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:text="@string/custimize_profile_text"
-        android:textColor="@color/blacknot"
+        android:textColor="@color/white"
         android:textStyle="bold"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/save_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -142,6 +162,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

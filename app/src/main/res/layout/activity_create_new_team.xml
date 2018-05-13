@@ -127,7 +127,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/fields_button_states"
-        android:text="@string/create_team"/>
+        android:text="@string/create_team"
+        android:textAllCaps="false"/>
 
     <ProgressBar
         android:id="@+id/pr1"

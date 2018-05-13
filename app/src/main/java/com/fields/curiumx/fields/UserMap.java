@@ -3,7 +3,7 @@ package com.fields.curiumx.fields;
 
 
 public class UserMap {
-    private String displayName;
+    private String realName;
     private String username;
     private String userID;
     private String currentFieldID;
@@ -21,14 +21,14 @@ public class UserMap {
 
     }
     public UserMap(String username, String userID, String currentFieldID, String currentFieldName,
-                   String usersTeam, String displayName, int userRole, String userReputation,
+                   String usersTeam, String realName, int userRole, String userReputation,
                    int position, String usersTeamID, int trainingCount, Boolean fieldsPlus){
         this.username = username;
         this.userID = userID;
         this.currentFieldID = currentFieldID;
         this.currentFieldName = currentFieldName;
         this.usersTeam = usersTeam;
-        this.displayName = displayName;
+        this.realName = realName;
         this.userRole = userRole;
         this.userReputation = userReputation;
         this.position = position;
@@ -57,8 +57,8 @@ public class UserMap {
         return usersTeam;
     }
 
-    public String getDisplayName(){
-        return displayName;
+    public String getRealName() {
+        return realName;
     }
 
     public int getUserRole() {

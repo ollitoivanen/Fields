@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,13 +39,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     ImageButton profileButton;
     TextView testCurrentField;
-    TextView username;
+    TextView realNameTextView;
     TextView usersTeam;
     TextView roleText;
     DocumentReference reference;
     String currentField;
     String UserName;
     String UserTeam;
+    String realName;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     long placeHolder;
@@ -60,13 +62,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     String uid = user.getUid();
     String[] userRoleArray;
     String [] userPositionArray;
+    int userRole;
+    int userPosition;
+    int trainingCountText;
 
     private void loadUserInformation() {
 
         if (user != null) {
             if (user.getPhotoUrl() != null) {
-                Glide.with(this)
+                GlideApp.with(this)
                         .load(user.getPhotoUrl().toString())
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .into(profileImage);
             }else{
                 profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
@@ -89,12 +96,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         switch (item.getItemId()){
             case R.id.edit_profile:
                 Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-                intent.putExtra("DisplayName",user.getDisplayName());
+                intent.putExtra("username",user.getDisplayName());
+                intent.putExtra("realName", realName);
+                intent.putExtra("userRole", userRole);
+                intent.putExtra("userPosition", userPosition);
                 startActivity(intent);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 break;
             case R.id.settings_user:
                 Intent intent1 = new Intent(ProfileActivity.this, SettingsActivity.class);
                 startActivity(intent1);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -106,7 +120,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         loadChanges();
         loadUserInformation();
         UserName = user.getDisplayName();
-        username.setText(UserName);
+        realNameTextView.setText(realName);
         super.onRestart();
     }
 
@@ -136,11 +150,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         gradient = findViewById(R.id.gradient);
         roleText = findViewById(R.id.position_role_text);
         testCurrentField = findViewById(R.id.testCurrentField);
-        username = findViewById(R.id.userName);
+        realNameTextView = findViewById(R.id.userName);
         usersTeam = findViewById(R.id.usersTeam);
         progressBar = findViewById(R.id.progress_bar);
         UserName = user.getDisplayName();
-        username.setText(UserName);
 
         loadChanges();
         loadUserInformation();
@@ -163,11 +176,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                     final DocumentSnapshot documentSnapshot = task.getResult();
                     setTitle(documentSnapshot.get("username").toString());
-                    int userRole = documentSnapshot.getLong("userRole").intValue();
-                    int userPosition = documentSnapshot.getLong("position").intValue();
-                    int trainingCountText = documentSnapshot.getLong("trainingCount").intValue();
+                    userRole = documentSnapshot.getLong("userRole").intValue();
+                    userPosition = documentSnapshot.getLong("position").intValue();
+                    trainingCountText = documentSnapshot.getLong("trainingCount").intValue();
                     trainingCount.setText(getResources().getString(R.string.training, Long.toString(trainingCountText)));
+                    realName = documentSnapshot.get("realName").toString();
+                    realNameTextView.setText(realName);
                     String userRoleString = userRoleArray[userRole];
+
 
                     if (userPosition == -1) {
                         roleText.setText(getResources().getString(R.string.player_position_role_not_given, userRoleString));
@@ -214,8 +230,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                         String goalCount = ds.get("goalCount").toString();
                                         String fieldType= ds.get("fieldType").toString();
                                         String accessType = ds.get("accessType").toString();
-                                        String creator = ds.get("creator").toString();
-                                        String creatorName = ds.get("creatorName").toString();
                                         Intent intent = new Intent(ProfileActivity.this, DetailFieldActivity.class);
                                         intent.putExtra("fieldID", fieldID);
                                         intent.putExtra("fieldName", currentField);
@@ -224,9 +238,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                         intent.putExtra("goalCount", goalCount);
                                         intent.putExtra("fieldType", fieldType);
                                         intent.putExtra("fieldAccessType", accessType);
-                                        intent.putExtra("creator", creator);
-                                        intent.putExtra("creatorName", creatorName);
                                         startActivity(intent);
+                                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                                     }
                                 });
                             }
@@ -241,6 +255,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             @Override
                             public void onClick(View v) {
                                 startActivity(new Intent(ProfileActivity.this, TeamActivity.class));
+                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                             }
                         });
                     } else {
@@ -271,15 +287,27 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.rep:
                 startActivity(new Intent(ProfileActivity.this, ReputationActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 break;
             case R.id.fields_plus:
                 startActivity(new Intent(ProfileActivity.this, FieldsPlusStartActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 break;
             case R.id.friends:
                 startActivity(new Intent(ProfileActivity.this, FriendListActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 break;
         //    case R.id.trainings:
         //        startActivity(new Intent(ProfileActivity.this, AllTrainingsActivity.class));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
     }
 }

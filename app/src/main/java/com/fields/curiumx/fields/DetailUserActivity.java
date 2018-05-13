@@ -44,8 +44,8 @@ public class DetailUserActivity extends AppCompatActivity {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     DocumentReference reference;
     String uid = user.getUid();
-    String displayName;
     String username;
+    String realName;
     String userID;
     String currentFieldID;
     String currentFieldName;
@@ -110,8 +110,8 @@ public class DetailUserActivity extends AppCompatActivity {
 
 
         Bundle info = getIntent().getExtras();
-        displayName = info.getString("displayName");
         username = info.getString("username");
+        realName = info.getString("realName");
         userID = info.getString("userID");
         currentFieldID = info.getString("currentFieldID");
         currentFieldName = info.getString("currentFieldName");

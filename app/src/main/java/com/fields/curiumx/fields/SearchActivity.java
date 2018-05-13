@@ -184,7 +184,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getApplicationContext(), DetailUserActivity.class);
-                        intent.putExtra("displayName", model.getDisplayName());
+                        intent.putExtra("username", model.getUsername());
                         intent.putExtra("username", model.getUsername());
                         intent.putExtra("userID", model.getUserID());
                         intent.putExtra("currentFieldName", model.getCurrentFieldName());

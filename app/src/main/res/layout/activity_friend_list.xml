@@ -14,11 +14,37 @@
 
     </com.fields.curiumx.fields.EmptyRecyclerView>
 
-    <TextView
-        android:id="@+id/textview"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/empty_friend_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Not any friends"
-        android:gravity="center"/>
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/sad_face"
+            android:layout_width="118dp"
+            android:layout_height="108dp"
+            android:src="@drawable/sad_face"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/no_friends"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sad_face" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

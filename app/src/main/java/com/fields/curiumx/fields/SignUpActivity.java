@@ -2,12 +2,8 @@ package com.fields.curiumx.fields;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Intent;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -15,18 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
-import android.transition.Transition;
-import android.transition.TransitionManager;
-import android.transition.TransitionValues;
 import android.util.Patterns;
 import android.view.View;
-import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -41,10 +30,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Text;
-
-import java.nio.file.Path;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -73,8 +58,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         roleSpinner.setAdapter(adapter);
         welcome = findViewById(R.id.welcome);
-        realName = findViewById(R.id.real_name);
-        username = findViewById(R.id.username);
+        realName = findViewById(R.id.real_name_edit);
+        username = findViewById(R.id.username_edit);
         emailSignUp = findViewById(R.id.emailSignUp);
         emailSignUp.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         passwordSignUp = findViewById(R.id.passwordSignUp);

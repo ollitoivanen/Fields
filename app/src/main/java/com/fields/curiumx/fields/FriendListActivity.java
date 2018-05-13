@@ -1,17 +1,17 @@
 package com.fields.curiumx.fields;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -23,7 +23,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,22 +33,19 @@ public class FriendListActivity extends AppCompatActivity {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
     FirestoreRecyclerAdapter adapter;
-
-
-
     @BindView(R.id.friendRecycler)
     EmptyRecyclerView friendRecycler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
         ButterKnife.bind(this);
         init();
-        TextView textView = findViewById(R.id.textview);
-        friendRecycler.setEmptyView(textView);
-
-
-    }
+        friendRecycler.setEmptyView(findViewById(R.id.empty_friend_list));
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
     @Override
     protected void onStart() {
@@ -64,10 +60,9 @@ public class FriendListActivity extends AppCompatActivity {
     }
 
     public class teamHolder extends EmptyRecyclerView.ViewHolder {
-        @BindView(R.id.name)
-        TextView textName;
-        @BindView(R.id.country)
-        TextView textCountry;
+        @BindView(R.id.teamPlayerName)
+        TextView name;
+
 
         public teamHolder(View itemView) {
             super(itemView);
@@ -86,8 +81,7 @@ public class FriendListActivity extends AppCompatActivity {
         adapter = new FirestoreRecyclerAdapter<UserMap, teamHolder>(response) {
             @Override
             public void onBindViewHolder(teamHolder holder, int position, final UserMap model) {
-                holder.textName.setText(model.getUsername());
-
+                holder.name.setText(model.getUsername());
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -106,6 +100,8 @@ public class FriendListActivity extends AppCompatActivity {
                                         intent.putExtra("userID", ds1.get("userID").toString());
                                         intent.putExtra("currentFieldName", ds1.get("currentFieldName").toString());
                                         startActivity(intent);
+                                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                                     }
                                 });
                             }
@@ -119,7 +115,7 @@ public class FriendListActivity extends AppCompatActivity {
             @Override
             public teamHolder onCreateViewHolder(ViewGroup group, int i) {
                 View view = LayoutInflater.from(group.getContext())
-                        .inflate(R.layout.list_item, group, false);
+                        .inflate(R.layout.team_player_list, group, false);
                 return new teamHolder(view);
             }
 
@@ -133,5 +129,43 @@ public class FriendListActivity extends AppCompatActivity {
         adapter.startListening();
 
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+        friendRecycler.setAdapter(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        adapter.stopListening();
+        friendRecycler.setAdapter(null);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        friendRecycler.setAdapter(adapter);
+        adapter.startListening();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -82,10 +82,18 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".FriendListActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ProfileActivity" />
+        </activity>
         <activity
             android:name=".EditProfileActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ProfileActivity" />
+        </activity>
         <activity
             android:name=".CustomizeProfileActivity"
             android:screenOrientation="portrait" />
@@ -101,9 +109,9 @@
         <activity
             android:name=".EditFieldActivity"
             android:screenOrientation="portrait">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".DetailFieldActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DetailFieldActivity" />
         </activity>
         <activity
             android:name=".TrainingActivity"
@@ -157,11 +165,16 @@
         </activity>
         <activity
             android:name=".EditTeamActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TeamActivity" />
+        </activity>
         <activity
             android:name=".WelcomeActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".TeamPlayersActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".TeamPlayersActivity" />
+        <activity android:name=".ChangePasswordActivity"></activity>
     </application>
 
 </manifest>
