@@ -8,6 +8,7 @@ public class EventMap {
      String eventTimeStart;
      String eventTimeEnd;
      String eventField;
+     String eventFieldID;
      Date eventStartDate;
      long eventStartDateInMillis;
 
@@ -15,7 +16,7 @@ public class EventMap {
 
     }
 
-    public EventMap(String eventID, int eventType, String eventTimeStart, String eventTimeEnd, String eventField, Date eventStartDate, Long eventStartDateInMillis){
+    public EventMap(String eventID, int eventType, String eventTimeStart, String eventTimeEnd, String eventField, String eventFieldID, Date eventStartDate, Long eventStartDateInMillis){
         this.eventID = eventID;
         this.eventType = eventType;
         this.eventTimeStart = eventTimeStart;
@@ -23,6 +24,7 @@ public class EventMap {
         this.eventTimeEnd = eventTimeEnd;
         this.eventStartDate = eventStartDate;
         this.eventStartDateInMillis = eventStartDateInMillis;
+        this.eventFieldID = eventFieldID;
     }
 
     public String getEventField() {
@@ -51,5 +53,9 @@ public class EventMap {
 
     public long getEventStartDateInMillis() {
         return eventStartDateInMillis;
+    }
+
+    public String getEventFieldID() {
+        return eventFieldID;
     }
 }

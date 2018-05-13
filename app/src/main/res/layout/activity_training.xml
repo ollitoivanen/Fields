@@ -7,20 +7,33 @@
     tools:context=".TrainingActivity"
     android:background="@color/colorPrimary">
 
+    <ImageView
+        android:id="@+id/player_outline"
+        android:layout_width="208dp"
+        android:layout_height="104dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/field"
+        android:src="@drawable/field_outline_green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/currently_at"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
         android:text="@string/currently_training_at"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/player_outline" />
 
     <TextView
         android:id="@+id/field_training"
@@ -59,9 +72,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="@string/training_time_text"
+
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/timeBox"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,8 +95,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:textColor="@color/blacknot"
         android:textStyle="bold"
         android:text="teset"
+        android:elevation="3dp"
         android:textAppearance="@android:style/TextAppearance.Medium"
         android:textSize="35sp"
         android:gravity="center"

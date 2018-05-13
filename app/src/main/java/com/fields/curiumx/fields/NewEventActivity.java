@@ -142,6 +142,7 @@ public class NewEventActivity extends AppCompatActivity {
 
                             if (chosenFieldNameIntent == null) {
                                 chosenFieldNameIntent = "";
+                                fieldID = "";
                             }else{
                                 FieldEventMap fieldEventMap = new FieldEventMap(eventTimeStart,
                                         eventTimeEnd, c.getTime(), typeSpinner.getSelectedItemPosition(), teamName);
@@ -151,7 +152,7 @@ public class NewEventActivity extends AppCompatActivity {
 
                             EventMap eventMap = new EventMap(eventID,
                                     typeSpinner.getSelectedItemPosition(),
-                                    eventTimeStart, eventTimeEnd, chosenFieldNameIntent,
+                                    eventTimeStart, eventTimeEnd, chosenFieldNameIntent, fieldID,
                                     c.getTime(), c.getTimeInMillis());
                             db.collection("Teams").document(ref).collection("Team's Events")
                                     .document(Long.toString(c.getTimeInMillis()))

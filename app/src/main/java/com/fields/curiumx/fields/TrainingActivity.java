@@ -1,19 +1,16 @@
 package com.fields.curiumx.fields;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,34 +32,27 @@ public class TrainingActivity extends AppCompatActivity {
     Button endTrainingButton;
     long diff;
     long reputation;
-    String reputation1;
     String userReputation;
     Long userReputationNew;
     int time;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
-
-
         currentField = findViewById(R.id.field_training);
         timeBox = findViewById(R.id.timeBox);
         endTrainingButton = findViewById(R.id.endTraining);
-
-
         final Bundle info = getIntent().getExtras();
         String fieldName = info.getString("fieldName");
         currentField.setText(fieldName);
-        setTitle("Current Training");
+        setTitle(getResources().getString(R.string.current_training));
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         endTrainingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
 
                 db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -98,14 +88,12 @@ public class TrainingActivity extends AppCompatActivity {
 
                         intent.putExtra("trainingRep", Long.toString(reputation));
                         startActivity(intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                         finish();
+                    }
+                });
             }
         });
-            }
-        });
-
-
-
     }
 
     @Override
@@ -145,5 +133,20 @@ public class TrainingActivity extends AppCompatActivity {
         });
 
 
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

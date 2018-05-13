@@ -109,6 +109,8 @@ public class DetailFieldActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         imTrainingHereNoMore.setEnabled(false);
+        fieldEventRecycler.setAdapter(adapter);
+        adapter.startListening();
         db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -117,10 +119,10 @@ public class DetailFieldActivity extends AppCompatActivity {
                 if (documentSnapshot.get("currentFieldID").toString().equals(fieldID)) {
                     imTrainingHereNoMore.setVisibility(View.VISIBLE);
                     imTrainingHereButton.setVisibility(View.GONE);
-                }else if (documentSnapshot.get("currentFieldID")!=null){
+                }else if (!documentSnapshot.get("currentFieldID").toString().equals("")){
                     imTrainingHereNoMore.setVisibility(View.GONE);
                     imTrainingHereButton.setVisibility(View.GONE);
-                } else {
+                } else if (documentSnapshot.get("currentFieldID").toString().equals("")){
                     imTrainingHereButton.setVisibility(View.VISIBLE);
                     imTrainingHereNoMore.setVisibility(View.GONE);
                 }
@@ -142,6 +144,7 @@ public class DetailFieldActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         fieldEventRecycler = findViewById(R.id.field_event_recycler);
+        fieldEventRecycler.setEmptyView(findViewById(R.id.empty_view_field));
         init();
         imTrainingHereButton = findViewById(R.id.imTrainingHereButton);
         imTrainingHereNoMore = findViewById(R.id.imTrainingHereNoMoreButton);
@@ -244,10 +247,10 @@ public class DetailFieldActivity extends AppCompatActivity {
                 if (documentSnapshot.get("currentFieldID").toString().equals(fieldID)) {
                     imTrainingHereNoMore.setVisibility(View.VISIBLE);
                     imTrainingHereButton.setVisibility(View.GONE);
-                }else if (documentSnapshot.get("currentFieldID")!=null){
+                }else if (!documentSnapshot.get("currentFieldID").toString().equals("")){
                     imTrainingHereNoMore.setVisibility(View.GONE);
                     imTrainingHereButton.setVisibility(View.GONE);
-                } else {
+                } else if (documentSnapshot.get("currentFieldID").toString().equals("")){
                     imTrainingHereButton.setVisibility(View.VISIBLE);
                     imTrainingHereNoMore.setVisibility(View.GONE);
                 }
@@ -405,5 +408,19 @@ public class DetailFieldActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         fieldEventRecycler.setAdapter(adapter);
         adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+        fieldEventRecycler.setAdapter(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        adapter.stopListening();
+        fieldEventRecycler.setAdapter(null);
     }
 }

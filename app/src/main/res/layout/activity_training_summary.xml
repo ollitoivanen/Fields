@@ -7,6 +7,17 @@
     tools:context=".TrainingSummaryActivity"
     android:background="@color/colorPrimary">
 
+    <ImageView
+        android:id="@+id/field_outline"
+        android:layout_width="233dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="32dp"
+        android:contentDescription="@string/field"
+        android:src="@drawable/field_outline_green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/youearned"
         android:layout_width="wrap_content"
@@ -14,12 +25,13 @@
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
         android:textStyle="bold"
+        android:textSize="25sp"
         android:text="@string/you_earned"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         app:layout_constraintBottom_toTopOf="@id/rept"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/field_outline" />
 
     <TextView
         android:id="@+id/rept"
@@ -27,7 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_view"
-        android:padding="5dp"
+        android:padding="10dp"
+        android:elevation="3dp"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:textSize="28sp"
         android:textStyle="bold"

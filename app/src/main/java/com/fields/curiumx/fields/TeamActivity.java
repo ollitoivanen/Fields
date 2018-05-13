@@ -173,6 +173,10 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                     db.collection("Teams").document(teamID1)
                                             .collection("Team's Events")
                                             .document(model.getEventID()).delete();
+                                    if (!model.getEventField().equals("")){
+                                        db.collection("Fields").document(model.getEventID())
+                                                .collection("fieldEvents").document(model.getEventID()).delete();
+                                    }
 
                                 } else {
                                     eventArray = getResources().getStringArray(R.array.event_type_array);

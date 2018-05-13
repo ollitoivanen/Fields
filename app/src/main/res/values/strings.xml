@@ -192,6 +192,12 @@
     <string name="field_type_info">Field Type: %1$s</string>
     <string name="info">Info</string>
     <string name="you_are_training_here">You\'re training here</string>
+    <string name="current_training">Current Training</string>
+    <string name="player">Player</string>
+    <string name="field">Field</string>
+    <string name="no_upcoming_events_field">No upcoming events on this Field. Great time to go out and play!</string>
+    <string name="reputation_count">%1$s Reputation</string>
+    <string name="training_summary">Training Summary</string>
 
 
     <string-array name="role_spinner">
