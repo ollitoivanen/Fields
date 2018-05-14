@@ -162,8 +162,7 @@ public class FriendListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);

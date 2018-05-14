@@ -211,6 +211,8 @@
     <string name="password_changed">Password changed</string>
     <string name="error_password_length">Password length should be over 6 characters </string>
     <string name="no_upcoming_events_detail">No upcoming events</string>
+    <string name="add_friend">Add friend</string>
+    <string name="added_as_friend">Added as friend</string>
 
     <string-array name="role_spinner">
         <item>Player</item>

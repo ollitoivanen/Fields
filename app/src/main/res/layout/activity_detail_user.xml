@@ -8,11 +8,18 @@
     android:id="@+id/profileActivity"
     >
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Background_Fields"/>
+
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/gradient_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:elevation="1dp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -76,19 +83,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:elevation="4dp"
             android:background="@drawable/rounded_view"
+            android:elevation="4dp"
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/real_name_detail">
 
             <ImageView
-                android:contentDescription="@string/team"
                 android:id="@+id/team_icon"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="4dp"
+                android:contentDescription="@string/team"
                 android:src="@drawable/ic_team_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/usersTeam_detail"
@@ -122,7 +129,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/rounded_view"
-        android:elevation="3dp"
+        android:elevation="2dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -179,7 +186,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/rounded_view"
-        android:elevation="3dp"
+        android:elevation="2dp"
         android:gravity="center"
         android:padding="10dp"
         android:textColor="@color/blacknot"
@@ -188,8 +195,59 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rep_detail" />
+<android.support.constraint.ConstraintLayout
+    android:id="@+id/friend_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@+id/current_field_detail"
+    android:layout_marginTop="8dp"
+    android:visibility="gone"
 
+    >
+    <TextView
+        android:id="@+id/add_friend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:background="@drawable/rounded_view_green"
+        android:elevation="1dp"
+        android:gravity="center"
+        android:layout_marginBottom="4dp"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/add_friend"/>
 
+    <TextView
+        android:id="@+id/remove_friend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:background="@drawable/rounded_view"
+        android:elevation="1dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="@string/added_as_friend"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+</android.support.constraint.ConstraintLayout>
     <LinearLayout
         android:id="@+id/activityBar"
         android:layout_width="match_parent"
@@ -199,6 +257,7 @@
         android:focusable="true"
         android:transitionName="bar"
         android:visibility="visible"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -223,10 +282,23 @@
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:onClick="onProfileClick"
             android:layout_weight="1"
             android:background="@color/cardview_light_background"
             android:src="@drawable/person_icon" />
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/chat_user"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/activityBar"
+        app:fabSize="normal"
+        android:src="@drawable/ic_chat"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"/>
 
 
     <ProgressBar

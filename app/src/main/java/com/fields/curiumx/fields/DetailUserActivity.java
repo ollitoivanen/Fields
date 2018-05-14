@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,11 +75,13 @@ public class DetailUserActivity extends AppCompatActivity {
     Date timestamp;
     ConstraintLayout gradient;
     ConstraintLayout reputation;
+    TextView addFriend;
+    TextView removeFriend;
+    ConstraintLayout friendContainer;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.chat, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -88,13 +92,7 @@ public class DetailUserActivity extends AppCompatActivity {
                 onBackPressed();
                 finish();
                 return true;
-
-            case R.id.message_player:
-                Intent intent = new Intent(DetailUserActivity.this, UserChatActivity.class);
-                intent.putExtra("userID", userID);
-                startActivity(intent);
-                break;
-        }
+                }
         return super.onOptionsItemSelected(item);
     }
 
@@ -109,6 +107,10 @@ public class DetailUserActivity extends AppCompatActivity {
         userRoleArray = getResources().getStringArray(R.array.role_spinner);
         userPositionArray = getResources().getStringArray(R.array.position_spinner);
 
+        chatUser = findViewById(R.id.chat_user);
+        friendContainer = findViewById(R.id.friend_container);
+        addFriend = findViewById(R.id.add_friend);
+        removeFriend = findViewById(R.id.remove_friend);
         roleText = findViewById(R.id.position_role_text_detail);
         currentField = findViewById(R.id.current_field_detail);
         realNameText = findViewById(R.id.real_name_detail);
@@ -119,6 +121,16 @@ public class DetailUserActivity extends AppCompatActivity {
         gradient = findViewById(R.id.gradient_detail);
         reputation = findViewById(R.id.rep_detail);
 
+        chatUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DetailUserActivity.this, UserChatActivity.class);
+                intent.putExtra("userID", userID);
+                startActivity(intent);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+            }
+        });
+
 
         Bundle info = getIntent().getExtras();
         username = info.getString("username");
@@ -126,6 +138,11 @@ public class DetailUserActivity extends AppCompatActivity {
         userID = info.getString("userID");
         currentFieldID = info.getString("currentFieldID");
         currentFieldName = info.getString("currentFieldName");
+        usersTeam = info.getString("usersTeam");
+        usersTeamID = info.getString("usersTeamID");
+        userRole = info.getInt("userRole");
+        userReputation = info.getString("userReputation");
+        position = info.getInt("position");
         if (!currentFieldName.equals("")) {
             timestamp = (Date) info.getSerializable("timestamp");
             Date currentTime = Calendar.getInstance().getTime();
@@ -180,11 +197,6 @@ public class DetailUserActivity extends AppCompatActivity {
             currentField.setText(getResources().getString(R.string.not_at_any_field));
         }
 
-        usersTeam = info.getString("usersTeam");
-        usersTeamID = info.getString("usersTeamID");
-        userRole = info.getInt("userRole");
-        userReputation = info.getString("userReputation");
-        position = info.getInt("position");
         if (usersTeam != null) {
             usersTeamText.setText(usersTeam);
             usersTeamText.setOnClickListener(new View.OnClickListener() {
@@ -236,6 +248,8 @@ public class DetailUserActivity extends AppCompatActivity {
                     currentField.setVisibility(View.VISIBLE);
                     gradient.setVisibility(View.VISIBLE);
                     reputation.setVisibility(View.VISIBLE);
+                    friendContainer.setVisibility(View.VISIBLE);
+                    chatUser.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     GlideApp.with(getApplicationContext())
                             .load(storageRef)
@@ -248,15 +262,80 @@ public class DetailUserActivity extends AppCompatActivity {
                     gradient.setVisibility(View.VISIBLE);
                     reputation.setVisibility(View.VISIBLE);
                     rept.setVisibility(View.VISIBLE);
+                    friendContainer.setVisibility(View.VISIBLE);
+                    chatUser.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
 
             }
         });
 
+        db.collection("Users").document(uid).collection("Friends").document(userID)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (!task.getResult().exists()){
+                    addFriend.setVisibility(View.VISIBLE);
+                    removeFriend.setVisibility(View.GONE);
+                }else {
+                    addFriend.setVisibility(View.GONE);
+                    removeFriend.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
+        removeFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeFriendClick();
+            }
+        });
 
+        addFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addFriendClick();
+            }
+        });
+    }
 
+    public void removeFriendClick(){
+        db.collection("Users").document(uid).collection("Friends")
+                .document(userID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                removeFriend.setVisibility(View.GONE);
+                addFriend.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void addFriendClick(){
+        FriendMap friendMap = new FriendMap(username, userID);
+        db.collection("Users").document(uid).collection("Friends")
+                .document(userID).set(friendMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                removeFriend.setVisibility(View.VISIBLE);
+                addFriend.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    public void onFeedClick(View view) {
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, FeedActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
+    }
+
+    public void onProfileClick(View view){
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, ProfileActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
 
 
     }
