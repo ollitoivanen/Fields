@@ -185,7 +185,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     public void onClick(View v) {
                         Intent intent = new Intent(getApplicationContext(), DetailUserActivity.class);
                         intent.putExtra("username", model.getUsername());
-                        intent.putExtra("username", model.getUsername());
+                        intent.putExtra("realName", model.getRealName());
                         intent.putExtra("userID", model.getUserID());
                         intent.putExtra("currentFieldName", model.getCurrentFieldName());
                         intent.putExtra("currentFieldID", model.getCurrentFieldID());
@@ -194,6 +194,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                         intent.putExtra("userRole", model.getUserRole());
                         intent.putExtra("userReputation", model.getUserReputation());
                         intent.putExtra("position", model.getPosition());
+                        if (!model.getCurrentFieldName().equals("")){
+                            intent.putExtra("timestamp", model.getTimestamp());
+                        }
                         startActivity(intent);
                     }
                 });

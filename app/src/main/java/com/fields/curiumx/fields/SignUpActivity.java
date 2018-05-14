@@ -160,7 +160,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                 String uid = user.getUid();
 
                                 UserMap userMap = new UserMap(usernameString, uid, "",
-                                        "", null, realNameString, userRole, "0",  -1, null, 0, false);
+                                        "", null, realNameString, userRole, "0",  -1, null, 0, false, null);
                                 db.collection("Users").document(uid).set(userMap);
 
                                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()

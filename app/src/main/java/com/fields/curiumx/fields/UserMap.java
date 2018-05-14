@@ -1,6 +1,7 @@
 package com.fields.curiumx.fields;
 
 
+import java.util.Date;
 
 public class UserMap {
     private String realName;
@@ -15,6 +16,7 @@ public class UserMap {
     private int position;
     private int trainingCount;
     private Boolean fieldsPlus;
+    private Date timestamp;
 
 
     public  UserMap(){
@@ -22,7 +24,7 @@ public class UserMap {
     }
     public UserMap(String username, String userID, String currentFieldID, String currentFieldName,
                    String usersTeam, String realName, int userRole, String userReputation,
-                   int position, String usersTeamID, int trainingCount, Boolean fieldsPlus){
+                   int position, String usersTeamID, int trainingCount, Boolean fieldsPlus, Date timestamp){
         this.username = username;
         this.userID = userID;
         this.currentFieldID = currentFieldID;
@@ -35,6 +37,7 @@ public class UserMap {
         this.usersTeamID = usersTeamID;
         this.trainingCount = trainingCount;
         this.fieldsPlus = fieldsPlus;
+        this.timestamp = timestamp;
     }
 
     public String getUsername(){
@@ -84,5 +87,9 @@ public class UserMap {
 
     public Boolean getFieldsPlus() {
         return fieldsPlus;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
     }
 }

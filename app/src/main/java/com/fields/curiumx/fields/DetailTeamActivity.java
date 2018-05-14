@@ -98,6 +98,7 @@ public class DetailTeamActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         playerCount = findViewById(R.id.teamPlayerCount);
         eventRecycler = findViewById(R.id.eventRecycler);
+        eventRecycler.setEmptyView(findViewById(R.id.empty_constraint));
         init();
         ButterKnife.bind(this);
         playerCount = findViewById(R.id.teamPlayerCount);
@@ -253,9 +254,8 @@ public class DetailTeamActivity extends AppCompatActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-
+                onBackPressed();
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

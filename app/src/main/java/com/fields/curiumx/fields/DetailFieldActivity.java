@@ -103,8 +103,6 @@ public class DetailFieldActivity extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -313,8 +311,8 @@ public class DetailFieldActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
+            onBackPressed();
+            return true;
             case R.id.edit_field:
                 Intent intent = new Intent(DetailFieldActivity.this, EditFieldActivity.class);
                 intent.putExtra("fieldName", fieldName);

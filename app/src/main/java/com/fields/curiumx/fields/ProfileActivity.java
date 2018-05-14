@@ -1,6 +1,5 @@
 package com.fields.curiumx.fields;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -150,7 +148,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         gradient = findViewById(R.id.gradient);
         roleText = findViewById(R.id.position_role_text);
         testCurrentField = findViewById(R.id.testCurrentField);
-        realNameTextView = findViewById(R.id.userName);
+        realNameTextView = findViewById(R.id.real_name);
         usersTeam = findViewById(R.id.usersTeam);
         progressBar = findViewById(R.id.progress_bar);
         UserName = user.getDisplayName();

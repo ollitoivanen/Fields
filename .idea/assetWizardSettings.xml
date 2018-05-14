@@ -61,7 +61,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="85" />
+                                                <entry key="scalingPercent" value="122" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -72,7 +72,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundLayerName" value="ic_launcher_background" />
-                                      <entry key="foregroundImage" value="$USER_HOME$/Downloads/fields_logo.png" />
+                                      <entry key="foregroundImage" value="$USER_HOME$/Desktop/field_logo-green_darker.png" />
                                       <entry key="foregroundLayerName" value="ic_launcher_foreground" />
                                       <entry key="outputName" value="ic_launcher_fields" />
                                     </map>

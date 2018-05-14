@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,30 +47,32 @@ public class DetailUserActivity extends AppCompatActivity {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     DocumentReference reference;
     String uid = user.getUid();
-    String username;
     String realName;
+    String username;
     String userID;
     String currentFieldID;
     String currentFieldName;
     String usersTeam;
     String usersTeamID;
-    String userRole;
+    int userRole;
     String userReputation;
-    String userBio;
-    String position;
-    TextView friends;
+    int position;
+    String userRoleText;
+    String userPositionText;
     ProgressBar progressBar;
     long placeHolder;
     String placeHolder2;
-    String currentField;
-    String UserTeam;
-    TextView testCurrentField;
-    TextView usernameText;
+    TextView currentField;
+    TextView realNameText;
     TextView usersTeamText;
-    TextView bioText;
     TextView roleText;
     TextView rept;
     ImageView profileImage;
+    String[] userRoleArray;
+    String [] userPositionArray;
+    Date timestamp;
+    ConstraintLayout gradient;
+    ConstraintLayout reputation;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,10 +84,16 @@ public class DetailUserActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                finish();
+                return true;
+
             case R.id.message_player:
                 Intent intent = new Intent(DetailUserActivity.this, UserChatActivity.class);
                 intent.putExtra("userID", userID);
                 startActivity(intent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -91,22 +102,22 @@ public class DetailUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_user);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        profileImage = findViewById(R.id.profilePhoto);
-        final String friendText = getString(R.string.friend);
-        final String friendsText = getString(R.string.friends);
+        profileImage = findViewById(R.id.profilePhoto_detail);
+        userRoleArray = getResources().getStringArray(R.array.role_spinner);
+        userPositionArray = getResources().getStringArray(R.array.position_spinner);
 
-        roleText = findViewById(R.id.position_role_text);
-        bioText = findViewById(R.id.bio_text1);
-        testCurrentField = findViewById(R.id.testCurrentField);
-        usernameText = findViewById(R.id.userName);
-        usersTeamText = findViewById(R.id.usersTeam);
-        rept = findViewById(R.id.reputation);
-        friends = findViewById(R.id.friends);
+        roleText = findViewById(R.id.position_role_text_detail);
+        currentField = findViewById(R.id.current_field_detail);
+        realNameText = findViewById(R.id.real_name_detail);
+        usersTeamText = findViewById(R.id.usersTeam_detail);
+        rept = findViewById(R.id.reputation_detail);
         progressBar = findViewById(R.id.progress_bar);
-
-
-
+        usersTeamText = findViewById(R.id.usersTeam_detail);
+        gradient = findViewById(R.id.gradient_detail);
+        reputation = findViewById(R.id.rep_detail);
 
 
         Bundle info = getIntent().getExtras();
@@ -115,119 +126,144 @@ public class DetailUserActivity extends AppCompatActivity {
         userID = info.getString("userID");
         currentFieldID = info.getString("currentFieldID");
         currentFieldName = info.getString("currentFieldName");
+        if (!currentFieldName.equals("")) {
+            timestamp = (Date) info.getSerializable("timestamp");
+            Date currentTime = Calendar.getInstance().getTime();
+            long diff = currentTime.getTime() - timestamp.getTime();
+            long seconds = diff / 1000;
+            long minutes = seconds / 60;
+            long hours = minutes / 60;
+            long days = hours / 24;
+
+            if (hours < 1) {
+                placeHolder = minutes;
+                placeHolder2 = placeHolder + " " + "minutes";
+            } else if (days < 1) {
+                placeHolder = hours;
+                placeHolder2 = placeHolder + " " + "hours";
+            } else {
+                placeHolder = days;
+                placeHolder2 = placeHolder2 + " " + "days";
+            }
+            currentField.setText(getResources().getString(R.string.last_seen_at, currentFieldName, placeHolder2));
+
+            currentField.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    db.collection("Fields").document(currentFieldID).get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot ds = task.getResult();
+                            String fieldArea = ds.get("fieldArea").toString();
+                            String fieldAddress = ds.get("fieldAddress").toString();
+                            String goalCount = ds.get("goalCount").toString();
+                            String fieldType= ds.get("fieldType").toString();
+                            String accessType = ds.get("accessType").toString();
+                            Intent intent = new Intent(DetailUserActivity.this, DetailFieldActivity.class);
+                            intent.putExtra("fieldID", currentFieldID);
+                            intent.putExtra("fieldName", currentFieldName);
+                            intent.putExtra("fieldArea", fieldArea);
+                            intent.putExtra("fieldAddress", fieldAddress);
+                            intent.putExtra("goalCount", goalCount);
+                            intent.putExtra("fieldType", fieldType);
+                            intent.putExtra("fieldAccessType", accessType);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                        }
+                    });
+
+
+                }
+            });
+        } else {
+            currentField.setText(getResources().getString(R.string.not_at_any_field));
+        }
+
         usersTeam = info.getString("usersTeam");
         usersTeamID = info.getString("usersTeamID");
-        userRole = info.getString("userRole");
+        userRole = info.getInt("userRole");
         userReputation = info.getString("userReputation");
-        userBio = info.getString("userBio");
-        position = info.getString("position");
+        position = info.getInt("position");
+        if (usersTeam != null) {
+            usersTeamText.setText(usersTeam);
+            usersTeamText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    db.collection("Teams").document(usersTeamID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot ds = task.getResult();
+                            int level = ds.getLong("level").intValue();
+                            String name = ds.get("teamUsernameText").toString();
+                            String fullName = ds.get("teamFullNameText").toString();
+                            int teamCountry = ds.getLong("teamCountryText").intValue();
 
+                            Intent intent = new Intent(DetailUserActivity.this, DetailTeamActivity.class);
+                            intent.putExtra("name", name);
+                            intent.putExtra("fullname", fullName);
+                            intent.putExtra("country", teamCountry);
+                            intent.putExtra("teamID", usersTeamID);
+                            intent.putExtra("level", level);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
-        final StorageReference storageRef = storage.getReference().child("profilepics/"+userID+".jpg");
+                        }
+                    });
+                }
+            });
+        } else {
+            usersTeamText.setText(getResources().getString(R.string.not_at_team));
+        }
+
+        setTitle(username);
+
+        realNameText.setText(realName);
+        rept.setText(userReputation);
+        userRoleText = userRoleArray[userRole];
+        if (position == -1) {
+            roleText.setText(getResources().getString(R.string.player_position_role_not_given, userRoleText));
+        } else {
+            userPositionText = userPositionArray[position];
+            roleText.setText(getResources().getString(R.string.player_position_role_given, userRoleText, userPositionText));
+        }
+
+        final StorageReference storageRef = storage.getReference().child("profilepics/" + userID + ".jpg");
         storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()){
-                    Glide.with(getApplicationContext())
-                            .load(storageRef)
-                            .into(profileImage);
-                }else {
-                    profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
-                }
-
-            }
-        });
-
-
-             loadChanges();
-    }
-
-    public void loadChanges() {
-                reference = FirebaseFirestore.getInstance().collection("Users").document(userID);
-
-        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                testCurrentField.setVisibility(View.VISIBLE);
-                usernameText.setVisibility(View.VISIBLE);
-                usersTeamText.setVisibility(View.VISIBLE);
-                profileImage.setVisibility(View.VISIBLE);
-                friends.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-
-                bioText.setVisibility(View.VISIBLE);
-                roleText.setVisibility(View.VISIBLE);
                 if (task.isSuccessful()) {
-
-
-                    final DocumentSnapshot documentSnapshot = task.getResult();
-                    setTitle(documentSnapshot.get("username").toString());
-                    bioText.setText(documentSnapshot.get("userBio").toString());
-                    roleText.setText(documentSnapshot.get("userRole").toString() + "," + " " + documentSnapshot.get("position").toString());
-
-
-                    if (!documentSnapshot.get("currentFieldName").toString().equals("")) {
-
-                        Map<String, Object> map = documentSnapshot.getData();
-                        Date checkDate = (Date) map.get("timestamp");
-                        Date currentTime = Calendar.getInstance().getTime();
-                        long diff = currentTime.getTime() - checkDate.getTime();
-                        long seconds = diff / 1000;
-                        long minutes = seconds / 60;
-                        long hours = minutes / 60;
-                        long days = hours / 24;
-
-                        if (hours < 1) {
-                            placeHolder = minutes;
-                            placeHolder2 = placeHolder + " " + "minutes";
-                        } else if (days < 1) {
-                            placeHolder = hours;
-                            placeHolder2 = placeHolder + " " + "hours";
-                        } else {
-                            placeHolder = days;
-                            placeHolder2 = placeHolder2 + " " + "days";
-                        }
-
-
-
-                      //testCurrentField.setOnClickListener(new View.OnClickListener() {
-                      //    @Override
-                      //    public void onClick(View v) {
-                      //        String venueID = documentSnapshot.get("currentFieldID").toString();
-                      //
-                      //        Intent intent = new Intent(DetailUserActivity.this, DetailFieldActivity.class);
-                      //        intent.putExtra("ID", venueID);
-                      //        intent.putExtra("name", currentField);
-                      //        startActivity(intent);
-                      //    }
-                      //});
-                      //
-                        currentField = documentSnapshot.get("currentFieldName").toString();
-                        testCurrentField.setText("Last seen at:" + " " + currentField + "," + " " + placeHolder2 + " " + "ago");
-                    } else {
-                        testCurrentField.setText("Not at any field");
-                    }
-
-                    if (documentSnapshot.get("User's team") != null) {
-                        UserTeam = documentSnapshot.get("User's team").toString();
-                        usersTeamText.setText(UserTeam);
-                    } else {
-                        usersTeamText.setText("Not at any team");
-                    }
-
-                    String reputation = documentSnapshot.get("userReputation").toString();
-                    rept.setText(reputation);
-
+                    currentField.setVisibility(View.VISIBLE);
+                    gradient.setVisibility(View.VISIBLE);
+                    reputation.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    GlideApp.with(getApplicationContext())
+                            .load(storageRef)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(profileImage);
                 } else {
-                    Log.d(TAG, "no such file");
+                    profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
+                    currentField.setVisibility(View.VISIBLE);
+                    gradient.setVisibility(View.VISIBLE);
+                    reputation.setVisibility(View.VISIBLE);
+                    rept.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
 
             }
         });
+
+
+
+
+
+
     }
 
-
-
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
 }

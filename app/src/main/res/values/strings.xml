@@ -209,6 +209,8 @@
     <string name="please_enter_new_password">Please enter new password</string>
     <string name="old_password_is_wrong">Old password is wrong</string>
     <string name="password_changed">Password changed</string>
+    <string name="error_password_length">Password length should be over 6 characters </string>
+    <string name="no_upcoming_events_detail">No upcoming events</string>
 
     <string-array name="role_spinner">
         <item>Player</item>

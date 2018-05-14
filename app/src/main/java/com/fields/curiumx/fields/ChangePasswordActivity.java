@@ -65,6 +65,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
         } else if (newPasswordString.isEmpty()) {
             newPasswordInput.setError(getResources().getString(R.string.please_enter_new_password));
             newPassword.requestFocus();
+        }else if (newPasswordString.length()<6){
+            newPasswordInput.setError(getResources().getString(R.string.error_password_length));
         } else {
             final String email = user.getEmail();
             AuthCredential credential = EmailAuthProvider.getCredential(email, oldPasswordString);
