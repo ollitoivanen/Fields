@@ -7,37 +7,50 @@
     tools:context=".UserChatActivity">
 
     <com.fields.curiumx.fields.EmptyRecyclerView
-        android:id="@+id/chat_recycler"
+        android:id="@+id/user_chat_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
-        app:layout_constraintBottom_toTopOf="@id/message_box"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/send_stuff_user"
+        app:layout_constraintTop_toTopOf="parent">
 
     </com.fields.curiumx.fields.EmptyRecyclerView>
 
-    <EditText
-        android:inputType="text"
-        android:id="@+id/message_box"
-        android:layout_width="0dp"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/send_stuff_user"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/write"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/send_button"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:background="@color/Background_Fields"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <EditText
+            android:id="@+id/message_box_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/write"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/send_button_user"
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
-    <Button
-        android:id="@+id/send_button"
-        android:layout_width="79dp"
-        android:layout_height="43dp"
-        android:layout_margin="4dp"
-        android:background="@drawable/rounded_view"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="@string/fui_button_text_send"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/message_box" />
+        <Button
+            android:id="@+id/send_button_user"
+            android:layout_width="79dp"
+            android:layout_height="43dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/fui_button_text_send"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/message_box_user"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textAllCaps="false"/>
+    </android.support.constraint.ConstraintLayout>
+
 
 
 

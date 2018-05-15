@@ -55,7 +55,6 @@ public class EditProfileActivity extends AppCompatActivity {
     Uri uriProfileImage;
     String profileImageUrl;
     ProgressBar progressBar;
-    TextView customizeButton;
     private static final int CHOOSE_IMAGE = 101;
     String[] userRoleArray;
     String [] userPositionArray;
@@ -86,13 +85,7 @@ public class EditProfileActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        customizeButton = findViewById(R.id.customize_button);
-        customizeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(EditProfileActivity.this, CustomizeProfileActivity.class));
-            }
-        });
+
         roleSpinner = findViewById(R.id.role_spinner);
         final ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this, R.array.role_spinner, android.R.layout.simple_spinner_item);
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.fields.curiumx.fields.ProfileActivity"
     android:id="@+id/profileActivity"
+
     >
 
     <View
@@ -185,19 +186,22 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             android:layout_marginBottom="2dp"
-
+            android:textSize="15sp"
             />
 
         <ImageView
             android:id="@+id/badge_rep"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="6dp"
             android:paddingBottom="5dp"
             android:paddingEnd="5dp"
             android:paddingStart="1dp"
             android:paddingTop="5dp"
-            android:src="@drawable/reps"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="2dp"
+            android:src="@drawable/badge_10"
             android:contentDescription="@string/badge"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -214,16 +218,17 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_view"
+        android:background="@drawable/rounded_view_green"
         android:elevation="2dp"
         android:gravity="center"
         android:padding="10dp"
-        android:textColor="@color/blacknot"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rep" />
+        app:layout_constraintTop_toBottomOf="@+id/rep"
+        />
 
     <TextView
         android:id="@+id/fields_plus"

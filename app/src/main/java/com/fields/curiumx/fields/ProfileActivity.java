@@ -63,6 +63,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     int userRole;
     int userPosition;
     int trainingCountText;
+    String reputationString;
+    long reputationInt;
+    ImageView badge_rep;
+    Boolean fieldsPlus;
 
     private void loadUserInformation() {
 
@@ -129,6 +133,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
+        badge_rep = findViewById(R.id.badge_rep);
 
         reference = FirebaseFirestore.getInstance().collection("Users").document(uid);
         userRoleArray = getResources().getStringArray(R.array.role_spinner);
@@ -168,7 +173,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     testCurrentField.setVisibility(View.VISIBLE);
                     gradient.setVisibility(View.VISIBLE);
                     reputation.setVisibility(View.VISIBLE);
-                    fields_plus.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
 
 
@@ -178,6 +182,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     userPosition = documentSnapshot.getLong("position").intValue();
                     trainingCountText = documentSnapshot.getLong("trainingCount").intValue();
                     trainingCount.setText(getResources().getString(R.string.training, Long.toString(trainingCountText)));
+                    fieldsPlus = documentSnapshot.getBoolean("fieldsPlus");
+                    if (fieldsPlus){
+                        fields_plus.setVisibility(View.GONE);
+                    }else{
+                        fields_plus.setVisibility(View.VISIBLE);
+                    }
                     realName = documentSnapshot.get("realName").toString();
                     realNameTextView.setText(realName);
                     String userRoleString = userRoleArray[userRole];
@@ -260,8 +270,53 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     } else {
                         usersTeam.setText(getResources().getString(R.string.not_at_team));
                     }
-                    String reputation = documentSnapshot.get("userReputation").toString();
-                    reputationText.setText(getResources().getString(R.string.reputation, reputation));
+                    reputationString = documentSnapshot.get("userReputation").toString();
+                    reputationText.setText(getResources().getString(R.string.reputation, reputationString));
+                    reputationInt = Long.parseLong(reputationString);
+
+
+                    if (reputationInt < 500) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_bronze_1));
+                    } else if (reputationInt < 1500) {
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_silver_2));
+                    } else if (reputationInt < 3000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_gold_3));
+                    } else if (reputationInt < 6000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_4));
+                    } else if (reputationInt < 10000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_5));
+                    } else if (reputationInt < 15000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_6));
+                    } else if (reputationInt < 21000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_7));
+                    } else if (reputationInt < 28000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_8));
+                    } else if (reputationInt < 38000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_9));
+                    } else if (reputationInt < 48000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_10));
+                    } else if (reputationInt < 58000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_11));
+                    } else if (reputationInt < 70000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_12));
+                    } else if (reputationInt < 85000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_13));
+                    } else if (reputationInt >= 85000) {
+
+                        badge_rep.setImageDrawable(getResources().getDrawable(R.drawable.badge_14));
+                    }
                     } else {
                     Log.d(TAG, "no such file");
                     Snackbar.make(findViewById(R.id.profileActivity), getResources().getString(R.string.error_occurred_loading_document), Snackbar.LENGTH_SHORT).show();
@@ -282,9 +337,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-
             case R.id.rep:
-                startActivity(new Intent(ProfileActivity.this, ReputationActivity.class));
+                Intent intent = new Intent(ProfileActivity.this, ReputationActivity.class);
+                intent.putExtra("reputation", reputationString);
+                startActivity(intent);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
                 break;

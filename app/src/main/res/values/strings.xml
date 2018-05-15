@@ -213,6 +213,11 @@
     <string name="no_upcoming_events_detail">No upcoming events</string>
     <string name="add_friend">Add friend</string>
     <string name="added_as_friend">Added as friend</string>
+    <string name="reputation_text">Reputation</string>
+    <string name="you_currently_have">You currently have</string>
+    <string name="your_current_badge">Your current badge:</string>
+    <string name="until_badge">%1$s Reputation until next badge!</string>
+    <string name="max_badge">You have unlocked all badges. Unbelievable job!</string>
 
     <string-array name="role_spinner">
         <item>Player</item>

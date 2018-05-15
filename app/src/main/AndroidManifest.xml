@@ -95,9 +95,6 @@
                 android:value=".ProfileActivity" />
         </activity>
         <activity
-            android:name=".CustomizeProfileActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ReputationActivity"
             android:screenOrientation="portrait" />
         <activity

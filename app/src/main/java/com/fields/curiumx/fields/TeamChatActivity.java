@@ -2,18 +2,14 @@ package com.fields.curiumx.fields;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,28 +17,22 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class TeamChatActivity extends AppCompatActivity {
     Boolean teamFieldsPlus;
@@ -102,13 +92,16 @@ public class TeamChatActivity extends AppCompatActivity {
     }
     public void init() {
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
         teamChatRecycler.setLayoutManager(linearLayoutManager);
 
     }
 
     public void setRecycler(){
         init();
-        query =  db.collection("Teams").document(teamID).collection("teamMessages").limit(50);
+        query =  db.collection("Teams").document(teamID).collection("teamMessages")
+                .orderBy("time", Query.Direction.DESCENDING).limit(50);
 
 
         FirestoreRecyclerOptions<ChatMap> response = new FirestoreRecyclerOptions.Builder<ChatMap>()
@@ -128,21 +121,21 @@ public class TeamChatActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder (chatHolder holder, int position, final ChatMap model){
                 if (!DateFormat.is24HourFormat(getApplicationContext())){
-                    SimpleDateFormat dateFormatPm = new SimpleDateFormat("hh:mm a");
-                    time = dateFormatPm.format(model.getTime());
+                SimpleDateFormat dateFormatPm = new SimpleDateFormat("hh:mm a");
+                time = dateFormatPm.format(model.getTime());
 
-                }else {
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            }else {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-                    time = simpleDateFormat.format(model.getTime());
-                }
+                time = simpleDateFormat.format(model.getTime());
+            }
 
 
                 holder.messageView.setText(model.getText());
                 holder.messageSender.setText(model.getSender());
                 holder.time.setText(time);
 
-            }
+        }
 
             @Override
             public void onError (FirebaseFirestoreException e){
@@ -255,7 +248,7 @@ teamChatRecycler.smoothScrollToPosition(50);
                     .document(Long.toString(System.currentTimeMillis())).set(chatMap);
             messageTextEdit.setText("");
             messageTextEdit.onEditorAction(EditorInfo.IME_ACTION_DONE);
-            teamChatRecycler.smoothScrollToPosition(50);
+            teamChatRecycler.smoothScrollToPosition(0);
 
         }
     }
@@ -264,8 +257,8 @@ teamChatRecycler.smoothScrollToPosition(50);
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+            onBackPressed();
+            finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
