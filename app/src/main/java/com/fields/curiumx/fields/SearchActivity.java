@@ -5,6 +5,8 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -50,7 +52,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     Button usersButton;
     Button teamsButton;
     Button fieldsButton;
-    TextView addNewField;
+    Button addNewField;
     @BindView(R.id.teamRecycler)
     EmptyRecyclerView teamRecycler;
     LinearLayout area_name_thing;
@@ -89,6 +91,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         fieldsButton = findViewById(R.id.fields_button);
         fieldsButton.setOnClickListener(this);
         search = findViewById(R.id.search);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search.setIconified(false);
+            }
+        });
         textView = findViewById(R.id.textViews);
         fieldsButton.callOnClick();
         teamRecycler.setEmptyView(textView);
@@ -281,7 +289,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -333,9 +342,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 addNewField.setVisibility(View.GONE);
                 clicked_fields = false;
 
-                usersButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                teamsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
-                fieldsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+                usersButton.setTextColor(getResources().getColor(R.color.colorPrimary));
+                teamsButton.setTextColor(getResources().getColor(R.color.blacknot));
+                fieldsButton.setTextColor(getResources().getColor(R.color.blacknot));
 
                 search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -357,9 +366,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 addNewField.setVisibility(View.GONE);
                 clicked_fields = false;
                 search.setQuery("", false);
-                teamsButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                usersButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
-                fieldsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+                teamsButton.setTextColor(getResources().getColor(R.color.colorPrimary));
+                usersButton.setTextColor(getResources().getColor(R.color.blacknot));
+                fieldsButton.setTextColor(getResources().getColor(R.color.blacknot));
 
                 search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
@@ -381,9 +390,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 area_name_thing.setVisibility(View.VISIBLE);
 
                 addNewField.setVisibility(View.VISIBLE);
-                fieldsButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                usersButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
-                teamsButton.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+                fieldsButton.setTextColor(getResources().getColor(R.color.colorPrimary));
+                usersButton.setTextColor(getResources().getColor(R.color.blacknot));
+                teamsButton.setTextColor(getResources().getColor(R.color.blacknot));
                 search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
@@ -402,6 +411,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.add_new_field:
                 startActivity(new Intent(SearchActivity.this, CreateNewFieldActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                 break;
 
             case R.id.field_by_name:
@@ -409,6 +420,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 clicked_area = false;
                 fieldsByName.setTextColor((getResources().getColor(R.color.colorPrimaryDark)));
                 fieldsByArea.setTextColor((getResources().getColor(R.color.blacknot)));
+
                 break;
             case R.id.field_by_area:
                 clicked_area = true;
@@ -421,12 +433,29 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         }
 
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    public void onProfileClick(View view){
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, ProfileActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
 
 
+    }
+    public void onFeedClick(View view) {
+        LinearLayout activityBar = findViewById(R.id.activityBar);
+        Intent intent = new Intent(this, FeedActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, activityBar, "bar");
+        startActivity(intent, options.toBundle());
 
-
-
-
+    }
 
 
 }

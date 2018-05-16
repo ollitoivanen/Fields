@@ -53,14 +53,6 @@ public class FeedActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String uid;
 
-
-
-
-
-
-
-
-
     @Override
     protected void onStart() {
         super.onStart();

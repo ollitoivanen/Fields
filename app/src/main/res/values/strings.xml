@@ -66,7 +66,7 @@
     <string name="forgot_password_text">Please enter your user\'s email so we can send you a message to change the password! You\'ll be back on Fields in no time </string>
     <string name="imtext">I\'m</string>
     <string name="people_here">%1$s People here</string>
-    <string name="not_finding_field">Not finding your field? Add new field here!</string>
+    <string name="not_finding_field">Not finding your field? Add new Field here and earn reputation!</string>
     <string name="field_name">Field name</string>
     <string name="pick_location">Pick location from map</string>
     <string name="edit_profile_string">Edit profile</string>

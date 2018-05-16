@@ -194,4 +194,31 @@ public class AllTrainingsActivity extends AppCompatActivity {
        adapter.startListening();
 
    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (fieldsPlus){
+            adapter.stopListening();
+            trainingsRecycler.setAdapter(null);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (fieldsPlus){
+            adapter.stopListening();
+            trainingsRecycler.setAdapter(null);
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (fieldsPlus){
+            trainingsRecycler.setAdapter(adapter);
+            adapter.startListening();
+        }
+    }
 }
