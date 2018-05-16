@@ -129,7 +129,7 @@
     <string name="error_occurred_loading_document">An error occurred while loading data. Please check your internet connection and try again </string>
     <string name="not_at_any_field">Not at any field</string>
     <string name="not_at_team">Not at any team</string>
-    <string name="training">%1$s Trainings</string>
+    <string name="training">%1$s Training</string>
     <string name="profile_image">Profile image</string>
     <string name="badge">Badge</string>
     <string name="feed_button">Feed button</string>
@@ -218,6 +218,13 @@
     <string name="your_current_badge">Your current badge:</string>
     <string name="until_badge">%1$s Reputation until next badge!</string>
     <string name="max_badge">You have unlocked all badges. Unbelievable job!</string>
+    <string name="level_up_training">Track your</string>
+    <string name="level_up_training2">by upgrading to Fields</string>
+    <string name="training_history">training history</string>
+    <string name="min">min</string>
+    <string name="h">h</string>
+    <string name="trainings">%1$s trainings</string>
+    <string name="training_history_title">Training History</string>
 
     <string-array name="role_spinner">
         <item>Player</item>

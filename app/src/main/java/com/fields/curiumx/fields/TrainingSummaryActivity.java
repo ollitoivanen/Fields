@@ -32,7 +32,7 @@ public class TrainingSummaryActivity extends AppCompatActivity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                onBackPressed();
                 finish();
             }
         });

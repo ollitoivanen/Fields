@@ -61,6 +61,9 @@ public class CreateNewFieldActivity extends AppCompatActivity {
     TextInputLayout fieldNameInput;
     TextInputLayout fieldAreaInput;
     TextInputLayout fieldAddressInput;
+    String fieldNameText;
+    String fieldAreaText;
+    String fieldAddressText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,9 +130,9 @@ public class CreateNewFieldActivity extends AppCompatActivity {
         save_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fieldNameText = field_name.getText().toString().trim();
-                String fieldAreaText = field_area.getText().toString().trim();
-                String fieldAddressText = field_address.getText().toString().trim();
+                fieldNameText = field_name.getText().toString().trim();
+                fieldAreaText = field_area.getText().toString().trim();
+                fieldAddressText = field_address.getText().toString().trim();
                 save_button.setEnabled(false);
 
                 if (fieldNameText.isEmpty()){
@@ -150,38 +153,47 @@ public class CreateNewFieldActivity extends AppCompatActivity {
                     fieldID = UUID.randomUUID().toString().substring(24);
                     if (uriFieldImage != null){
                         uploadImageToFirebaseStorage();
+                    }else {
+                        updateData();
                     }
 
-                    final FieldMap fieldMap = new FieldMap(fieldNameText, fieldAreaText, fieldAddressText,
-                            fieldID, goal_count.getSelectedItemPosition(),
-                            field_type.getSelectedItemPosition(), field_access_type.getSelectedItemPosition());
-                    db.collection("Fields").document(fieldID).set(fieldMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(), getResources()
-                                        .getString(R.string.field_created_successfully), Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(CreateNewFieldActivity.this, DetailFieldActivity.class);
-                                intent.putExtra("fieldName", fieldMap.getFieldName());
-                                intent.putExtra("fieldAddress", fieldMap.getFieldAddress());
-                                intent.putExtra("fieldArea", fieldMap.getFieldArea());
-                                intent.putExtra("fieldType", fieldMap.getFieldType());
-                                intent.putExtra("fieldAccessType", fieldMap.getAccessType());
-                                intent.putExtra("goalCount", fieldMap.getGoalCount());
-                                intent.putExtra("fieldID", fieldMap.getFieldID());
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                                finish();
-                            }else {
-                                Snackbar.make(findViewById(R.id.scroll), getResources()
-                                        .getString(R.string.error_occurred_creating_field),
-                                        Snackbar.LENGTH_SHORT).show();
-                                save_button.setEnabled(true);
-                            }
-                        }
-                    });
 
+
+                }
+            }
+        });
+    }
+
+    public void updateData(){
+        progressBar.setVisibility(View.VISIBLE);
+        final FieldMap fieldMap = new FieldMap(fieldNameText, fieldAreaText, fieldAddressText,
+                fieldID, goal_count.getSelectedItemPosition(),
+                field_type.getSelectedItemPosition(), field_access_type.getSelectedItemPosition());
+        db.collection("Fields").document(fieldID).set(fieldMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), getResources()
+                            .getString(R.string.field_created_successfully), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(CreateNewFieldActivity.this, DetailFieldActivity.class);
+                    intent.putExtra("fieldName", fieldMap.getFieldName());
+                    intent.putExtra("fieldAddress", fieldMap.getFieldAddress());
+                    intent.putExtra("fieldArea", fieldMap.getFieldArea());
+                    intent.putExtra("fieldType", fieldMap.getFieldType());
+                    intent.putExtra("fieldAccessType", fieldMap.getAccessType());
+                    intent.putExtra("goalCount", fieldMap.getGoalCount());
+                    intent.putExtra("fieldID", fieldMap.getFieldID());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    finish();
+                }else {
+                    Snackbar.make(findViewById(R.id.scroll), getResources()
+                                    .getString(R.string.error_occurred_creating_field),
+                            Snackbar.LENGTH_SHORT).show();
+                    save_button.setEnabled(true);
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -243,10 +255,7 @@ public class CreateNewFieldActivity extends AppCompatActivity {
 
         StorageReference fieldImageRef =
                 FirebaseStorage.getInstance().getReference("fieldpics/" + fieldID + ".jpg");
-        StorageMetadata storageMetadata = new StorageMetadata.Builder()
-                .setCustomMetadata("creatorUid", uid)
-                .setCustomMetadata("fieldID", fieldID)
-                .build();
+
 
         if (uriFieldImage != null) {
             try {
@@ -257,12 +266,13 @@ public class CreateNewFieldActivity extends AppCompatActivity {
 
                 save_button.setEnabled(false);
                 progressBar.setVisibility(View.VISIBLE);
-                UploadTask uploadTask = fieldImageRef.putBytes(data1, storageMetadata);
+                UploadTask uploadTask = fieldImageRef.putBytes(data1);
                 uploadTask.addOnSuccessListener(CreateNewFieldActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressBar.setVisibility(View.GONE);
                         save_button.setEnabled(true);
+                        updateData();
                         }
                 });
             } catch (IOException e) {

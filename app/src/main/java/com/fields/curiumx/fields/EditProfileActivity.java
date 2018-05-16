@@ -137,8 +137,8 @@ public class EditProfileActivity extends AppCompatActivity {
             if (user.getPhotoUrl() != null) {
                 GlideApp.with(this)
                         .load(user.getPhotoUrl().toString())
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
+                   //     .diskCacheStrategy(DiskCacheStrategy.NONE)
+                     //   .skipMemoryCache(true)
                         .into(imageView);
             }else {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
@@ -164,7 +164,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 saveUserButton.setEnabled(false);
                 db.collection("Users").document(uid).update("realName", realNameString,
-                        "position", playerPosition, "userRole", userRole)
+                        "position", playerPosition, "userRole", userRole, "username", usernameString)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {

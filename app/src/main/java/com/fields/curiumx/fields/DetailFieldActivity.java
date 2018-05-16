@@ -109,6 +109,7 @@ public class DetailFieldActivity extends AppCompatActivity {
         imTrainingHereNoMore.setEnabled(false);
         fieldEventRecycler.setAdapter(adapter);
         adapter.startListening();
+        loadFieldInfo();
         db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -154,6 +155,7 @@ public class DetailFieldActivity extends AppCompatActivity {
         fieldTypeView = findViewById(R.id.fieldType);
         dropImage = findViewById(R.id.dropdown);
         container = findViewById(R.id.gradient2);
+
 
         Bundle info = getIntent().getExtras();
         fieldName = info.getString("fieldName");
@@ -203,22 +205,7 @@ public class DetailFieldActivity extends AppCompatActivity {
 
 
 
-        final StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
-        storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()){
-                    GlideApp.with(getApplicationContext())
-                            .load(storageRef)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(fieldPhoto);
-                }else {
-                    fieldPhoto.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
-                }
 
-            }
-        });
 
         setTitle(fieldName);
         TextView fieldName = findViewById(R.id.fieldName);
@@ -268,6 +255,26 @@ public class DetailFieldActivity extends AppCompatActivity {
         });
 
         setRecycler();
+        loadFieldInfo();
+    }
+
+    public void loadFieldInfo(){
+        final StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
+        storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()){
+                    GlideApp.with(getApplicationContext())
+                            .load(storageRef)
+                           .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(fieldPhoto);
+                }else {
+                    fieldPhoto.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
+                }
+
+            }
+        });
     }
 
     public void onButtonPressImHere() {

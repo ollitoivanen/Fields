@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -35,13 +36,16 @@ public class FriendListActivity extends AppCompatActivity {
     FirestoreRecyclerAdapter adapter;
     @BindView(R.id.friendRecycler)
     EmptyRecyclerView friendRecycler;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
         ButterKnife.bind(this);
+        progressBar = findViewById(R.id.progress_bar_friends_list);
         init();
+        setTitle(getResources().getString(R.string.friends));
         friendRecycler.setEmptyView(findViewById(R.id.empty_friend_list));
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -75,30 +79,41 @@ public class FriendListActivity extends AppCompatActivity {
         Query query = db.collection("Users").document(uid).collection("Friends");
 
 
-        FirestoreRecyclerOptions<UserMap> response = new FirestoreRecyclerOptions.Builder<UserMap>()
-                .setQuery(query, UserMap.class)
+        FirestoreRecyclerOptions<FriendMap> response = new FirestoreRecyclerOptions.Builder<FriendMap>()
+                .setQuery(query, FriendMap.class)
                 .build();
-        adapter = new FirestoreRecyclerAdapter<UserMap, teamHolder>(response) {
+        adapter = new FirestoreRecyclerAdapter<FriendMap, teamHolder>(response) {
             @Override
-            public void onBindViewHolder(teamHolder holder, int position, final UserMap model) {
-                holder.name.setText(model.getUsername());
+            public void onBindViewHolder(teamHolder holder, int position, final FriendMap model) {
+                holder.name.setText(model.getUserName());
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        progressBar.setVisibility(View.VISIBLE);
                         db.collection("Users").document(uid).collection("Friends").document(model.getUserID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                DocumentSnapshot ds = task.getResult();
+                                final DocumentSnapshot ds = task.getResult();
                                 db.collection("Users").document(ds.get("userID").toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
                                         DocumentSnapshot ds1 = task1.getResult();
                                         Intent intent = new Intent(getApplicationContext(), DetailUserActivity.class);
-                                        intent.putExtra("displayName",ds1.get("displayName").toString());
+                                        intent.putExtra("realName",ds1.get("realName").toString());
                                         intent.putExtra("username", ds1.get("username").toString());
                                         intent.putExtra("userID", ds1.get("userID").toString());
                                         intent.putExtra("currentFieldName", ds1.get("currentFieldName").toString());
+                                        intent.putExtra("currentFieldID", ds1.get("currentFieldID").toString());
+                                        intent.putExtra("usersTeam", ds1.get("usersTeam").toString());
+                                        intent.putExtra("usersTeamID", ds1.get("usersTeamID").toString());
+                                        intent.putExtra("userRole", ds1.getLong("userRole").intValue());
+                                        intent.putExtra("userReputation", ds1.get("userReputation").toString());
+                                        intent.putExtra("position", ds1.getLong("position"));
+                                        if (!ds1.get("currentFieldID").equals("")){
+                                            intent.putExtra("timestamp", ds1.getDate("timestamp"));
+                                        }
+                                        progressBar.setVisibility(View.GONE);
                                         startActivity(intent);
                                         overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 

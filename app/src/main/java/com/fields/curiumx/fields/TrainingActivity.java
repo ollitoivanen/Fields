@@ -44,7 +44,7 @@ public class TrainingActivity extends AppCompatActivity {
         timeBox = findViewById(R.id.timeBox);
         endTrainingButton = findViewById(R.id.endTraining);
         final Bundle info = getIntent().getExtras();
-        String fieldName = info.getString("fieldName");
+        final String fieldName = info.getString("fieldName");
         currentField.setText(fieldName);
         setTitle(getResources().getString(R.string.current_training));
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -71,21 +71,21 @@ public class TrainingActivity extends AppCompatActivity {
                 } else {
                     reputation = diff / 60000;
                      userReputationNew = reputation + Long.parseLong(userReputation);
-                     UserMap userMap = new UserMap();
-                     db.collection("Users").document(uid).update("userReputation", userReputationNew);
-                            db.collection("Users").document(uid).update("userReputation", userReputationNew);
-                            db.collection("Users").document(uid).update("trainingCount", userMap.getTrainingCount() + 1);
+                     db.collection("Users").document(uid).update("userReputation", userReputationNew,
+                             "userReputation", userReputationNew,
+                             "trainingCount", ds.getLong("trainingCount").intValue() + 1);
 
 
 
+                     TrainingMap trainingMap = new TrainingMap(checkTime, reputation, diff, fieldName);
 
+                     db.collection("Users").document(uid).collection("Trainings")
+                             .document(Long.toString(System.currentTimeMillis())).set(trainingMap);
                         }
 
-                        db.collection("Users").document(uid).update("currentFieldID", "");
-                        db.collection("Users").document(uid).update("currentFieldName", "");
-                        db.collection("Users").document(uid).update("timestamp", null);
+                        db.collection("Users").document(uid).update("currentFieldID", "",
+                                "currentFieldName", "", "timestamp", null);
                         Intent intent = new Intent(TrainingActivity.this, TrainingSummaryActivity.class);
-
                         intent.putExtra("trainingRep", Long.toString(reputation));
                         startActivity(intent);
                         overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);

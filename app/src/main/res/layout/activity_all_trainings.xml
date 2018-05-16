@@ -6,4 +6,71 @@
     android:layout_height="match_parent"
     tools:context=".AllTrainingsActivity">
 
+   <com.fields.curiumx.fields.EmptyRecyclerView
+       android:id="@+id/trainings_recycler"
+       android:layout_width="wrap_content"
+       android:layout_height="match_parent">
+
+
+
+   </com.fields.curiumx.fields.EmptyRecyclerView>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/no_fields_plus_constraint_training"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/blacknot"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/field_picture_art"
+            android:layout_width="200dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:contentDescription="@string/conversation"
+            android:src="@drawable/field_history_art"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/level_up_text2_training"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/discover_training"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/field_picture_art" />
+
+        <Button
+            android:id="@+id/discover_training"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/rounded_view"
+            android:backgroundTint="@color/premium_blue"
+            android:clickable="true"
+            android:elevation="5dp"
+            android:focusable="true"
+            android:text="@string/discover"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>

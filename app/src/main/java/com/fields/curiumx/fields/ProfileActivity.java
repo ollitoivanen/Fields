@@ -74,8 +74,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             if (user.getPhotoUrl() != null) {
                 GlideApp.with(this)
                         .load(user.getPhotoUrl().toString())
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
+                       // .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        //.skipMemoryCache(true)
                         .into(profileImage);
             }else{
                 profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
@@ -177,11 +177,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
 
                     final DocumentSnapshot documentSnapshot = task.getResult();
-                    setTitle(documentSnapshot.get("username").toString());
+                    setTitle(user.getDisplayName());
                     userRole = documentSnapshot.getLong("userRole").intValue();
                     userPosition = documentSnapshot.getLong("position").intValue();
                     trainingCountText = documentSnapshot.getLong("trainingCount").intValue();
-                    trainingCount.setText(getResources().getString(R.string.training, Long.toString(trainingCountText)));
+                    if (trainingCountText==1){
+                        trainingCount.setText(getResources().getString(R.string.training, Long.toString(trainingCountText)));
+
+
+                    }else {
+                        trainingCount.setText(getResources().getString(R.string.trainings, Long.toString(trainingCountText)));
+
+                    }
                     fieldsPlus = documentSnapshot.getBoolean("fieldsPlus");
                     if (fieldsPlus){
                         fields_plus.setVisibility(View.GONE);
@@ -354,8 +361,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
                 break;
-        //    case R.id.trainings:
-        //        startActivity(new Intent(ProfileActivity.this, AllTrainingsActivity.class));
+          case R.id.trainings:
+                Intent intent1 = new Intent(ProfileActivity.this, AllTrainingsActivity.class);
+                intent1.putExtra("fieldsPlus", fieldsPlus);
+                startActivity(intent1);
+              overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
         }
     }
 

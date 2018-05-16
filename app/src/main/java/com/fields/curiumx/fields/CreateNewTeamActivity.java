@@ -154,54 +154,39 @@ public class CreateNewTeamActivity extends AppCompatActivity {
             teamFullNameInput.setError(getResources().getString(R.string.error_team_full_name));
             teamFullName.requestFocus();
             saveTeamButton.setEnabled(true);
-
         }else {
-            db.collection("Teams").document(teamUsernameText).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.getResult().exists()) {
-                        teamUsernameInput.setError(getResources().getString(R.string.error_team_exists));
-                        teamUsername.requestFocus();
-                        saveTeamButton.setEnabled(true);
+            //If team with same name doesn't exist, save it
+            db.collection("Users").document(uid).get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
 
-                    } else {
-                        //If team with same name doesn't exist, save it
-                        db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                DocumentSnapshot documentSnapshot = task.getResult();
-
-
-                                //Check if user is already in a team
-                                if (documentSnapshot.get("usersTeam") == null) {
-                                    progressBar.setVisibility(View.VISIBLE);
-                                    teamID = UUID.randomUUID().toString().substring(24);
-                                    if (documentSnapshot.getBoolean("fieldsPlus")){
-                                        memberFieldsPlus = true;
-                                    }else {
-                                        memberFieldsPlus = false;
-                                    }
-
-                                    if (uriFieldImage != null){
-                                        uploadImageToFirebaseStorage();
-                                    }else {
-                                        updateData();
-                                    }
-
-
-                                } else {
-                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.you_are_in_team), Toast.LENGTH_LONG).show();
-                                    startActivity(new Intent(CreateNewTeamActivity.this, FeedActivity.class));
-                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                                    finish();
+                            //Check if user is already in a team
+                            if (documentSnapshot.get("usersTeam") == null) {
+                                progressBar.setVisibility(View.VISIBLE);
+                                teamID = UUID.randomUUID().toString().substring(24);
+                                if (documentSnapshot.getBoolean("fieldsPlus")){
+                                    memberFieldsPlus = true;
+                                }else {
+                                    memberFieldsPlus = false;
                                 }
+                                if (uriFieldImage != null){
+                                    uploadImageToFirebaseStorage();
+                                }else {
+                                    updateData();
+                                    }
+                            } else {
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.you_are_in_team), Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(CreateNewTeamActivity.this, FeedActivity.class));
+                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                finish();
                             }
-                        });
-                    }
-                }
-            });
+                        }
+                    });
         }
     }
+
 
     private void showImageChooser() {
         Intent intent = new Intent();

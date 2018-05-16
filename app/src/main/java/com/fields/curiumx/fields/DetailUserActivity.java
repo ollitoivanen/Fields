@@ -300,10 +300,12 @@ public class DetailUserActivity extends AppCompatActivity {
     }
 
     public void removeFriendClick(){
+        progressBar.setVisibility(View.VISIBLE);
         db.collection("Users").document(uid).collection("Friends")
                 .document(userID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                progressBar.setVisibility(View.GONE);
                 removeFriend.setVisibility(View.GONE);
                 addFriend.setVisibility(View.VISIBLE);
             }
@@ -311,11 +313,13 @@ public class DetailUserActivity extends AppCompatActivity {
     }
 
     public void addFriendClick(){
+        progressBar.setVisibility(View.VISIBLE);
         FriendMap friendMap = new FriendMap(username, userID);
         db.collection("Users").document(uid).collection("Friends")
                 .document(userID).set(friendMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                progressBar.setVisibility(View.GONE);
                 removeFriend.setVisibility(View.VISIBLE);
                 addFriend.setVisibility(View.GONE);
             }

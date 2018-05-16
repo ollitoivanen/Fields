@@ -162,9 +162,9 @@ public class EditFieldActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String fieldNametext = fieldNameT.getText().toString().trim();
-                String fieldAreaText = fieldAreaT.getText().toString().trim();
-                String fieldAdressText = fieldAddressT.getText().toString().trim();
+                final String fieldNametext = fieldNameT.getText().toString().trim();
+                final String fieldAreaText = fieldAreaT.getText().toString().trim();
+                final String fieldAdressText = fieldAddressT.getText().toString().trim();
 
                 if (fieldNametext.isEmpty()){
                     fieldNameInput.setError(getResources().getString(R.string.please_enter_fields_name));
@@ -178,28 +178,25 @@ public class EditFieldActivity extends AppCompatActivity {
                 }else {
 
 
-                    if (uriFieldImage != null){
-                        uploadImageToFirebaseStorage();
-                    }
+                   // if (uriFieldImage != null){
+                     //   uploadImageToFirebaseStorage();
+                    //}
                     saveButton1.setEnabled(false);
-                    final FieldMap fieldMap = new FieldMap(fieldNametext, fieldAreaText, fieldAdressText,
-                            fieldID, fieldGoalCountT.getSelectedItemPosition(),
-                            fieldTypeT.getSelectedItemPosition(), fieldAccesTypeT.getSelectedItemPosition());
-                    db.collection("Fields").document(fieldID).set(fieldMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    db.collection("Fields").document(fieldID).update("fieldName", fieldNametext, "fieldArea", fieldAreaText,
+                            "fieldAddress", fieldAdressText, "goalCount", fieldGoalCountT.getSelectedItemPosition(),
+                            "fieldType", fieldTypeT.getSelectedItemPosition(), "accessType", fieldAccesTypeT.getSelectedItemPosition()).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Intent intent = new Intent(EditFieldActivity.this, DetailFieldActivity.class);
-                                intent.putExtra("fieldName", fieldMap.getFieldName());
-                                intent.putExtra("fieldAddress", fieldMap.getFieldAddress());
-                                intent.putExtra("fieldArea", fieldMap.getFieldArea());
-                                intent.putExtra("fieldType", fieldMap.getFieldType());
-                                intent.putExtra("fieldAccessType", fieldMap.getAccessType());
-                                intent.putExtra("goalCount", fieldMap.getGoalCount());
-
-                                intent.putExtra("fieldID", fieldMap.getFieldID());
+                                intent.putExtra("fieldName", fieldNametext);
+                                intent.putExtra("fieldAddress", fieldAdressText);
+                                intent.putExtra("fieldArea", fieldAreaText);
+                                intent.putExtra("fieldType", fieldTypeT.getSelectedItemPosition());
+                                intent.putExtra("fieldAccessType", fieldAccesTypeT.getSelectedItemPosition());
+                                intent.putExtra("goalCount", fieldGoalCountT.getSelectedItemPosition());
+                                intent.putExtra("fieldID", fieldID);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
                                 startActivity(intent);
                                 finish();
 
@@ -265,6 +262,7 @@ public class EditFieldActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
                 fieldImage11.setImageBitmap(bitmap);
+                uploadImageToFirebaseStorage();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -333,7 +331,8 @@ public class EditFieldActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                finish();
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
                 return true;

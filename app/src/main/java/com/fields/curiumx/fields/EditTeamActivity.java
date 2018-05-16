@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -172,6 +173,8 @@ public class EditTeamActivity extends AppCompatActivity {
 
     public void saveTeam(){
 
+        saveButton.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
          teamUsernameText = teamUsername.getText().toString().toLowerCase().trim();
          teamFullNameText = teamFullName.getText().toString().trim();
          teamCountryText = teamCountry.getSelectedItemPosition();
@@ -180,30 +183,14 @@ public class EditTeamActivity extends AppCompatActivity {
             teamUsernameInput.setError(getResources().getString(R.string.error_team_username));
             teamUsername.requestFocus();
             saveButton.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
         }else if (teamFullNameText.isEmpty()){
             teamFullNameInput.setError(getResources().getString(R.string.error_team_full_name));
             teamFullName.requestFocus();
             saveButton.setEnabled(true);
-
+            progressBar.setVisibility(View.GONE);
         }else {
-            db.collection("Teams").document(teamUsernameText).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.getResult().exists()) {
-                        teamUsernameInput.setError(getResources().getString(R.string.error_team_exists));
-                        teamUsername.requestFocus();
-                        saveButton.setEnabled(true);
-                        progressBar.setVisibility(View.VISIBLE);
-                    } else {
-                        if (uriTeamImage != null) {
-                            uploadImageToFirebaseStorage();
-                        }else {
-                            updateData();
-                        }
-
-                    }
-                }
-            });
+            updateData();
         }
     }
     private void showImageChooser() {
@@ -223,6 +210,7 @@ public class EditTeamActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriTeamImage);
                 teamPhotoEdit.setImageBitmap(bitmap);
+                uploadImageToFirebaseStorage();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -250,9 +238,6 @@ public class EditTeamActivity extends AppCompatActivity {
                 uploadTask.addOnSuccessListener(EditTeamActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                updateData();
-
                         progressBar.setVisibility(View.GONE);
                         saveButton.setEnabled(true);
 
@@ -285,6 +270,7 @@ public class EditTeamActivity extends AppCompatActivity {
                             String error = getResources().getString(R.string.error_occurred_loading_document);
                             Snackbar.make(findViewById(R.id.editteam), error, Snackbar.LENGTH_LONG).show();
                             saveButton.setEnabled(true);
+                            progressBar.setVisibility(View.GONE);
                         }
                     }
                 });

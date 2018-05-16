@@ -49,7 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:text="teset"/>
+       />
 
 
     <Button
@@ -97,7 +97,6 @@
         android:layout_marginTop="16dp"
         android:textColor="@color/blacknot"
         android:textStyle="bold"
-        android:text="teset"
         android:elevation="3dp"
         android:textAppearance="@android:style/TextAppearance.Medium"
         android:textSize="35sp"
