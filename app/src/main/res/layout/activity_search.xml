@@ -18,7 +18,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/rounded_view"
         android:queryBackground="@android:color/transparent"
-
+        android:queryHint="@string/search_hint"
         android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,11 +38,12 @@ app:layout_constraintTop_toTopOf="parent"
         />
 
     <com.fields.curiumx.fields.EmptyRecyclerView
-        android:id="@+id/teamRecycler"
+        android:id="@+id/search_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/div_search"
-        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@id/add_new_field"
+
         >
 
     </com.fields.curiumx.fields.EmptyRecyclerView>
@@ -70,7 +71,7 @@ app:layout_constraintTop_toTopOf="parent"
 
             android:background="@color/Background_Fields"
 
-            android:text="Fields" />
+            android:text="@string/fields" />
 
         <Button
             android:id="@+id/teams_button"
@@ -81,7 +82,7 @@ app:layout_constraintTop_toTopOf="parent"
             android:background="@color/Background_Fields"
             android:scaleType="fitCenter"
             android:padding="7dp"
-            android:text="Teams"
+            android:text="@string/teams"
              />
 
         <Button
@@ -91,7 +92,7 @@ app:layout_constraintTop_toTopOf="parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/Background_Fields"
-            android:text="Users"
+            android:text="@string/users"
              />
     </LinearLayout>
 
@@ -118,6 +119,8 @@ app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/activityBar"
         android:layout_marginBottom="16dp"/>
 
+
+
     <LinearLayout
         android:id="@+id/area_name_thing"
         android:layout_width="match_parent"
@@ -131,17 +134,39 @@ app:layout_constraintTop_toTopOf="parent"
         android:visibility="visible"
         >
 
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/divv"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/DividerColor"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/field_by_name"
+                android:layout_marginBottom="2dp"
+                />
+
+
         <Button
             android:id="@+id/field_by_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="2dp"
-            android:layout_marginTop="4dp"
             android:layout_marginBottom="1dp"
             android:layout_weight="1"
-            android:background="@drawable/rounded_view"
-            android:text="@string/field_name" />
+            app:layout_constraintStart_toStartOf="parent"
+
+            android:background="@color/Background_Fields"
+            app:layout_constraintEnd_toStartOf="@id/field_by_area"
+            app:layout_constraintTop_toBottomOf="@id/divv"
+            android:text="@string/field_name"
+            style="?android:attr/borderlessButtonStyle"
+            android:textSize="13sp"
+
+            />
 
         <Button
             android:id="@+id/field_by_area"
@@ -150,10 +175,16 @@ app:layout_constraintTop_toTopOf="parent"
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="2dp"
-            android:layout_marginTop="4dp"
             android:layout_marginBottom="1dp"
-            android:background="@drawable/rounded_view"
-            android:text="@string/field_area" />
+            app:layout_constraintStart_toEndOf="@id/field_by_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/Background_Fields"
+            android:text="@string/field_area"
+            style="?android:attr/borderlessButtonStyle"
+            android:textSize="13sp"
+            app:layout_constraintTop_toBottomOf="@id/divv"
+            />
+        </android.support.constraint.ConstraintLayout>
 
 
     </LinearLayout>
@@ -164,7 +195,6 @@ app:layout_constraintTop_toTopOf="parent"
         android:layout_height="1dp"
         android:background="@color/DividerColor"
         app:layout_constraintTop_toBottomOf="@id/area_name_thing"
-        android:layout_marginTop="8dp"
         />
 
     <LinearLayout
@@ -187,7 +217,7 @@ app:layout_constraintTop_toTopOf="parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/cardview_light_background"
-
+            android:onClick="onFeedClick"
             android:src="@drawable/home_icon" />
 
 

@@ -1,32 +1,29 @@
 package com.fields.curiumx.fields;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.app.Activity;
-import android.content.Context;
+
 import android.content.Intent;
-import android.graphics.Color;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.NavUtils;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Registry;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,12 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import java.io.InputStream;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener{
     TextView textView;
@@ -53,17 +46,17 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     Button teamsButton;
     Button fieldsButton;
     Button addNewField;
-    @BindView(R.id.teamRecycler)
-    EmptyRecyclerView teamRecycler;
+    EmptyRecyclerView searchRecycler;
     LinearLayout area_name_thing;
     Button fieldsByName;
     Button fieldsByArea;
     Boolean clicked_name;
     Boolean clicked_area;
     Boolean clicked_fields;
-
-
-
+    StorageReference teamImageRef;
+    StorageReference fieldImageRef;
+    StorageReference userImageRef;
+    Boolean listening;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +64,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_search);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ButterKnife.bind(this);
-        init();
-
         clicked_fields = false;
-
+        listening = false;
         fieldsByArea = findViewById(R.id.field_by_area);
         fieldsByName = findViewById(R.id.field_by_name);
         fieldsByArea.setOnClickListener(this);
@@ -99,32 +89,32 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         });
         textView = findViewById(R.id.textViews);
         fieldsButton.callOnClick();
-        teamRecycler.setEmptyView(textView);
+        searchRecycler = findViewById(R.id.search_recycler);
+        searchRecycler.setEmptyView(textView);
+        init();
 
-        }
+    }
 
-        public void init(){
+    public void init(){
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-        teamRecycler.setLayoutManager(linearLayoutManager);
+        searchRecycler.setLayoutManager(linearLayoutManager);
         db = FirebaseFirestore.getInstance();
     }
 
     public class teamHolder extends EmptyRecyclerView.ViewHolder {
-        @BindView(R.id.name)
         TextView textName;
-        @BindView(R.id.country)
-        TextView textCountry;
+        ImageView profileImageSearch;
+
 
         public teamHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            textName = itemView.findViewById(R.id.name);
+            profileImageSearch = itemView.findViewById(R.id.profile_image_search);
         }
     }
 
-
     public void findTeam(){
-        text = search.getQuery().toString();
-
+        text = search.getQuery().toString().toLowerCase().trim();
 
         Query query = db.collection("Teams").whereEqualTo("teamUsernameText", text);
 
@@ -134,10 +124,25 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         adapter = new FirestoreRecyclerAdapter<TeamMap, teamHolder>(response) {
             @Override
-            public void onBindViewHolder(teamHolder holder, int position, final TeamMap model) {
+            public void onBindViewHolder(final teamHolder holder, int position, final TeamMap model) {
                 holder.textName.setText(model.getTeamUsernameText());
-                //holder.textCountry.setText(model.getTeamCountryText());
-
+                String teamID = model.getTeamID();
+                teamImageRef = FirebaseStorage.getInstance()
+                        .getReference().child("teampics/"+teamID+".jpg");
+                teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            GlideApp.with(getApplicationContext())
+                                    .load(teamImageRef)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(holder.profileImageSearch);
+                        }else {
+                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+                        }
+                    }
+                    });
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -146,9 +151,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                         intent.putExtra("fullname", model.getTeamFullNameText());
                         intent.putExtra("country", model.getTeamCountryText());
                         intent.putExtra("teamID", model.getTeamID());
-
                         intent.putExtra("level", model.getLevel());
                         startActivity(intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                     }
                 });
             }
@@ -167,12 +173,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         };
 
         adapter.notifyDataSetChanged();
-        teamRecycler.setAdapter(adapter);
+        searchRecycler.setAdapter(adapter);
     }
 
-
     public void findUser(){
-        text = search.getQuery().toString();
+        text = search.getQuery().toString().toLowerCase().trim();
 
 
 
@@ -184,11 +189,28 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         adapter = new FirestoreRecyclerAdapter<UserMap, teamHolder>(response) {
             @Override
-            public void onBindViewHolder(teamHolder holder, int position, final UserMap model) {
+            public void onBindViewHolder(final teamHolder holder, int position, final UserMap model) {
                 holder.textName.setText(model.getUsername());
 
+                userImageRef = FirebaseStorage.getInstance()
+                        .getReference().child("userpics/"+model.getUserID()+".jpg");
+                userImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            GlideApp.with(getApplicationContext())
+                                    .load(userImageRef)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(holder.profileImageSearch);
+                        }else {
+                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
+                        }
+                    }
+                });
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+               holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getApplicationContext(), DetailUserActivity.class);
@@ -206,6 +228,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                             intent.putExtra("timestamp", model.getTimestamp());
                         }
                         startActivity(intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                     }
                 });
             }
@@ -224,17 +248,16 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         };
 
         adapter.notifyDataSetChanged();
-        teamRecycler.setAdapter(adapter);
+        searchRecycler.setAdapter(adapter);
     }
 
-
     public void findField(){
-        text = search.getQuery().toString();
+        text = search.getQuery().toString().trim().toLowerCase();
         Query query;
         if (clicked_name){
-            query = db.collection("Fields").whereEqualTo("fieldName", text);
+            query = db.collection("Fields").whereEqualTo("fieldNameLowerCase", text);
             }else {
-            query = db.collection("Fields").whereEqualTo("fieldArea", text);
+            query = db.collection("Fields").whereEqualTo("fieldAreaLowerCase", text);
         }
 
         FirestoreRecyclerOptions<FieldMap> response = new FirestoreRecyclerOptions.Builder<FieldMap>()
@@ -243,8 +266,25 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         adapter = new FirestoreRecyclerAdapter<FieldMap, teamHolder>(response) {
             @Override
-            public void onBindViewHolder(teamHolder holder, int position, final FieldMap model) {
+            public void onBindViewHolder(final teamHolder holder, int position, final FieldMap model) {
                 holder.textName.setText(model.getFieldName());
+
+                fieldImageRef = FirebaseStorage.getInstance()
+                        .getReference().child("fieldpics/"+model.getFieldID()+".jpg");
+                fieldImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            GlideApp.with(getApplicationContext())
+                                    .load(fieldImageRef)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(holder.profileImageSearch);
+                        }else {
+                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
+                        }
+                    }
+                });
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -258,6 +298,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                         intent.putExtra("goalCount", model.getGoalCount());
                         intent.putExtra("fieldID", model.getFieldID());
                         startActivity(intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
                     }
                 });
             }
@@ -276,14 +318,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         };
 
         adapter.notifyDataSetChanged();
-        teamRecycler.setAdapter(adapter);
+        searchRecycler.setAdapter(adapter);
     }
-
-
-
-
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -295,42 +331,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         }
         return super.onOptionsItemSelected(item);
     }
-
-    public void animateThing(){
-        area_name_thing = findViewById(R.id.area_name_thing);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(area_name_thing, "y", 200f )
-                .setDuration(100);
-        animator.addListener(new Animator.AnimatorListener(){
-            @Override
-            public void onAnimationStart(Animator animator) {
-                area_name_thing.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-                area_name_thing.setLayerType(View.LAYER_TYPE_NONE, null);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                area_name_thing.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        area_name_thing.setLayerType(View.LAYER_TYPE_NONE, null);
-
-
-                    }
-                });
-            }
-        });
-        animator.start();
-    }
-
-
 
     @Override
     public void onClick(View view) {
@@ -349,13 +349,15 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
-                        findUser();
-                        adapter.startListening();
+
                         return false;
                     }
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
+                        findUser();
+                        adapter.startListening();
+                        listening = true;
                         return false;
                     }
                 });
@@ -373,13 +375,15 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
-                        findTeam();
-                        adapter.startListening();
+
                         return false;
                     }
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
+                        findTeam();
+                        adapter.startListening();
+                        listening = true;
                         return false;
                     }
                 });
@@ -396,15 +400,18 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
-                        findField();
-                        adapter.startListening();
+
                         return false;
                     }
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
+                        findField();
+                        adapter.startListening();
+                        listening = true;
                         return false;
                     }
+
                 });
 
                 break;
@@ -448,7 +455,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
 
     }
-    public void onFeedClick(View view) {
+
+    public void onFeedClick(View view){
         LinearLayout activityBar = findViewById(R.id.activityBar);
         Intent intent = new Intent(this, FeedActivity.class);
         ActivityOptionsCompat options = ActivityOptionsCompat.
@@ -457,5 +465,23 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (listening) {
+            adapter.stopListening();
+            searchRecycler.setAdapter(null);
+        }
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (listening) {
+            adapter.stopListening();
+            searchRecycler.setAdapter(null);
+        }
+
+    }
 }

@@ -28,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -87,6 +88,9 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
     FloatingActionButton chatFloat;
     StorageReference teamImageRef;
     Boolean teamFieldsPlus;
+    boolean adapterSet = false;
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -122,6 +126,8 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
+
+
 
         teamCountryArray = getResources().getStringArray(R.array.country_list);
         chatFloat = findViewById(R.id.chat_float);
@@ -229,13 +235,13 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                         adapter.notifyDataSetChanged();
                         eventRecycler.setAdapter(adapter);
                         adapter.startListening();
+                        adapterSet = true;
 
                         DocumentSnapshot documentSnapshot1 = task.getResult();
                         teamName = documentSnapshot1.get("teamUsernameText").toString();
                         teamCountry = documentSnapshot1.getLong("teamCountryText").intValue();
                         teamFullName = documentSnapshot1.get("teamFullNameText").toString();
                         level = documentSnapshot1.getLong("level").intValue();
-                        //
                         db.collection("Teams").document(teamID1).collection("TeamUsers")
                                 .whereEqualTo("memberFieldsPlus", true).get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -246,7 +252,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                 }else {
                                     teamFieldsPlus = true;
                                 }
-                                //
+
                                 teamLevelArray = getResources().getStringArray(R.array.level_array);
                                 teamLevelString = teamLevelArray[level];
                                 teamCountryString = teamCountryArray[teamCountry];
@@ -254,37 +260,34 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                 teamTextName.setText(teamFullName);
                                 teamTextCountry.setText(teamCountryString);
                                 teamLevel.setText(teamLevelString);
-                                teamImageRef = FirebaseStorage.getInstance()
-                                        .getReference().child("teampics/"+teamID1+".jpg");
-                                teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        progressBar.setVisibility(View.GONE);
-                                        if (task.isSuccessful()) {
-                                            GlideApp.with(TeamActivity.this)
-                                                    .load(teamImageRef)
-                                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                                    .skipMemoryCache(true)
-                                                    .into(teamImage).waitForLayout();
-                                            basicInfoCont.setVisibility(View.VISIBLE);
-                                            addEventImage.setVisibility(View.VISIBLE);
-                                            teamEventsText.setVisibility(View.VISIBLE);
-                                            eventRecycler.setEmptyView(emptyConstraint);
-                                            eventRecycler.setVisibility(View.VISIBLE);
-                                            chatFloat.setVisibility(View.VISIBLE);
-                                        } else {
-                                            teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
-                                            basicInfoCont.setVisibility(View.VISIBLE);
-                                            addEventImage.setVisibility(View.VISIBLE);
-                                            teamEventsText.setVisibility(View.VISIBLE);
-                                            eventRecycler.setEmptyView(emptyConstraint);
-                                            eventRecycler.setVisibility(View.VISIBLE);
-                                            chatFloat.setVisibility(View.VISIBLE);
-                                        }
-                                    }
-                                });
 
-                                country_map.setOnClickListener(new View.OnClickListener() {
+                                progressBar.setVisibility(View.GONE);
+                                basicInfoCont.setVisibility(View.VISIBLE);
+                                addEventImage.setVisibility(View.VISIBLE);
+                                teamEventsText.setVisibility(View.VISIBLE);
+                                eventRecycler.setEmptyView(emptyConstraint);
+                                eventRecycler.setVisibility(View.VISIBLE);
+                                chatFloat.setVisibility(View.VISIBLE);
+
+                                teamImageRef = FirebaseStorage.getInstance()
+                                            .getReference().child("teampics/"+teamID1+".jpg");
+                                    teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Uri> task) {
+                                            if (task.isSuccessful()) {
+                                                GlideApp.with(getApplicationContext())
+                                                        .load(teamImageRef)
+                                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                                        .skipMemoryCache(true)
+                                                        .into(teamImage);
+                                            } else {
+                                                teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+
+                                            }
+                                        }
+                                    });
+
+                                    country_map.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         Intent intent = new Intent();
@@ -297,12 +300,9 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                 });
                             }
                                 });
-
-
                     }
                 });
-
-            }else{
+                }else{
                     Snackbar.make(findViewById(R.id.team_activity), getResources()
                             .getString(R.string.error_occurred_loading_document), Snackbar.LENGTH_LONG).show();
                 }
@@ -313,19 +313,21 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        adapter.stopListening();
-        eventRecycler.setAdapter(null);
-
+        if (adapterSet) {
+            adapter.stopListening();
+            eventRecycler.setAdapter(null);
+        }
 
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if (adapterSet) {
+            adapter.stopListening();
 
-        eventRecycler.setAdapter(null);
-
+            eventRecycler.setAdapter(null);
+        }
     }
 
     @Override
@@ -343,7 +345,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
 
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
-                    GlideApp.with(TeamActivity.this)
+                    GlideApp.with(getApplicationContext())
                             .load(teamImageRef)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)

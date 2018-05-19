@@ -122,7 +122,9 @@
             android:background="@drawable/rounded_view"
             android:text="@string/in"
             android:textColor="@color/colorPrimary"
-            android:layout_marginBottom="2dp"/>
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="2dp"/>
 
         <Button
             android:id="@+id/half_button"
@@ -134,7 +136,9 @@
             android:text="@string/open"
             android:textColor="@color/blacknot"
             android:layout_marginStart="4dp"
-            android:layout_marginBottom="2dp"/>
+            android:layout_marginBottom="2dp"
+
+            android:layout_marginTop="2dp"/>
 
         <Button
             android:id="@+id/out_button"
@@ -146,6 +150,8 @@
             android:layout_marginStart="4dp"
             android:textColor="@color/red_out"
             android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
             />
     </LinearLayout>
 

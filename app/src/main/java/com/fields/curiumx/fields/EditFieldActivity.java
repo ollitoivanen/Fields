@@ -182,9 +182,12 @@ public class EditFieldActivity extends AppCompatActivity {
                      //   uploadImageToFirebaseStorage();
                     //}
                     saveButton1.setEnabled(false);
-                    db.collection("Fields").document(fieldID).update("fieldName", fieldNametext, "fieldArea", fieldAreaText,
+                    db.collection("Fields").document(fieldID).update("fieldName", fieldNametext,
+                            "fieldNameLowerCase", fieldNametext.toLowerCase(),"fieldArea", fieldAreaText,
+                            "fieldAreaLowerCase", fieldAreaText.toLowerCase(),
                             "fieldAddress", fieldAdressText, "goalCount", fieldGoalCountT.getSelectedItemPosition(),
-                            "fieldType", fieldTypeT.getSelectedItemPosition(), "accessType", fieldAccesTypeT.getSelectedItemPosition()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            "fieldType", fieldTypeT.getSelectedItemPosition(),
+                            "accessType", fieldAccesTypeT.getSelectedItemPosition()).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
@@ -201,7 +204,8 @@ public class EditFieldActivity extends AppCompatActivity {
                                 finish();
 
                             }else {
-                                Snackbar.make(findViewById(R.id.edit_field_activity), getResources()
+                                Snackbar.make(findViewById(R.id.edit_field_activity),
+                                        getResources()
                                                 .getString(R.string.error_occurred_creating_field),
                                         Snackbar.LENGTH_SHORT).show();
                                 saveButton1.setEnabled(true);

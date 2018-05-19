@@ -166,7 +166,7 @@ public class CreateNewFieldActivity extends AppCompatActivity {
 
     public void updateData(){
         progressBar.setVisibility(View.VISIBLE);
-        final FieldMap fieldMap = new FieldMap(fieldNameText, fieldAreaText, fieldAddressText,
+        final FieldMap fieldMap = new FieldMap(fieldNameText, fieldNameText.toLowerCase(), fieldAreaText, fieldAreaText.toLowerCase(), fieldAddressText,
                 fieldID, goal_count.getSelectedItemPosition(),
                 field_type.getSelectedItemPosition(), field_access_type.getSelectedItemPosition());
         db.collection("Fields").document(fieldID).set(fieldMap).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -290,7 +290,7 @@ public class CreateNewFieldActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                startActivity(new Intent(CreateNewFieldActivity.this, SearchActivity.class));
+               onBackPressed();
                 finish();
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 

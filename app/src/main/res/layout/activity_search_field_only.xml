@@ -7,21 +7,21 @@
     tools:context=".SearchFieldOnlyActivity">
 
     <SearchView
+
         android:id="@+id/search1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="4dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/rounded_view"
+        android:queryBackground="@android:color/transparent"
+        android:queryHint="@string/search_hint"
         android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingBottom="6dp"
-        android:paddingEnd="2dp"
-        android:paddingStart="2dp"
-        android:queryHint="@string/search_field"/>
+        />
 
     <com.fields.curiumx.fields.EmptyRecyclerView
         android:id="@+id/fieldRecycler"
@@ -37,6 +37,14 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/no_results_found"
+        />
+
+    <View
+        android:id="@+id/div_search"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/DividerColor"
+        app:layout_constraintTop_toBottomOf="@id/area_name_thing1"
         />
 
     <LinearLayout
@@ -61,8 +69,10 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="1dp"
             android:layout_weight="1"
-            android:background="@drawable/rounded_view"
-            android:text="@string/field_name" />
+            android:text="@string/field_name"
+            android:background="@color/Background_Fields"
+            style="?android:attr/borderlessButtonStyle"
+            />
 
         <Button
             android:id="@+id/field_by_area1"
@@ -73,8 +83,10 @@
             android:layout_marginEnd="2dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="1dp"
-            android:background="@drawable/rounded_view"
-            android:text="@string/field_area" />
+            android:text="@string/field_area"
+            android:background="@color/Background_Fields"
+            style="?android:attr/borderlessButtonStyle"
+            />
 
 
     </LinearLayout>

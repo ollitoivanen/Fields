@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -63,6 +64,7 @@ public class NewEventActivity extends AppCompatActivity {
     String eventTimeStart;
     String eventTimeEnd;
     String fieldID;
+    ImageView deleteEventField;
 
 
 
@@ -105,6 +107,7 @@ public class NewEventActivity extends AppCompatActivity {
         error = findViewById(R.id.error_message);
         error2 = findViewById(R.id.error_message2);
         setTitle(getResources().getString(R.string.create_new_event));
+        deleteEventField = findViewById(R.id.delete_event_field);
         progressBar12 = findViewById(R.id.progress_bar1);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -222,9 +225,19 @@ public class NewEventActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 chosenFieldText.setVisibility(View.VISIBLE);
+                deleteEventField.setVisibility(View.VISIBLE);
                 chosenFieldNameIntent = data.getStringExtra("fieldName2");
                 fieldID = data.getStringExtra("fieldID");
               chosenFieldText.setText(chosenFieldNameIntent);
+
+              deleteEventField.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                      chosenFieldNameIntent = null;
+                      chosenFieldText.setVisibility(View.GONE);
+                      deleteEventField.setVisibility(View.GONE);
+                  }
+              });
             }
         }
     }
@@ -284,11 +297,6 @@ public class NewEventActivity extends AppCompatActivity {
             updateTime(hr, min);
         }
     };
-
-    private static String utilTime(int value) {
-        if (value < 10) return "0" + String.valueOf(value);
-        else return String.valueOf(value);
-    }
 
     private void updateTime(int hours, int mins) {
         String timeSet = "";
@@ -355,8 +363,8 @@ public class NewEventActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                onBackPressed();
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

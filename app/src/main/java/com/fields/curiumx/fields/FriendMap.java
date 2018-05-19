@@ -20,4 +20,5 @@ public class FriendMap {
     public String getUserName() {
         return userName;
     }
+
 }

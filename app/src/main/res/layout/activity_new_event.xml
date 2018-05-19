@@ -115,6 +115,23 @@
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/location_text"
+
+        />
+
+    <ImageView
+        android:contentDescription="@string/delete"
+        android:id="@+id/delete_event_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_cross_red"
+        app:layout_constraintBottom_toTopOf="@id/choose_field_button"
+        app:layout_constraintStart_toEndOf="@id/chosen_field_name"
+
+
         app:layout_constraintTop_toBottomOf="@id/location_text" />
 
     <Button

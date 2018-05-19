@@ -2,7 +2,9 @@ package com.fields.curiumx.fields;
 
 public class FieldMap {
     private String fieldName;
+    private  String fieldNameLowerCase;
     private String fieldArea;
+    private String fieldAreaLowerCase;
     private String fieldAddress;
     private String fieldID;
     private int goalCount;
@@ -16,7 +18,8 @@ public class FieldMap {
 
     }
 
-    public FieldMap(String fieldName, String fieldArea, String fieldAddress, String fieldID, int goalCount, int fieldType, int accessType){
+    public FieldMap(String fieldName, String fieldNameLowerCase, String fieldArea, String fieldAreaLowerCase, String fieldAddress,
+                    String fieldID, int goalCount, int fieldType, int accessType){
         this.fieldName = fieldName;
         this.fieldArea = fieldArea;
         this.fieldAddress = fieldAddress;
@@ -24,6 +27,8 @@ public class FieldMap {
         this.goalCount = goalCount;
         this.fieldType = fieldType;
         this.accessType = accessType;
+        this.fieldNameLowerCase = fieldNameLowerCase;
+        this.fieldAreaLowerCase = fieldAreaLowerCase;
 
     }
 
@@ -55,4 +60,12 @@ public class FieldMap {
         return goalCount;
     }
 
+    public String getFieldNameLowerCase() {
+        return fieldNameLowerCase;
+
+    }
+
+    public String getFieldAreaLowerCase() {
+        return fieldAreaLowerCase;
+    }
 }

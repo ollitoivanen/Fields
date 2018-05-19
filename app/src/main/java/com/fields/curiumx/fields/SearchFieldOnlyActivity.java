@@ -2,24 +2,33 @@ package com.fields.curiumx.fields;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,26 +37,33 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
 
     String text;
     TextView textView;
-
-    SearchView searchView;
+    SearchView search;
     Button field_by_area_button;
     Button field_by_name_button;
     @BindView(R.id.fieldRecycler)
     EmptyRecyclerView ep;
-
+    StorageReference fieldImageRef;
     Boolean clicked_area;
     Boolean clicked_name;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
+    Boolean listening;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_field_only);
         textView = findViewById(R.id.textViews_empty);
-        searchView = findViewById(R.id.search1);
+        search = findViewById(R.id.search1);
+        listening = false;
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search.setIconified(false);
+            }
+        });
         field_by_area_button = findViewById(R.id.field_by_area1);
         field_by_area_button.setOnClickListener(this);
         field_by_name_button = findViewById(R.id.field_by_name1);
@@ -56,19 +72,23 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
         field_by_name_button.callOnClick();
         ButterKnife.bind(this);
         ep.setEmptyView(textView);
-
+        setTitle(getResources().getString(R.string.search_field));
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                findField();
-                adapter.startListening();
+
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                findField();
+                adapter.startListening();
+                listening = true;
                 return false;
             }
         });
@@ -81,25 +101,26 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
     }
 
     public class fieldHolder extends EmptyRecyclerView.ViewHolder {
-        @BindView(R.id.name)
         TextView textName;
+        ImageView profileImageSearch;
 
 
         public fieldHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            textName = itemView.findViewById(R.id.name);
+            profileImageSearch = itemView.findViewById(R.id.profile_image_search);
         }
     }
 
 
 
     public void findField(){
-        text = searchView.getQuery().toString();
+        text = search.getQuery().toString().trim().toLowerCase();
         Query query;
         if (clicked_name){
-            query = db.collection("Fields").whereEqualTo("fieldName", text);
+            query = db.collection("Fields").whereEqualTo("fieldNameLowerCase", text);
         }else {
-            query = db.collection("Fields").whereEqualTo("fieldArea", text);
+            query = db.collection("Fields").whereEqualTo("fieldAreaLowerCase", text);
         }
 
         FirestoreRecyclerOptions<FieldMap> response = new FirestoreRecyclerOptions.Builder<FieldMap>()
@@ -108,8 +129,25 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
 
         adapter = new FirestoreRecyclerAdapter<FieldMap, fieldHolder>(response) {
             @Override
-            public void onBindViewHolder(fieldHolder holder, int position, final FieldMap model) {
+            public void onBindViewHolder(final fieldHolder holder, int position, final FieldMap model) {
                 holder.textName.setText(model.getFieldName());
+
+                fieldImageRef = FirebaseStorage.getInstance()
+                        .getReference().child("fieldpics/"+model.getFieldID()+".jpg");
+                fieldImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            GlideApp.with(getApplicationContext())
+                                    .load(fieldImageRef)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(holder.profileImageSearch);
+                        }else {
+                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
+                        }
+                    }
+                });
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -123,6 +161,9 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
                         intent.putExtra("fieldID", model.getFieldID());
                         setResult(Activity.RESULT_OK, intent);
                         finish();
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+
 
                     }
                 });
@@ -152,20 +193,60 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
 
         switch (v.getId()){
 
-
             case R.id.field_by_name1:
                 clicked_name = true;
                 clicked_area = false;
+                search.setQuery("", false);
                 field_by_name_button.setTextColor((getResources().getColor(R.color.colorPrimaryDark)));
                 field_by_area_button.setTextColor((getResources().getColor(R.color.blacknot)));
                 break;
             case R.id.field_by_area1:
                 clicked_area = true;
                 clicked_name = false;
+                search.setQuery("", false);
                 field_by_area_button.setTextColor((getResources().getColor(R.color.colorPrimaryDark)));
                 field_by_name_button.setTextColor((getResources().getColor(R.color.blacknot)));
 
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (listening) {
+            adapter.stopListening();
+            ep.setAdapter(null);
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (listening) {
+            adapter.stopListening();
+            ep.setAdapter(null);
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                finish();
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
     }
 }

@@ -161,10 +161,10 @@
     <string name="you_arent_in_any_team">You aren\'t in any team. Join a team now or create a new one to get the best out of Fields! </string>
     <string name="join_existing_team">Join existing team</string>
     <string name="no_pending_players">No requests pending. When player wants to join your team, the request will appear here!</string>
-    <string name="manage_team">- Manage your team </string>
-    <string name="set_event">- Set team events </string>
-    <string name="see_who_is_in">- See who\'s in and out from events </string>
-    <string name="chat_with_team">- Chat with team (Fields Plus) </string>
+    <string name="manage_team">Manage your team </string>
+    <string name="set_event">Set team events </string>
+    <string name="see_who_is_in">See who\'s in and out from events </string>
+    <string name="chat_with_team">Chat with team (Fields Plus) </string>
     <string name="stay">Stay</string>
     <string name="event_details">Event details</string>
     <string name="delete_event">Delete event</string>
@@ -225,6 +225,13 @@
     <string name="h">h</string>
     <string name="trainings">%1$s trainings</string>
     <string name="training_history_title">Training History</string>
+    <string name="fields">Fields</string>
+    <string name="users">Users</string>
+    <string name="teams">Teams</string>
+    <string name="delete">Delete</string>
+    <string name="your_team">Your Team</string>
+    <string name="actions">Actions</string>
+
 
     <string-array name="role_spinner">
         <item>Player</item>

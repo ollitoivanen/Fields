@@ -11,6 +11,7 @@
     <color name="premium_blue">#3facff</color>
     <color name="blacknot">#2d2d2d</color>
     <color name="red_out">#ff3838</color>
+    <color name="light_text">#b2b2b2</color>
 
     <!-- dots inactive colors -->
     <color name="dot_dark_screen1">#d1395c</color>

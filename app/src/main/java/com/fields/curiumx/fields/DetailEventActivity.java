@@ -96,8 +96,8 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                 });
                 break;
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                onBackPressed();
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
