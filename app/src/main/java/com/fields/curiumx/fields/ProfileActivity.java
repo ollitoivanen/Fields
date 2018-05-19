@@ -220,13 +220,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                         if (hours < 1) {
                             placeHolder = minutes;
-                            placeHolder2 = placeHolder + " " + getResources().getString(R.string.minutes);
+                            placeHolder2 = placeHolder + " " + "minutes";
+                        }else if (hours<2){
+                            placeHolder = hours;
+                            placeHolder2 = placeHolder + " " + getResources().getString(R.string.hour);
                         } else if (days < 1) {
                             placeHolder = hours;
                             placeHolder2 = placeHolder + " " + getResources().getString(R.string.hours);
+                        }else if (days<2){
+                            placeHolder = days;
+                            placeHolder2 = placeHolder + " " + getResources().getString(R.string.day);
                         } else {
                             placeHolder = days;
-                            placeHolder2 = placeHolder + " " + getResources().getString(R.string.days);
+                            placeHolder2 = placeHolder2 + " " + getResources().getString(R.string.days);
                         }
                         currentField = documentSnapshot.get("currentFieldName").toString();
                         testCurrentField.setText(getResources().getString(R.string.last_seen_at, currentField, placeHolder2));

@@ -44,6 +44,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -56,7 +58,6 @@ public class FeedActivity extends AppCompatActivity {
     TextView textView;
     Button logoutButton;
     FirebaseAuth mAuth;
-    FirebaseAuth.AuthStateListener mAuthListener;
     CardView teamCardView;
     CardView teamCardViewNoTeam;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -71,6 +72,12 @@ public class FeedActivity extends AppCompatActivity {
     LinearLayoutManager linearLayoutManager;
     FirestoreRecyclerAdapter adapter;
     String uid;
+    long placeHolder;
+    String placeHolder2;
+    Date timestamp;
+    ConstraintLayout emptyView;
+    TextView friends_text;
+
 
     public class feedHolder extends EmptyRecyclerView.ViewHolder {
         TextView currentField;
@@ -104,15 +111,11 @@ public class FeedActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
     public void loadData(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         uid = user.getUid();
+        emptyView = findViewById(R.id.empty_friend_list_feed);
+        friends_text = findViewById(R.id.actions_text);
 
 
         db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -120,16 +123,20 @@ public class FeedActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 progressBar.setVisibility(View.GONE);
                 yourTeamText.setVisibility(View.VISIBLE);
+                friends_text.setVisibility(View.VISIBLE);
+                feedRecycler.setVisibility(View.VISIBLE);
+                feedRecycler.setEmptyView(emptyView);
+
+
                 DocumentSnapshot ds = task.getResult();
                 if (ds.get("usersTeam")==null){
                     ConstraintSet constraintSet = new ConstraintSet();
                     base = findViewById(R.id.base_activity);
                     constraintSet.clone(base);
-                    constraintSet.connect(R.id.actions_text,ConstraintSet.TOP,R.id.teamCardNoTeam,ConstraintSet.BOTTOM,12);
+                    constraintSet.connect(R.id.actions_text,ConstraintSet.TOP,R.id.teamCardNoTeam,ConstraintSet.BOTTOM,20);
                     constraintSet.applyTo(base);
 
                     teamCardViewNoTeam.setVisibility(View.VISIBLE);
-                    feedRecycler.setVisibility(View.VISIBLE);
                     teamCardViewNoTeam.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -142,7 +149,6 @@ public class FeedActivity extends AppCompatActivity {
                 }else {
 
                     teamCardView.setVisibility(View.VISIBLE);
-                    feedRecycler.setVisibility(View.VISIBLE);
                     String teamName = ds.get("usersTeam").toString();
                     String teamID = ds.get("usersTeamID").toString();
                     final ImageView teamImageFeed = findViewById(R.id.team_image_feed);
@@ -201,15 +207,11 @@ public class FeedActivity extends AppCompatActivity {
         }else {
             loadData();
             setRecycler();
-
         }
-
-
         feedButton = findViewById(R.id.feed_button);
         feedButton.setImageDrawable(getResources().getDrawable(R.drawable.home_green));
         textView = findViewById(R.id.textview);
-
-    }
+        }
 
     @Override
     protected void onRestart() {
@@ -259,6 +261,7 @@ public class FeedActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
 
                             holder.username.setText(model.getUserName());
 
@@ -275,7 +278,7 @@ public class FeedActivity extends AppCompatActivity {
                                                 .into(holder.userPhoto);
                                     } else {
                                         holder.userPhoto.setImageDrawable(getResources().
-                                                getDrawable(R.drawable.team_basic));
+                                                getDrawable(R.drawable.profileim));
 
                                     }
                                 }
@@ -283,22 +286,46 @@ public class FeedActivity extends AppCompatActivity {
 
                         String currentField = task.getResult().get("currentFieldName").toString();
                         if (!currentField.equals("")) {
-                            holder.currentField.setText(currentField);
+
+
+                            timestamp = (Date) documentSnapshot.get("timestamp");
+                            Date currentTime = Calendar.getInstance().getTime();
+                            long diff = currentTime.getTime() - timestamp.getTime();
+                            long seconds = diff / 1000;
+                            long minutes = seconds / 60;
+                            long hours = minutes / 60;
+                            long days = hours / 24;
+
+                            if (hours < 1) {
+                                placeHolder = minutes;
+                                placeHolder2 = placeHolder + " " + "minutes";
+                            }else if (hours<2){
+                                placeHolder = hours;
+                                placeHolder2 = placeHolder + " " + getResources().getString(R.string.hour);
+                            } else if (days < 1) {
+                                placeHolder = hours;
+                                placeHolder2 = placeHolder + " " + getResources().getString(R.string.hours);
+                            }else if (days<2){
+                                placeHolder = days;
+                                placeHolder2 = placeHolder + " " + getResources().getString(R.string.day);
+                                } else {
+                                placeHolder = days;
+                                placeHolder2 = placeHolder2 + " " + getResources().getString(R.string.days);
+                            }
+                            holder.currentField.setText(getResources().getString(R.string.at_ago, currentField, placeHolder2));
                         }else {
                             holder.currentField.setText(getResources().getString(R.string.not_at_any_field));
                         }
-                    }else {
+                        }else {
                             Snackbar.make(findViewById(R.id.team_activity),
                                     getResources()
                                     .getString(R.string.error_occurred_loading_document),
                                     Snackbar.LENGTH_LONG).show();
-
                         }
-
                     }
                 });
 
-               /* holder.itemView.setOnClickListener(new View.OnClickListener() {
+               holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         progressBar.setVisibility(View.VISIBLE);
@@ -318,8 +345,10 @@ public class FeedActivity extends AppCompatActivity {
                                         intent.putExtra("userID", ds1.get("userID").toString());
                                         intent.putExtra("currentFieldName", ds1.get("currentFieldName").toString());
                                         intent.putExtra("currentFieldID", ds1.get("currentFieldID").toString());
-                                        intent.putExtra("usersTeam", ds1.get("usersTeam").toString());
-                                        intent.putExtra("usersTeamID", ds1.get("usersTeamID").toString());
+                                        if (ds1.get("usersTeam")!=null) {
+                                            intent.putExtra("usersTeam", ds1.get("usersTeam").toString());
+                                            intent.putExtra("usersTeamID", ds1.get("usersTeamID").toString());
+                                        }
                                         intent.putExtra("userRole", ds1.getLong("userRole").intValue());
                                         intent.putExtra("userReputation", ds1.get("userReputation").toString());
                                         intent.putExtra("position", ds1.getLong("position"));
@@ -337,7 +366,7 @@ public class FeedActivity extends AppCompatActivity {
 
 
                     }
-                });*/
+                });
             }
 
             @Override

@@ -370,6 +370,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                finish();
                 return true;
             case R.id.leave:
 

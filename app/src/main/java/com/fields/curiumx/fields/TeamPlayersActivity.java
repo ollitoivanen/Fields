@@ -145,18 +145,8 @@ public class TeamPlayersActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-
-                if (i==1){
-                    Intent intent = new Intent(TeamPlayersActivity.this, TeamActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-
-                }else if (i==2){
-                    Intent intent = new Intent(TeamPlayersActivity.this, DetailTeamActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-
-                }
+                onBackPressed();
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

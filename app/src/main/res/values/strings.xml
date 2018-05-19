@@ -126,6 +126,7 @@
     <string name="hours"> hours</string>
     <string name="days"> days</string>
     <string name="last_seen_at">Last seen at: %1$s, %2$s ago</string>
+    <string name="at_ago">at %1$s, %2$s ago</string>
     <string name="error_occurred_loading_document">An error occurred while loading data. Please check your internet connection and try again </string>
     <string name="not_at_any_field">Not at any field</string>
     <string name="not_at_team">Not at any team</string>
@@ -223,6 +224,8 @@
     <string name="training_history">training history</string>
     <string name="min">min</string>
     <string name="h">h</string>
+    <string name="hour">hour</string>
+    <string name="day">day</string>
     <string name="trainings">%1$s trainings</string>
     <string name="training_history_title">Training History</string>
     <string name="fields">Fields</string>

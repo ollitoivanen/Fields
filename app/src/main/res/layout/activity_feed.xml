@@ -113,7 +113,7 @@
                 <ImageView
                     android:layout_width="65dp"
                     android:layout_height="65dp"
-                    android:src="@drawable/profile_round" />
+                    />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/team_image_feed"
@@ -121,7 +121,7 @@
                     android:layout_height="60dp"
                     android:layout_gravity="center"
                     android:elevation="6dp"
-                    android:src="@drawable/team_basic" />
+                     />
 
             </FrameLayout>
 
@@ -185,17 +185,17 @@
 
     <TextView
         android:id="@+id/actions_text"
-        android:text="@string/actions"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/teamCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/friends"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
 
-        />
+        app:layout_constraintTop_toBottomOf="@id/teamCard" />
 
     <com.fields.curiumx.fields.EmptyRecyclerView
         android:id="@+id/actions_recycler"
@@ -209,6 +209,39 @@
 
 
     </com.fields.curiumx.fields.EmptyRecyclerView>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/empty_friend_list_feed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/actions_recycler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/actions_recycler">
+
+        <ImageView
+            android:id="@+id/sad_face"
+            android:layout_width="118dp"
+            android:layout_height="108dp"
+            android:src="@drawable/sad_face"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/no_friends"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sad_face" />
+    </android.support.constraint.ConstraintLayout>
 
 
 

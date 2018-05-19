@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -70,6 +71,7 @@ public class DetailUserActivity extends AppCompatActivity {
     TextView roleText;
     TextView rept;
     ImageView profileImage;
+    ImageView badge_reputation;
     String[] userRoleArray;
     String [] userPositionArray;
     Date timestamp;
@@ -106,6 +108,7 @@ public class DetailUserActivity extends AppCompatActivity {
         profileImage = findViewById(R.id.profilePhoto_detail);
         userRoleArray = getResources().getStringArray(R.array.role_spinner);
         userPositionArray = getResources().getStringArray(R.array.position_spinner);
+        badge_reputation = findViewById(R.id.badge_rep_detail);
 
         chatUser = findViewById(R.id.chat_user);
         friendContainer = findViewById(R.id.friend_container);
@@ -155,12 +158,18 @@ public class DetailUserActivity extends AppCompatActivity {
             if (hours < 1) {
                 placeHolder = minutes;
                 placeHolder2 = placeHolder + " " + "minutes";
+            } else if (hours < 2) {
+                placeHolder = hours;
+                placeHolder2 = placeHolder + " " + getResources().getString(R.string.hour);
             } else if (days < 1) {
                 placeHolder = hours;
-                placeHolder2 = placeHolder + " " + "hours";
+                placeHolder2 = placeHolder + " " + getResources().getString(R.string.hours);
+            } else if (days < 2) {
+                placeHolder = days;
+                placeHolder2 = placeHolder + " " + getResources().getString(R.string.day);
             } else {
                 placeHolder = days;
-                placeHolder2 = placeHolder2 + " " + "days";
+                placeHolder2 = placeHolder2 + " " + getResources().getString(R.string.days);
             }
             currentField.setText(getResources().getString(R.string.last_seen_at, currentFieldName, placeHolder2));
 
@@ -169,32 +178,79 @@ public class DetailUserActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     db.collection("Fields").document(currentFieldID).get()
                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            DocumentSnapshot ds = task.getResult();
-                            String fieldArea = ds.get("fieldArea").toString();
-                            String fieldAddress = ds.get("fieldAddress").toString();
-                            String goalCount = ds.get("goalCount").toString();
-                            String fieldType= ds.get("fieldType").toString();
-                            String accessType = ds.get("accessType").toString();
-                            Intent intent = new Intent(DetailUserActivity.this, DetailFieldActivity.class);
-                            intent.putExtra("fieldID", currentFieldID);
-                            intent.putExtra("fieldName", currentFieldName);
-                            intent.putExtra("fieldArea", fieldArea);
-                            intent.putExtra("fieldAddress", fieldAddress);
-                            intent.putExtra("goalCount", goalCount);
-                            intent.putExtra("fieldType", fieldType);
-                            intent.putExtra("fieldAccessType", accessType);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                        }
-                    });
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    DocumentSnapshot ds = task.getResult();
+                                    String fieldArea = ds.get("fieldArea").toString();
+                                    String fieldAddress = ds.get("fieldAddress").toString();
+                                    String goalCount = ds.get("goalCount").toString();
+                                    String fieldType = ds.get("fieldType").toString();
+                                    String accessType = ds.get("accessType").toString();
+                                    Intent intent = new Intent(DetailUserActivity.this, DetailFieldActivity.class);
+                                    intent.putExtra("fieldID", currentFieldID);
+                                    intent.putExtra("fieldName", currentFieldName);
+                                    intent.putExtra("fieldArea", fieldArea);
+                                    intent.putExtra("fieldAddress", fieldAddress);
+                                    intent.putExtra("goalCount", goalCount);
+                                    intent.putExtra("fieldType", fieldType);
+                                    intent.putExtra("fieldAccessType", accessType);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                }
+                            });
 
 
                 }
             });
+
         } else {
             currentField.setText(getResources().getString(R.string.not_at_any_field));
+        }
+
+        long reputationInt = Long.parseLong(userReputation);
+
+
+        if (reputationInt < 500) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_bronze_1));
+        } else if (reputationInt < 1500) {
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_silver_2));
+        } else if (reputationInt < 3000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_gold_3));
+        } else if (reputationInt < 6000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_4));
+        } else if (reputationInt < 10000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_5));
+        } else if (reputationInt < 15000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_6));
+        } else if (reputationInt < 21000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_7));
+        } else if (reputationInt < 28000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_8));
+        } else if (reputationInt < 38000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_9));
+        } else if (reputationInt < 48000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_10));
+        } else if (reputationInt < 58000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_11));
+        } else if (reputationInt < 70000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_12));
+        } else if (reputationInt < 85000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_13));
+        } else if (reputationInt >= 85000) {
+
+            badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_14));
         }
 
         if (usersTeam != null) {
@@ -231,7 +287,8 @@ public class DetailUserActivity extends AppCompatActivity {
         setTitle(username);
 
         realNameText.setText(realName);
-        rept.setText(userReputation);
+        rept.setText(getResources().getString(R.string.reputation, userReputation));
+
         userRoleText = userRoleArray[userRole];
         if (position == -1) {
             roleText.setText(getResources().getString(R.string.player_position_role_not_given, userRoleText));

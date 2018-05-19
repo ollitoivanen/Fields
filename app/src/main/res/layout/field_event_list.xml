@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.constraint.ConstraintLayout
@@ -15,11 +14,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/rounded_view_green"
-            android:padding="5dp"
+            android:padding="7dp"
             android:elevation="1dp"
-            android:text="time"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/white"
@@ -31,10 +29,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="12dp"
             android:elevation="2dp"
             android:padding="5dp"
-            android:text="date"
             android:textSize="20sp"
 
             app:layout_constraintStart_toEndOf="@id/event_time_field"
@@ -48,7 +45,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:padding="5dp"
-            android:text="team"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -62,7 +58,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:padding="5dp"
-            android:text="type"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@id/event_team_field"
             app:layout_constraintTop_toBottomOf="@+id/event_time_field" />
@@ -71,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/DividerColor"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             />
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>
