@@ -144,6 +144,7 @@
     <string name="new_password">New Password</string>
     <string name="please_enter_old_password">Please enter old password</string>
     <string name="please_enter_new_password">Please enter new password</string>
+    <string name="please_enter_valid_password">Please enter valid password</string>
     <string name="old_password_is_wrong">Old password is wrong</string>
     <string name="password_changed">Password changed</string>
     <string name="error_password_length">Password length should be over 6 characters </string>

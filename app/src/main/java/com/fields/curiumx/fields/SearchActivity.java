@@ -8,8 +8,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -139,7 +137,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                                     .skipMemoryCache(true)
                                     .into(holder.profileImageSearch);
                         }else {
-                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
                         }
                     }
                     });
@@ -204,7 +202,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                                     .skipMemoryCache(true)
                                     .into(holder.profileImageSearch);
                         }else {
-                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
+                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
                         }
                     }
                 });

@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -243,7 +241,7 @@ public class DetailTeamActivity extends AppCompatActivity {
                             .load(storageRef)
                             .into(teamImage);
                 }else {
-                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
                 }
 
             }

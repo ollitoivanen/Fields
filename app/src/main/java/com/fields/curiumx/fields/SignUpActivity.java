@@ -7,10 +7,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -42,14 +45,29 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ConstraintLayout container1;
     ProgressBar progressBar;
+    TextInputLayout usernameInput;
+    TextInputLayout realNameInput;
+    TextInputLayout emailInput;
+    TextInputLayout passwordInput;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.FieldsThemeAppCompatWelcome);
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_sign_up);
-        setTitle("");
         animateLogo();
+
+
+
+
+        usernameInput = findViewById(R.id.username_input);
+        realNameInput = findViewById(R.id.real_name_input);
+        emailInput = findViewById(R.id.email_address_input);
+        passwordInput = findViewById(R.id.password_input);
+
 
 
 
@@ -58,15 +76,23 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         roleSpinner.setAdapter(adapter);
         welcome = findViewById(R.id.welcome);
-        realName = findViewById(R.id.real_name_edit);
-        username = findViewById(R.id.username_edit);
-        emailSignUp = findViewById(R.id.emailSignUp);
+        realName = findViewById(R.id.real_name_edit_signup);
+        username = findViewById(R.id.username_edit_signup);
+        emailSignUp = findViewById(R.id.email_edit_signup);
         emailSignUp.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        passwordSignUp = findViewById(R.id.passwordSignUp);
+        passwordSignUp = findViewById(R.id.password_edit_signup);
         signUpButton = findViewById(R.id.signUpButton);
         signInTextView = findViewById(R.id.signInTextView);
         container1 = findViewById(R.id.cont);
         progressBar = findViewById(R.id.progress);
+
+        username.addTextChangedListener(new MyTextWatcher(username));
+        realName.addTextChangedListener(new MyTextWatcher(realName));
+        emailSignUp.addTextChangedListener(new MyTextWatcher(emailSignUp));
+        passwordSignUp.addTextChangedListener(new MyTextWatcher(passwordSignUp));
+
+
+
 
         signUpButton.setOnClickListener(this);
         signInTextView.setOnClickListener(this);
@@ -105,92 +131,78 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         final String realNameString = realName.getText().toString().trim();
         final int userRole = roleSpinner.getSelectedItemPosition();
 
-        if (realNameString.isEmpty()){
-            realName.setError("Please give real name");
+        if (realNameString.isEmpty()) {
+            realNameInput.setError(getResources().getString(R.string.please_enter_real_name));
             realName.requestFocus();
-        }
-
-        else if (emailString.isEmpty()) {
-            emailSignUp.setError("Email is required");
+        } else if (emailString.isEmpty()) {
+            emailInput.setError(getResources().getString(R.string.please_enter_valid_email));
             emailSignUp.requestFocus();
-            return;
-        }
-
-        else if (!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()) {
-            emailSignUp.setError("Please enter a valid email");
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()) {
+            emailInput.setError(getResources().getString(R.string.please_enter_valid_email));
             emailSignUp.requestFocus();
-            return;
-        }
 
-        else if (passwordString.isEmpty()) {
-            passwordSignUp.setError("Password is required");
+        } else if (passwordString.isEmpty()) {
+            passwordInput.setError(getResources().getString(R.string.please_enter_valid_password));
             passwordSignUp.requestFocus();
-            return;
-        }
-
-        else if (passwordString.length() < 6) {
-            passwordSignUp.setError("Minimum length of password should be 6");
+        } else if (passwordString.length() < 6) {
+            passwordInput.setError(getResources().getString(R.string.error_password_length));
             passwordSignUp.requestFocus();
-            return;
-        }
-
-        else if (usernameString.isEmpty()){
-            username.setError("Name is required");
+        } else if (usernameString.isEmpty()) {
+            usernameInput.setError(getResources().getString(R.string.please_enter_username));
             username.requestFocus();
-            return;
-        }
+        } else {
 
 
-
-        //Checks if user with same username already already exists
-        db.collection("Users").whereEqualTo("username", usernameString).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.getResult().isEmpty()){
+            //Checks if user with same username already already exists
+            db.collection("Users").whereEqualTo("username", usernameString).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.getResult().isEmpty()) {
                         progressBar.setVisibility(View.VISIBLE);
-                    mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            progressBar.setVisibility(View.GONE);
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT)
-                                        .show();
+                        mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                progressBar.setVisibility(View.GONE);
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT)
+                                            .show();
 
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                String uid = user.getUid();
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    String uid = user.getUid();
 
-                                UserMap userMap = new UserMap(usernameString, uid, "",
-                                        "", null, realNameString, userRole, "0",  -1, null, 0, false, null);
-                                db.collection("Users").document(uid).set(userMap);
+                                    UserMap userMap = new UserMap(usernameString, uid, "",
+                                            "", null, realNameString, userRole, "0", -1, null, 0, false, null);
+                                    db.collection("Users").document(uid).set(userMap);
 
-                                UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(usernameString)
-                                        .build();
-                                user.updateProfile(profileChangeRequest);
+                                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(usernameString)
+                                            .build();
+                                    user.updateProfile(profileChangeRequest);
 
-                                Intent intent = new Intent(SignUpActivity.this, FeedActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                finish();
+                                    Intent intent = new Intent(SignUpActivity.this, FeedActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                    finish();
 
-                            } else {
-
-                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                    Toast.makeText(getApplicationContext(), "You are already registered", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
+                                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                        Toast.makeText(getApplicationContext(), "You are already registered", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
-                        }
-                    });
-                    }else{
-                    username.setError("This username is taken");
-                    username.requestFocus();
+                        });
+                    } else {
+                        username.setError("This username is taken");
+                        username.requestFocus();
                     }
-            }
-        });
+                }
+            });
+        }
     }
-
     public void animateLogo(){
         final ImageView logo = findViewById(R.id.logo);
         ObjectAnimator animator = ObjectAnimator.ofFloat(logo, "y", 1000f, 0f )
@@ -240,7 +252,47 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.signInTextView:
                 startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
         }
     }
 
+    private class MyTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()){
+                case R.id.username_edit_signup:
+                    usernameInput.setErrorEnabled(false);
+                    break;
+                case R.id.real_name_edit_signup:
+                    realNameInput.setErrorEnabled(false);
+                    break;
+                case R.id.email_edit_signup:
+                    emailInput.setErrorEnabled(false);
+                    break;
+                case R.id.password_edit_signup:
+                    passwordInput.setErrorEnabled(false);
+                    break;
+
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
 }

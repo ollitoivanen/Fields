@@ -9,12 +9,13 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="295dp"
-        android:layout_height="131dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="50dp"
 
         android:contentDescription="@string/logo"
         android:scaleType="centerCrop"
-        android:src="@drawable/fields_full"
+        android:src="@drawable/fields_logo_full_green"
         app:layout_constraintBottom_toTopOf="@id/welcome"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/welcome_back"
         android:textSize="18sp"
         android:textStyle="bold"

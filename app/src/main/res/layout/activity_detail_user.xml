@@ -60,7 +60,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="center"
-                android:src="@drawable/profileim"
+                android:src="@drawable/profile_default"
                 android:visibility="visible" />
         </FrameLayout>
 
@@ -170,7 +170,6 @@
             android:paddingEnd="5dp"
             android:paddingStart="1dp"
             android:paddingTop="5dp"
-            android:src="@drawable/reps"
             android:contentDescription="@string/badge"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

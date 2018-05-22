@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -39,17 +37,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class FeedActivity extends AppCompatActivity {
@@ -165,7 +157,7 @@ public class FeedActivity extends AppCompatActivity {
                                         .skipMemoryCache(true)
                                         .into(teamImageFeed);
                             } else {
-                                teamImageFeed.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+                                teamImageFeed.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
 
                             }
                         }
@@ -279,7 +271,7 @@ public class FeedActivity extends AppCompatActivity {
                                                 .into(holder.userPhoto);
                                     } else {
                                         holder.userPhoto.setImageDrawable(getResources().
-                                                getDrawable(R.drawable.profileim));
+                                                getDrawable(R.drawable.profile_default));
 
                                     }
                                 }

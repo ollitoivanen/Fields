@@ -22,8 +22,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -149,7 +147,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         deleteImage.setVisibility(View.GONE);
-                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
+                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
 
 
                     }
@@ -168,7 +166,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 deleteImage.setVisibility(View.VISIBLE);
                 deleteImage();
             }else {
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
 
             }
         }

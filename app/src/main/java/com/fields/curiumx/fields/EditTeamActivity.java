@@ -1,6 +1,5 @@
 package com.fields.curiumx.fields;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,7 +8,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -24,27 +22,20 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.UUID;
 
 public class EditTeamActivity extends AppCompatActivity {
     ImageView teamPhotoEdit;
@@ -84,7 +75,7 @@ public class EditTeamActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         deleteImage.setVisibility(View.GONE);
-                        teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
+                        teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
 
 
                     }
@@ -185,7 +176,7 @@ public class EditTeamActivity extends AppCompatActivity {
                     deleteImage.setVisibility(View.VISIBLE);
                     deleteImage();
                 }else {
-                    teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+                    teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
                 }
 
             }

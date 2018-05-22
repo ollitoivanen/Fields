@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -78,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         //.skipMemoryCache(true)
                         .into(profileImage);
             }else{
-                profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
+                profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
             }
         }else{
             startActivity(new Intent(ProfileActivity.this, SignUpActivity.class));

@@ -15,7 +15,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:contentDescription="@string/field"
-        android:src="@drawable/field_outline_green"
+        android:src="@drawable/football_outline_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

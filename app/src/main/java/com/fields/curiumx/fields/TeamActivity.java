@@ -10,7 +10,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,7 +27,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -281,7 +279,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                                         .skipMemoryCache(true)
                                                         .into(teamImage);
                                             } else {
-                                                teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+                                                teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
 
                                             }
                                         }
@@ -351,7 +349,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                             .skipMemoryCache(true)
                             .into(teamImage);
                 } else {
-                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
+                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
                 }
 
             }
