@@ -5,7 +5,7 @@
         android:title="@string/edit_profile_string"
         android:id="@+id/edit_profile"
         android:icon="@drawable/ic_edit_profile"
-        android:showAsAction="always"
+        app:showAsAction="never"
        />
 
 </menu>

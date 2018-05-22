@@ -79,6 +79,27 @@ public class EditFieldActivity extends AppCompatActivity {
     String[] fieldTypeArray;
     String[] fieldAccessTypeArray;
     String[] fieldGoalCountArray;
+    ImageView deleteImage;
+
+    public void deleteImage(){
+        deleteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                StorageReference fieldImageRef =
+                        FirebaseStorage.getInstance().getReference("fieldpics/" + fieldID + ".jpg");
+                fieldImageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        deleteImage.setVisibility(View.GONE);
+                        fieldImage11.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
+
+
+                    }
+                });
+            }
+        });
+    }
 
 
     @Override
@@ -86,6 +107,8 @@ public class EditFieldActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_field);
         setTitle(getResources().getString(R.string.edit_field));
+
+        deleteImage = findViewById(R.id.delete_image);
 
         Bundle data = getIntent().getExtras();
         fieldName  = data.getString("fieldName");
@@ -137,6 +160,8 @@ public class EditFieldActivity extends AppCompatActivity {
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)
                             .into(fieldImage11);
+                    deleteImage.setVisibility(View.VISIBLE);
+                    deleteImage();
                 }else {
                     fieldImage11.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
                 }
@@ -177,10 +202,6 @@ public class EditFieldActivity extends AppCompatActivity {
                     fieldAddressT.requestFocus();
                 }else {
 
-
-                   // if (uriFieldImage != null){
-                     //   uploadImageToFirebaseStorage();
-                    //}
                     saveButton1.setEnabled(false);
                     db.collection("Fields").document(fieldID).update("fieldName", fieldNametext,
                             "fieldNameLowerCase", fieldNametext.toLowerCase(),"fieldArea", fieldAreaText,
@@ -295,6 +316,8 @@ public class EditFieldActivity extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressBar.setVisibility(View.GONE);
                         saveButton1.setEnabled(true);
+                        deleteImage.setVisibility(View.VISIBLE);
+                        deleteImage();
                     }
                 });
             } catch (IOException e) {

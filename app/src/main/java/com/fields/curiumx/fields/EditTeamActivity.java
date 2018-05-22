@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -70,15 +71,33 @@ public class EditTeamActivity extends AppCompatActivity {
     TextView pressText;
     StorageReference teamImageRef;
     private static final int CHOOSE_IMAGE = 101;
+    ImageView deleteImage;
+
+    public void deleteImage(){
+        deleteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                StorageReference teamImageRef =
+                        FirebaseStorage.getInstance().getReference("teampics/" + teamID + ".jpg");
+                teamImageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        deleteImage.setVisibility(View.GONE);
+                        teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
 
 
-
+                    }
+                });
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_team);
-
+        deleteImage = findViewById(R.id.delete_image);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -163,6 +182,8 @@ public class EditTeamActivity extends AppCompatActivity {
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)
                             .into(teamPhotoEdit);
+                    deleteImage.setVisibility(View.VISIBLE);
+                    deleteImage();
                 }else {
                     teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.team_basic));
                 }
@@ -240,6 +261,8 @@ public class EditTeamActivity extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressBar.setVisibility(View.GONE);
                         saveButton.setEnabled(true);
+                        deleteImage.setVisibility(View.VISIBLE);
+                        deleteImage();
 
                     }
                 });
@@ -307,10 +330,8 @@ public class EditTeamActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
                 finish();
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-
                 return true;
         }
         return super.onOptionsItemSelected(item);

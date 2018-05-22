@@ -64,6 +64,7 @@ public class EditProfileActivity extends AppCompatActivity {
     int role;
     TextInputLayout usernameInput;
     TextInputLayout realNameInput;
+    ImageView deleteImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,8 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
         userRoleArray = getResources().getStringArray(R.array.role_spinner);
         userPositionArray = getResources().getStringArray(R.array.position_spinner);
+        deleteImage = findViewById(R.id.delete_image);
+
 
         press_text = findViewById(R.id.press_text);
         usernameEdit = findViewById(R.id.username_edit);
@@ -97,7 +100,7 @@ public class EditProfileActivity extends AppCompatActivity {
         imageView = findViewById(R.id.profilePhotoEdit);
         progressBar = findViewById(R.id.progress_bar_edit);
         saveUserButton = findViewById(R.id.save_button);
-        setTitle(getResources().getString(R.string.edit_team));
+        setTitle(getResources().getString(R.string.edit_profile_string));
 
         Bundle info = getIntent().getExtras();
         username = info.getString("username");
@@ -128,7 +131,31 @@ public class EditProfileActivity extends AppCompatActivity {
                 showImageChooser();
             }
         });
-                loadUserInformation();
+
+        loadUserInformation();
+    }
+
+    public void deleteImage(){
+        deleteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                        .setPhotoUri(null)
+                        .build();
+                user.updateProfile(profileChangeRequest);
+                StorageReference profileImageRef =
+                        FirebaseStorage.getInstance().getReference("profilepics/" + uid + ".jpg");
+                profileImageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        deleteImage.setVisibility(View.GONE);
+                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
+
+
+                    }
+                });
+            }
+        });
     }
 
     private void loadUserInformation() {
@@ -137,9 +164,9 @@ public class EditProfileActivity extends AppCompatActivity {
             if (user.getPhotoUrl() != null) {
                 GlideApp.with(this)
                         .load(user.getPhotoUrl().toString())
-                   //     .diskCacheStrategy(DiskCacheStrategy.NONE)
-                     //   .skipMemoryCache(true)
                         .into(imageView);
+                deleteImage.setVisibility(View.VISIBLE);
+                deleteImage();
             }else {
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.profileim));
 
@@ -250,6 +277,9 @@ public class EditProfileActivity extends AppCompatActivity {
                                 .setPhotoUri(Uri.parse(profileImageUrl))
                                 .build();
                         user.updateProfile(profileChangeRequest);
+                        deleteImage.setVisibility(View.VISIBLE);
+                        deleteImage();
+
                     }
                 });
             } catch (IOException e) {

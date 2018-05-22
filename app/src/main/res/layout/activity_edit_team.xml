@@ -19,6 +19,18 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <ImageView
+        android:contentDescription="@string/delete"
+        android:id="@+id/delete_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_cross_red"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/press_text"
+        app:layout_constraintStart_toEndOf="@id/teamPhotoEdit"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/press_text"
         android:layout_width="100dp"

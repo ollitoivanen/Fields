@@ -169,7 +169,7 @@ public class PendingPlayerActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 return true;
         }

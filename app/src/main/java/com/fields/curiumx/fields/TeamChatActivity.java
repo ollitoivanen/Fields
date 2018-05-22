@@ -208,10 +208,7 @@ teamChatRecycler.smoothScrollToPosition(50);
         actionBar.setTitle("");
 
 
-        TextView levelUp = findViewById(R.id.level_up_text);
-        String text1 =
-                "<font COLOR=\'#FFFFFF\'><b>" + getResources().getString(R.string.level_up1) + "</b></font>" + " " +
-                "<font COLOR=\'#3FACFF\'><b>" + getResources().getString(R.string.plus_comma) + "</b></font>";
+
 
 
         TextView levelUp2 = findViewById(R.id.level_up_text2);
@@ -223,7 +220,6 @@ teamChatRecycler.smoothScrollToPosition(50);
 
 
 
-        levelUp.setText(Html.fromHtml(text1));
         Button discoverButton = findViewById(R.id.discover);
         discoverButton.setOnClickListener(new View.OnClickListener() {
             @Override

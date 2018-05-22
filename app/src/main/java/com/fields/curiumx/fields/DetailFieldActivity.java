@@ -266,7 +266,7 @@ public class DetailFieldActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     GlideApp.with(getApplicationContext())
                             .load(storageRef)
-                           .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)
                             .into(fieldPhoto);
                 }else {

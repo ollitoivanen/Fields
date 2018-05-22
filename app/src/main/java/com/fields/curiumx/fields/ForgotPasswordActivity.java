@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -22,6 +25,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String emailAddress;
     EditText emailAddressEditText;
+    TextInputLayout emailAddressInput;
 
 
     @Override
@@ -31,6 +35,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         Button sendButton = findViewById(R.id.sendButton);
         emailAddressEditText = findViewById(R.id.emailAddress);
+        emailAddressInput = findViewById(R.id.email_address_input);
+        emailAddressEditText.addTextChangedListener(new MyTextWatcher(emailAddressEditText));
+
 
 
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -39,13 +46,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 emailAddress = emailAddressEditText.getText().toString();
 
                 if (emailAddress.isEmpty()) {
-                    emailAddressEditText.setError("Email is required");
+                    emailAddressInput.setError(getResources().getString(R.string.please_enter_valid_email));
                     emailAddressEditText.requestFocus();
                     return;
                 }
 
                 if (!Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches()) {
-                    emailAddressEditText.setError("Please enter a valid email");
+                    emailAddressInput.setError(getResources().getString(R.string.please_enter_valid_email));
                     emailAddressEditText.requestFocus();
 
                 } else {
@@ -66,6 +73,29 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
 
         });
+    }
+
+    private class MyTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.emailAddress:
+                    emailAddressInput.setErrorEnabled(false);
+                    break;
+            }
+        }
     }
 }
 

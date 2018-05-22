@@ -1,61 +1,15 @@
 <resources>
     <string name="app_name">Fields</string>
-    <string name="bottom_map_title">Map</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="title_activity_main">Fields</string>
-    <string name="title_explore">Explore</string>
-    <string name="title_profile">Profile</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="abs_title">Fields</string>
-    <string name="empty_text">No Fields close to your location!</string>
-    <string name="popup_prompt_location">Location is required to find the Fields closest to you! Please accept the permission for the app to work properly.</string>
-    <string name="popup_prompt_location_button">OK</string>
     <string name="logoutText">Log out</string>
 
-    <string name="selected_place">Last selected place:</string>
-    <string name="place_details">
-    <![CDATA[
-        <b>%1$s</b>
-        <br/>
-        <i>Place Id: %2$s</i>
-        <br/>
-        Address: %3$s
-        <br/>
-        Phone: %4$s
-        <br/>
-        Website: %5$s
-    ]]>
-    </string>
-    <string name="title_activity_login">Sign in</string>
-
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="sign_in_cancelled">Sign in cancelled</string>
-    <string name="no_internet_connection">No internet connection</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="search_hint">Search</string>
-    <string name="title_activity_search_all">SearchAllActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="friend">Friend</string>
     <string name="friends">Friends</string>
     <string name="realname">Real name</string>
     <string name="username">Username</string>
@@ -68,13 +22,9 @@
     <string name="people_here">%1$s People here</string>
     <string name="not_finding_field">Not finding your field? Add new Field here and earn reputation!</string>
     <string name="field_name">Field name</string>
-    <string name="pick_location">Pick location from map</string>
     <string name="edit_profile_string">Edit profile</string>
     <string name="press_text">Tap to change profile picture</string>
     <string name="playing_position">Playing position</string>
-    <string name="bio">Bio</string>
-    <string name="custimize_profile_text">Customize profile</string>
-    <string name="badges">Badges</string>
     <string name="fields_plus">FIELDS Plus</string>
     <string name="field_area">Field City</string>
     <string name="field_address">Field Address</string>
@@ -84,10 +34,7 @@
     <string name="press_text3">Tap to choose team picture</string>
 
     <string name="field_access_text">Field access type</string>
-    <string name="tap_to_find">Tap to find in map</string>
-    <string name="map_explanation">To find field address, search for the field in map and copy the address from there. Easy as that!</string>
     <string name="goto_map">OK, Go to map</string>
-    <string name="ok">ok</string>
     <string name="edit_field">Edit Field</string>
     <string name="end_training">End training</string>
     <string name="currently_training_at">Currently training at..</string>
@@ -98,8 +45,6 @@
     <string name="level">Team\'s playing level</string>
     <string name="team_country">Team country</string>
     <string name="events">Events</string>
-    <string name="add">Add</string>
-    <string name="add_homefield">Add as team\'s home field </string>
     <string name="event_type">Event type</string>
     <string name="event_date">Event date</string>
     <string name="event_location">Event Location</string>
@@ -119,7 +64,6 @@
     <string name="leave_team">Leave team</string>
     <string name="pending_players">Pending players</string>
     <string name="write">Write</string>
-    <string name="message_player">Message Player</string>
     <string name="player_position_role_given">%1$s, %2$s</string>
     <string name="player_position_role_not_given">%1$s</string>
     <string name="minutes"> minutes</string>
@@ -137,13 +81,10 @@
     <string name="profile_button">Profile button</string>
     <string name="reputation">%1$s Reputation</string>
     <string name="feed">Feed</string>
-    <string name="profile">Profile</string>
     <string name="team">Team</string>
     <string name="no_events_coming">No upcoming events. Time to relax!</string>
     <string name="players">Players</string>
-    <string name="team_chat">Team chat</string>
     <string name="edit_team">Edit team</string>
-    <string name="today">Today</string>
     <string name="training_time">%1$s - %2$s</string>
     <string name="event_field">at %1$s</string>
     <string name="from">From</string>
@@ -153,7 +94,6 @@
     <string name="team_full_name">Team\'s Full Name</string>
     <string name="error_team_full_name">Please enter Team\'s full name</string>
     <string name="error_team_username">Please enter Team\'s username</string>
-    <string name="error_team_exists">Team with same name already exists</string>
     <string name="error_occurred_creating_team">An error occurred creating team. Please try again</string>
     <string name="you_are_in_team">You are already in a team</string>
     <string name="team_created_successfully">Team created successfully</string>
@@ -169,10 +109,8 @@
     <string name="stay">Stay</string>
     <string name="event_details">Event details</string>
     <string name="delete_event">Delete event</string>
-    <string name="event_deleted">Event deleted</string>
     <string name="create_new_event">Create New Event</string>
     <string name="discover">Discover</string>
-    <string name="level_up1">Level up your soccer game by upgrading to Fields </string>
     <string name="level_up2">Only one of your team\'s members need\'s to have Fields</string>
     <string name="level_up3">in order to open the</string>
     <string name="team_chat_feature">team chat</string>
@@ -194,13 +132,11 @@
     <string name="info">Info</string>
     <string name="you_are_training_here">You\'re training here</string>
     <string name="current_training">Current Training</string>
-    <string name="player">Player</string>
     <string name="field">Field</string>
     <string name="no_upcoming_events_field">No upcoming events on this Field. Great time to go out and play!</string>
     <string name="reputation_count">%1$s Reputation</string>
     <string name="training_summary">Training Summary</string>
     <string name="no_friends">You don\'t have any friends. Add your friends or invite them to Fields for maximum fun!</string>
-    <string name="edit_profile">Edit Profile</string>
     <string name="please_enter_username">Please enter username</string>
     <string name="please_enter_real_name">Please enter real name</string>
     <string name="change_password">Change password</string>
@@ -233,7 +169,29 @@
     <string name="teams">Teams</string>
     <string name="delete">Delete</string>
     <string name="your_team">Your Team</string>
-    <string name="actions">Actions</string>
+    <string name="try_for_free">Try For Free</string>
+    <string name="level_up">Level up your football game by upgrading to Fields</string>
+    <string name="plus_feature">Track your training history</string>
+    <string name="plus_feature_2">Save favorite Fields for fast use</string>
+    <string name="plus_feature_3">Be the good guy and open the chat feature for your Team</string>
+    <string name="features">Features</string>
+    <string name="much_more_coming">Much more coming in the future!</string>
+    <string name="please_enter_valid_email">Please enter valid email</string>
+    <string name="lets_get_started">Let\'s get started</string>
+
+
+
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+    <string name="slide_1_title">Welcome to Fields!</string>
+    <string name="slide_1_desc">Let\'s see what makes Fields special</string>
+    <string name="slide_2_title">Football Fields</string>
+    <string name="slide_2_desc">See where your friends and other people are training so you can find the best space and time to play!</string>
+    <string name="slide_3_title">Manage your team</string>
+    <string name="slide_3_desc">Set team events and see who\'s coming to events</string>
+    <string name="slide_4_title">Sounds awesome, right?</string>
+
 
 
     <string-array name="role_spinner">
@@ -569,25 +527,6 @@
 
     </string-array>
 
-    <string name="title_activity_welcome">Home Screen</string>
-    <string name="next">NEXT</string>
-    <string name="skip">SKIP</string>
-    <string name="start">GOT IT</string>
-
-    <string name="slide_1_title">Hello Food!</string>
-    <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
-
-    <string name="slide_2_title">Movie Tickets</string>
-    <string name="slide_2_desc">Book movie tickets for your family and friends!</string>
-
-    <string name="slide_3_title">Great Discounts</string>
-    <string name="slide_3_desc">Best discounts on every single service we offer!</string>
-
-    <string name="slide_4_title">World Travel</string>
-    <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
-
-    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
-    <string name="play_again">Play Again</string>
 </resources>
 
 

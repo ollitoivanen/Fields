@@ -6,36 +6,7 @@
 
 
         <style name="Widget"/>
-    <style name="Widget.SampleMessage">
-        <item name="android:textAppearance">?android:textAppearanceMedium</item>
-        <item name="android:lineSpacingMultiplier">1.1</item>
-    </style>
-
-    <style name="Widget.SampleMessageTile">
-
-        <item name="android:shadowColor">#7F000000</item>
-        <item name="android:shadowDy">-3.5</item>
-        <item name="android:shadowRadius">2</item>
-    </style>
 
 
 
-    <style name="FieldsTheme" parent="android:Theme.Material.Light">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:colorPrimary">@color/colorPrimary</item>
-        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:colorAccent">@color/FieldsMenuItemNotSelected</item>
-        <item name="android:colorBackground">@color/Background_Fields</item>
-
-        <item name="android:windowContentTransitions">true</item>
-
-
-
-    </style>
-
-   
-
-</resources>
+    </resources>
