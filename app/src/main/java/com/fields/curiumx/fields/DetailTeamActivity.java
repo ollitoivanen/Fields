@@ -55,6 +55,7 @@ public class DetailTeamActivity extends AppCompatActivity {
     String[] eventArray;
     LinearLayout country_map;
     FirebaseStorage storage = FirebaseStorage.getInstance();
+    @BindView(R.id.eventRecycler)
     EmptyRecyclerView eventRecycler;
     private FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
@@ -67,21 +68,23 @@ public class DetailTeamActivity extends AppCompatActivity {
     String [] countryArray;
     int i;
 
-    private class eventHolder extends EmptyRecyclerView.ViewHolder {
+    public class eventHolder extends EmptyRecyclerView.ViewHolder {
 
+        CardView root = findViewById(R.id.root);
+        @BindView(R.id.eventDate)
         TextView textDate;
+        @BindView(R.id.eventTime)
         TextView textTime;
+        @BindView(R.id.eventPlace)
         TextView textPlace;
+        @BindView(R.id.eventType)
         TextView textType;
 
 
 
-        private eventHolder(View itemView) {
+        public eventHolder(View itemView) {
             super(itemView);
-            textDate = itemView.findViewById(R.id.eventDate);
-            textTime = itemView.findViewById(R.id.eventTime);
-            textPlace = itemView.findViewById(R.id.eventPlace);
-            textType = itemView.findViewById(R.id.eventType);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -95,6 +98,7 @@ public class DetailTeamActivity extends AppCompatActivity {
         eventRecycler = findViewById(R.id.eventRecycler);
         eventRecycler.setEmptyView(findViewById(R.id.empty_constraint));
         init();
+        ButterKnife.bind(this);
         playerCount = findViewById(R.id.teamPlayerCount);
         playerCount.setOnClickListener(new View.OnClickListener() {
             @Override

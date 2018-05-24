@@ -70,6 +70,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
     LinearLayout country_map;
     ConstraintLayout basicInfoCont;
     FirebaseStorage storage = FirebaseStorage.getInstance();
+    @BindView(R.id.eventRecycler)
     EmptyRecyclerView eventRecycler;
     private FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
@@ -99,21 +100,23 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
         return super.onCreateOptionsMenu(menu);
     }
 
-    private class eventHolder extends EmptyRecyclerView.ViewHolder {
+    public class eventHolder extends EmptyRecyclerView.ViewHolder {
 
+        CardView root = findViewById(R.id.root);
+        @BindView(R.id.eventDate)
         TextView textDate;
+        @BindView(R.id.eventTime)
         TextView textTime;
+        @BindView(R.id.eventPlace)
         TextView textPlace;
+        @BindView(R.id.eventType)
         TextView textType;
 
 
 
-        private eventHolder(View itemView) {
+        public eventHolder(View itemView) {
             super(itemView);
-            textDate = itemView.findViewById(R.id.eventDate);
-            textTime = itemView.findViewById(R.id.eventTime);
-            textPlace = itemView.findViewById(R.id.eventPlace);
-            textType = itemView.findViewById(R.id.eventType);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -146,6 +149,8 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(getResources().getString(R.string.team));
         init();
+        ButterKnife.bind(this);
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

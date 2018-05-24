@@ -40,6 +40,7 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
     SearchView search;
     Button field_by_area_button;
     Button field_by_name_button;
+    @BindView(R.id.fieldRecycler)
     EmptyRecyclerView ep;
     StorageReference fieldImageRef;
     Boolean clicked_area;

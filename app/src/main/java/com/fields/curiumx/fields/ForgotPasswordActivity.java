@@ -1,5 +1,6 @@
 package com.fields.curiumx.fields;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -9,7 +10,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,13 +32,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Button sendButton = findViewById(R.id.sendButton);
         emailAddressEditText = findViewById(R.id.emailAddress);
         emailAddressInput = findViewById(R.id.email_address_input);
         emailAddressEditText.addTextChangedListener(new MyTextWatcher(emailAddressEditText));
-        setTitle("");
 
 
 
@@ -64,8 +62,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Log.d(TAG, "Email sent.");
-                                        Snackbar.make(findViewById(R.id.forgot_password_activity),
-                                                getResources().getString(R.string.email_sent), Snackbar.LENGTH_LONG)
+                                        Snackbar.make(findViewById(R.id.forgot_password_activity), "Email has been sent", Snackbar.LENGTH_LONG)
                                         .show();
 
                                     }
@@ -99,22 +96,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     break;
             }
         }
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
     }
 }
 

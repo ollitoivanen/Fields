@@ -1,7 +1,6 @@
 package com.fields.curiumx.fields;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
@@ -15,12 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,8 +28,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 
 import java.text.SimpleDateFormat;
@@ -55,14 +50,13 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
     String eventID;
     String teamID;
     ProgressBar progressBar;
+    @BindView(R.id.taking_part_recycler)
     EmptyRecyclerView takingPartRecycler;
     private FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     String event_member_status_in = "1";
     String event_member_status_out = "2";
     String event_member_status_open = "0";
-    StorageReference profileImageRef;
-
 
     Button in;
     Button out;
@@ -164,13 +158,12 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
 
     public class partHolder extends EmptyRecyclerView.ViewHolder {
 
+        @BindView(R.id.nameTaking)
         TextView nameTaking;
-        ImageView profileImage;
 
         public partHolder(View itemView) {
             super(itemView);
-            nameTaking = itemView.findViewById(R.id.nameTaking);
-            profileImage = itemView.findViewById(R.id.profile_image_list);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -207,6 +200,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
         takingPartRecycler = findViewById(R.id.taking_part_recycler);
         init();
 
+        ButterKnife.bind(this);
         Query query = db.collection("Teams").document(teamID).collection("TeamUsers");
 
 
@@ -223,25 +217,6 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                 } else{
                     holder.nameTaking.setText(model.getUsernameMember());
             }
-
-                profileImageRef = FirebaseStorage.getInstance()
-                        .getReference().child("profilepics/"+model.getUidMember()+".jpg");
-                profileImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            GlideApp.with(getApplicationContext())
-                                    .load(profileImageRef)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(true)
-                                    .into(holder.profileImage);
-                        } else {
-                            holder.profileImage.setImageDrawable(getResources().
-                                    getDrawable(R.drawable.profile_default));
-
-                        }
-                    }
-                });
 
 
 

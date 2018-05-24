@@ -18,15 +18,11 @@
 
     <TextView
         android:id="@+id/fields_plus_text"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/fields_plus_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:textSize="18sp"
-        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/fields_plus_art"
         app:layout_constraintVertical_bias="0.36" />
 
@@ -36,7 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        app:cardCornerRadius="10dp"
         app:cardBackgroundColor="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@id/buy_button"
         app:layout_constraintTop_toBottomOf="@id/fields_plus_text"
@@ -57,7 +52,6 @@
                 android:text="@string/plus_feature"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/fields_plus_card_constraint" />
@@ -68,8 +62,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:textSize="18sp"
-
                 android:text="@string/plus_feature_2"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -86,8 +78,6 @@
                 android:text="@string/plus_feature_3"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:textSize="18sp"
-
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fields_plus_text_4" />
@@ -111,8 +101,6 @@
                 android:text="@string/much_more_coming"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:textSize="16sp"
-
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/feature_div" />
@@ -125,18 +113,15 @@
     <Button
         android:id="@+id/buy_button"
         android:layout_width="match_parent"
-        android:layout_height="63dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_height="wrap_content"
         android:backgroundTint="@color/premium_blue"
+        android:textAllCaps="false"
         android:padding="20dp"
         android:text="@string/try_for_free"
-        android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-
-
         app:layout_constraintEnd_toEndOf="parent"
+
+
         app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

@@ -130,24 +130,20 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         final String usernameString = username.getText().toString().trim().toLowerCase();
         final String realNameString = realName.getText().toString().trim();
         final int userRole = roleSpinner.getSelectedItemPosition();
-        signUpButton.setEnabled(false);
 
         if (realNameString.isEmpty()) {
             realNameInput.setError(getResources().getString(R.string.please_enter_real_name));
             realName.requestFocus();
-            signUpButton.setEnabled(true);
         } else if (emailString.isEmpty()) {
             emailInput.setError(getResources().getString(R.string.please_enter_valid_email));
             emailSignUp.requestFocus();
-            signUpButton.setEnabled(true);
         } else if (!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()) {
             emailInput.setError(getResources().getString(R.string.please_enter_valid_email));
             emailSignUp.requestFocus();
-            signUpButton.setEnabled(true);
+
         } else if (passwordString.isEmpty()) {
             passwordInput.setError(getResources().getString(R.string.please_enter_valid_password));
             passwordSignUp.requestFocus();
-            signUpButton.setEnabled(true);
         } else if (passwordString.length() < 6) {
             passwordInput.setError(getResources().getString(R.string.error_password_length));
             passwordSignUp.requestFocus();
