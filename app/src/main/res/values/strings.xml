@@ -136,7 +136,7 @@
     <string name="no_upcoming_events_field">No upcoming events on this Field. Great time to go out and play!</string>
     <string name="reputation_count">%1$s Reputation</string>
     <string name="training_summary">Training Summary</string>
-    <string name="no_friends">You don\'t have any friends. Add your friends or invite them to Fields for maximum fun!</string>
+    <string name="no_friends">You haven\'t added any friends. Add your friends or invite them to Fields for maximum fun!</string>
     <string name="please_enter_username">Please enter username</string>
     <string name="please_enter_real_name">Please enter real name</string>
     <string name="change_password">Change password</string>
@@ -147,7 +147,7 @@
     <string name="please_enter_valid_password">Please enter valid password</string>
     <string name="old_password_is_wrong">Old password is wrong</string>
     <string name="password_changed">Password changed</string>
-    <string name="error_password_length">Password length should be over 6 characters </string>
+    <string name="error_password_length">Password length should be at least 6 characters </string>
     <string name="no_upcoming_events_detail">No upcoming events</string>
     <string name="add_friend">Add friend</string>
     <string name="added_as_friend">Added as friend</string>
@@ -179,6 +179,13 @@
     <string name="much_more_coming">Much more coming in the future!</string>
     <string name="please_enter_valid_email">Please enter valid email</string>
     <string name="lets_get_started">Let\'s get started</string>
+    <string name="email_sent">Email sent</string>
+    <string name="error_email_password">Email and password don\'t match up</string>
+    <string name="no_trainings">You don\'t have any trainings yet!</string>
+    <string name="favorite">Favorite</string>
+    <string name="favorited">Favorited</string>
+    <string name="added_to_favorites">Added to favorites</string>
+    <string name="removed_from_favorites">Removed from favorites</string>
 
 
 
@@ -191,7 +198,9 @@
     <string name="slide_2_desc">See where your friends and other people are training so you can find the best space and time to play!</string>
     <string name="slide_3_title">Manage your team</string>
     <string name="slide_3_desc">Set team events and see who\'s coming to events</string>
-    <string name="slide_4_title">Sounds awesome, right?</string>
+    <string name="slide_5_title">Sounds awesome, right?</string>
+    <string name="slide_4_title">Earn Reputation</string>
+    <string name="slide_4_desc">Earn reputation by training and compete with your friends!</string>
 
 
 

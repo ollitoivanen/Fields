@@ -27,9 +27,9 @@
 
         <ImageView
             android:id="@+id/sad_face"
-            android:layout_width="118dp"
-            android:layout_height="108dp"
-            android:src="@drawable/sad_face"
+            android:layout_width="82dp"
+            android:layout_height="76dp"
+            android:src="@drawable/group_icon_big"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

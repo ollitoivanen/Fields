@@ -46,7 +46,6 @@ public class UserChatActivity extends AppCompatActivity {
     EmptyRecyclerView chatRecycler;
     String userID;
     Query query;
-    TextView messageView;
     Boolean thisUser;
     String UserMessages = "UserMessages";
     String TheseMessages = "TheseMessages";
@@ -187,12 +186,22 @@ public class UserChatActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder (chatHolder holder,int position, final ChatMap model){
             if (!DateFormat.is24HourFormat(getApplicationContext())){
-                SimpleDateFormat dateFormatPm = new SimpleDateFormat("hh:mm a");
-                time = dateFormatPm.format(model.getTime());
+                if (model.getTime().getTime()-System.currentTimeMillis()<-86400000) {
+                    SimpleDateFormat dateFormatPmOverDay = new SimpleDateFormat("hh:mm a,  dd MMM", Locale.getDefault());
+                    time = dateFormatPmOverDay.format(model.getTime());
+                }else {
+                    SimpleDateFormat dateFormatPm = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                    time = dateFormatPm.format(model.getTime());
+                }
 
             }else {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-                time = simpleDateFormat.format(model.getTime());
+                if (model.getTime().getTime() - System.currentTimeMillis()<-86400000) {
+                    SimpleDateFormat simpleDateFormatOverDay = new SimpleDateFormat("HH:mm,  dd MMM", Locale.getDefault());
+                    time = simpleDateFormatOverDay.format(model.getTime());
+                }else {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                    time = simpleDateFormat.format(model.getTime());
+                }
             }
 
             holder.messageView.setText(model.getText());

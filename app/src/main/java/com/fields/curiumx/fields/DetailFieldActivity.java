@@ -7,8 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -81,10 +83,13 @@ public class DetailFieldActivity extends AppCompatActivity {
     LinearLayoutManager linearLayoutManager;
     String[] eventArray;
     String eventTypeString;
+    boolean favorite;
 
     String[] fieldTypeArray;
     String[] fieldAccessTypeArray;
     String[] fieldGoalCountArray;
+
+    private Menu menu;
 
     public class fieldEventHolder extends EmptyRecyclerView.ViewHolder {
 
@@ -130,9 +135,30 @@ public class DetailFieldActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        this.menu = menu;
+        final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.edit_field, menu);
+        inflater.inflate(R.menu.favorite, menu);
+        menu.getItem(1).setEnabled(false);
+        db.collection("Users").document(uid).collection("favoriteFields").document(fieldID)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.getResult().exists()){
+                    favorite = true;
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_star));
+                    menu.getItem(1).setEnabled(true);
+
+                }else {
+                    favorite = false;
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_star_outline));
+                    menu.getItem(1).setEnabled(true);
+
+                }
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -331,6 +357,40 @@ public class DetailFieldActivity extends AppCompatActivity {
                 intent.putExtra("goalCount", goalCount);
                 startActivity(intent);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                break;
+            case R.id.favorite:
+                if (!favorite) {
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_star));
+                    menu.getItem(1).setEnabled(false);
+
+                    FavoriteMap favoriteMap = new FavoriteMap(fieldID, fieldName);
+                    db.collection("Users").document(uid).collection("favoriteFields")
+                            .document(fieldID).set(favoriteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            favorite = true;
+                            Snackbar.make(findViewById(R.id.detail_field_actvity),
+                                    getResources().getString(R.string.added_to_favorites),
+                                    Snackbar.LENGTH_SHORT).show();
+                            menu.getItem(1).setEnabled(true);
+
+                        }
+                    });
+                }else {
+                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_star_outline));
+                    menu.getItem(1).setEnabled(false);
+                    db.collection("Users").document(uid).collection("favoriteFields")
+                            .document(fieldID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Snackbar.make(findViewById(R.id.detail_field_actvity),
+                                    getResources().getString(R.string.removed_from_favorites),
+                                    Snackbar.LENGTH_SHORT).show();
+                            favorite = false;
+                            menu.getItem(1).setEnabled(true);
+                        }
+                    });
+                }
 
         }
         return super.onOptionsItemSelected(item);

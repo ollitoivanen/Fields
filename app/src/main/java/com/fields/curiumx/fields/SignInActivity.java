@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -23,18 +26,26 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     FirebaseAuth mAuth;
     EditText emailSignIn, passwordSignIn;
+    TextInputLayout emailSignInInput, passwordSignInInput;
+    Button signInButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setTheme(R.style.FieldsThemeAppCompatWelcome);
         setContentView(R.layout.activity_sign_in);
         super.onCreate(savedInstanceState);
 
         emailSignIn = findViewById(R.id.emailSignIn);
         emailSignIn.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         passwordSignIn = findViewById(R.id.passwordSignIn);
-        Button signInButton = findViewById(R.id.signInButton);
+        signInButton = findViewById(R.id.signInButton);
         TextView signUpTextView = findViewById(R.id.signUpTextView);
         TextView forgotPassword = findViewById(R.id.forgotPassword);
+
+        emailSignInInput = findViewById(R.id.emailSignIn_input);
+        passwordSignInInput = findViewById(R.id.passwordSignIn_input);
+        emailSignIn.addTextChangedListener(new MyTextWatcher(emailSignIn));
+        passwordSignIn.addTextChangedListener(new MyTextWatcher(passwordSignIn));
 
         //Check if user is logged in
         mAuth = FirebaseAuth.getInstance();
@@ -43,6 +54,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
                     startActivity(new Intent(SignInActivity.this, FeedActivity.class));
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
             }
         });
@@ -51,51 +63,49 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         forgotPassword.setOnClickListener(this);
     }
 
-    public void userSignIn(){
+    public void userSignIn() {
 
         String email = emailSignIn.getText().toString().trim();
         String password = passwordSignIn.getText().toString().trim();
+        signInButton.setEnabled(false);
+
 
         if (email.isEmpty()) {
-        emailSignIn.setError("Email is required");
-        emailSignIn.requestFocus();
-        return;
-    }
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailSignIn.setError("Please enter a valid email");
+            emailSignInInput.setError(getResources().getString(R.string.please_enter_valid_email));
             emailSignIn.requestFocus();
-            return;
-        }
-
-        if (password.isEmpty()) {
-            passwordSignIn.setError("Password is required");
+            signInButton.setEnabled(true);
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailSignInInput.setError(getResources().getString(R.string.please_enter_valid_email));
+            emailSignIn.requestFocus();
+            signInButton.setEnabled(true);
+        } else if (password.isEmpty()) {
+            passwordSignInInput.setError(getResources().getString(R.string.please_enter_valid_password));
             passwordSignIn.requestFocus();
-            return;
-        }
-
-        if (password.length() < 6) {
-            passwordSignIn.setError("Minimum length of password should be 6");
+            signInButton.setEnabled(true);
+        } else if (password.length() < 6) {
+            passwordSignInInput.setError(getResources().getString(R.string.error_password_length));
             passwordSignIn.requestFocus();
-            return;
-        }
+            signInButton.setEnabled(true);
+        } else {
 
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    finish();
-                    Intent intent = new Intent(SignInActivity.this, FeedActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    Toast.makeText(SignInActivity.this, "Sign in successful", Toast.LENGTH_SHORT)
-                            .show();
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        finish();
+                        Intent intent = new Intent(SignInActivity.this, FeedActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
-                } else {
-                    Snackbar.make(findViewById(R.id.login_activity), task.getException().getMessage(), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(findViewById(R.id.login_activity), getResources()
+                                .getString(R.string.error_email_password), Snackbar.LENGTH_SHORT).show();
+                        signInButton.setEnabled(true);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -108,11 +118,46 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
             case R.id.signUpTextView:
                 startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;
 
             case R.id.forgotPassword:
                 startActivity(new Intent(SignInActivity.this, ForgotPasswordActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    private class MyTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()){
+                case R.id.emailSignIn:
+                    emailSignInInput.setErrorEnabled(false);
+                    break;
+                case R.id.passwordSignIn:
+                    passwordSignInInput.setErrorEnabled(false);
+                    break;
+
+            }
         }
     }
 }

@@ -67,6 +67,7 @@ public class AllTrainingsActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         Bundle info = getIntent().getExtras();
         fieldsPlus = info.getBoolean("fieldsPlus");
 
@@ -79,6 +80,7 @@ public class AllTrainingsActivity extends AppCompatActivity {
 
     public void init() {
         trainingsRecycler = findViewById(R.id.trainings_recycler);
+        trainingsRecycler.setEmptyView(findViewById(R.id.empty_view_trainings));
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);

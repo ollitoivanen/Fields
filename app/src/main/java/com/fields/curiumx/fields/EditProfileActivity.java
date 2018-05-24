@@ -323,10 +323,8 @@ public class EditProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
                 finish();
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -1,6 +1,8 @@
 package com.fields.curiumx.fields;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,15 +12,21 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,20 +38,22 @@ public class TeamPlayersActivity extends AppCompatActivity {
     String uid = user.getUid();
     FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
-    @BindView(R.id.team_players_recycler)
     EmptyRecyclerView teamPlayersRecycler;
     Query query;
     String teamID;
     int i;
+    StorageReference userImageRef;
+
 
 
     public class teamPlayerHolder extends EmptyRecyclerView.ViewHolder {
-        @BindView(R.id.teamPlayerName)
         TextView teamPlayerName;
+        ImageView teamPlayerImage;
 
         public teamPlayerHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+                teamPlayerName = itemView.findViewById(R.id.nameTaking);
+                teamPlayerImage = itemView.findViewById(R.id.profile_image_list);
         }
     }
 
@@ -91,14 +101,33 @@ public class TeamPlayersActivity extends AppCompatActivity {
             @Override
             public teamPlayerHolder onCreateViewHolder (ViewGroup group, int i){
                 View view = LayoutInflater.from(group.getContext())
-                        .inflate(R.layout.team_player_list, group, false);
+                        .inflate(R.layout.taking_part_list, group, false);
 
                 return new teamPlayerHolder(view);
             }
 
             @Override
-            public void onBindViewHolder (teamPlayerHolder holder, int position, final MemberMap model){
+            public void onBindViewHolder (final teamPlayerHolder holder, int position, final MemberMap model){
                 holder.teamPlayerName.setText(model.getUsernameMember());
+
+                userImageRef = FirebaseStorage.getInstance()
+                        .getReference().child("profilepics/"+model.getUidMember()+".jpg");
+                userImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            GlideApp.with(getApplicationContext())
+                                    .load(userImageRef)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(holder.teamPlayerImage);
+                        } else {
+                            holder.teamPlayerImage.setImageDrawable(getResources().
+                                    getDrawable(R.drawable.team_default));
+
+                        }
+                    }
+                });
             }
 
             @Override
