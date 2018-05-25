@@ -4,19 +4,37 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.billingclient.api.BillingClient;
-import com.fields.curiumx.fields.billing.BillingProvider;
+
+import com.anjlab.android.iab.v3.BillingProcessor;
+import com.anjlab.android.iab.v3.TransactionDetails;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 
-public class FieldsPlusStartActivity extends AppCompatActivity {
+public class FieldsPlusStartActivity extends AppCompatActivity implements BillingProcessor.IBillingHandler{
     Button buyButton;
-    BillingProvider mBillingProvider;
+    BillingProcessor bp;
+    ImageView fp;
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String uid = user.getUid();
+
+
+    String key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhP70LSlF/j2XxzB5EERbyj1J/N8l6EJS8tCWLtbaB7a72Rr7uYWex6CgtQ2gGsRSpInGa1dOyjT9cV+JvKNVTv/WyhIEpcFQJiI2rlQcAkAWNivaffsBxUfODq6Xp2urNdgQ/35CTp/wYm75oHxE9nnqpI4X0Jk1iUKKBew8DIo2JUh9ezjruk2b+txmFTyDi0Fdm6yLmLUL0eed0mU5KrQO0FO5OHI990bCfQPIoZGKA7FPbiWSS09rn36j3HinD4fc2L52LgIwvz4vcWyMRmCioWygxpMnyUs+TP0C3mXrdJiZkrmYig5T1zgtdy4wru5EOtW6qYwSYsj64WAS1wIDAQAB";
+
+
+
+
 
 
 
@@ -29,6 +47,11 @@ public class FieldsPlusStartActivity extends AppCompatActivity {
         buyButton = findViewById(R.id.buy_button);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        bp = new BillingProcessor(this, key, this);
+        bp.initialize(); // binds
+        fp = findViewById(R.id.fields_plus_art);
+
+
 
 
 
@@ -43,13 +66,26 @@ public class FieldsPlusStartActivity extends AppCompatActivity {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBillingProvider.getBillingManager().startPurchaseFlow("fields_plus",
-                        BillingClient.SkuType.SUBS);
+                boolean isAvailable = BillingProcessor.isIabServiceAvailable(getApplicationContext());
+                if(isAvailable) {
+                    boolean isSubsUpdateSupported = bp.isSubscriptionUpdateSupported();
+                    if(isSubsUpdateSupported) {
+                        bp.subscribe(FieldsPlusStartActivity.this, "fields_plus");
+
+                    }
+
+                }
+
             }
         });
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!bp.handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
 
 
@@ -71,6 +107,52 @@ public class FieldsPlusStartActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBillingInitialized() {
+        /*
+         * Called when BillingProcessor was initialized and it's ready to purchase
+         */
+    }
+
+    @Override
+    public void onProductPurchased(String productId, TransactionDetails details) {
+
+        db.collection("Users").document(uid).update("fieldsPlus", true);
+        finish();
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+
+        /*
+         * Called when requested PRODUCT ID was successfully purchased
+         */
+    }
+
+    @Override
+    public void onBillingError(int errorCode, Throwable error) {
+        /*
+         * Called when some error occurred. See Constants class for more details
+         *
+         * Note - this includes handling the case where the user canceled the buy dialog:
+         * errorCode = Constants.BILLING_RESPONSE_RESULT_USER_CANCELED
+         */
+    }
+
+    @Override
+    public void onPurchaseHistoryRestored() {
+        /*
+         * Called when purchase history was restored and the list of all owned PRODUCT ID's
+         * was loaded from Google Play
+         */
+    }
+
+    @Override
+    public void onDestroy() {
+        if (bp != null) {
+            bp.release();
+        }
+        super.onDestroy();
+    }
 
 
 }
+
