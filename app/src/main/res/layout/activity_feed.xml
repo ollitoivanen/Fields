@@ -244,6 +244,19 @@
             app:layout_constraintTop_toBottomOf="@id/sad_face" />
     </android.support.constraint.ConstraintLayout>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/start_training_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_soccer_field_grey600_48dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@id/activityBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+
+        />
+
 
 
     <ProgressBar

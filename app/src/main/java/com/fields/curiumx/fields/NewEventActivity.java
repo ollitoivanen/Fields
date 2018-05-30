@@ -65,6 +65,7 @@ public class NewEventActivity extends AppCompatActivity {
     String eventTimeEnd;
     String fieldID;
     ImageView deleteEventField;
+    String teamID;
 
 
 
@@ -114,10 +115,15 @@ public class NewEventActivity extends AppCompatActivity {
         chooseFieldButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(NewEventActivity.this, SearchFieldOnlyActivity.class), 1);
+                Intent intent = new Intent(NewEventActivity.this, SearchFieldOnlyActivity.class);
+                intent.putExtra("fromEvent", true);
+                startActivityForResult(intent, 1);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
         });
+
+        Bundle info = getIntent().getExtras();
+        teamID = info.getString("teamID");
 
 
         publishButton = findViewById(R.id.publish_button);
@@ -148,7 +154,8 @@ public class NewEventActivity extends AppCompatActivity {
                                 fieldID = "";
                             }else{
                                 FieldEventMap fieldEventMap = new FieldEventMap(eventTimeStart,
-                                        eventTimeEnd, c.getTime(), typeSpinner.getSelectedItemPosition(), teamName);
+                                        eventTimeEnd, c.getTime(), typeSpinner.getSelectedItemPosition()
+                                        , teamName, c.getTimeInMillis(), teamID, eventID);
                                 db.collection("Fields").document(fieldID).collection("fieldEvents")
                                         .document(Long.toString(c.getTimeInMillis())).set(fieldEventMap);
                             }

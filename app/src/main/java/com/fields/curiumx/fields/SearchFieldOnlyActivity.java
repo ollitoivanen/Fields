@@ -21,6 +21,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,7 +50,10 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
-    Boolean listening;
+    boolean listening;
+    boolean fromEvent;
+    TextView startTraining;
+    Button addField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,15 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
         textView = findViewById(R.id.textViews_empty);
         search = findViewById(R.id.search1);
         listening = false;
+        addField = findViewById(R.id.add_new_field);
+        addField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SearchFieldOnlyActivity.this, CreateNewFieldActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+            }
+        });
+        startTraining = findViewById(R.id.start_text);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,12 +83,16 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
         field_by_name_button.setOnClickListener(this);
         ep = findViewById(R.id.fieldRecycler);
         field_by_name_button.callOnClick();
-        ButterKnife.bind(this);
         ep.setEmptyView(textView);
         setTitle(getResources().getString(R.string.search_field));
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
+        Bundle info = getIntent().getExtras();
+        fromEvent = info.getBoolean("fromEvent");
+        if (fromEvent){
+            startTraining.setVisibility(View.GONE);
+        }
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -133,35 +151,52 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
 
                 fieldImageRef = FirebaseStorage.getInstance()
                         .getReference().child("fieldpics/"+model.getFieldID()+".jpg");
-                fieldImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                fieldImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
+                    public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
-                                    .load(fieldImageRef)
+                                    .load(uri)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(holder.profileImageSearch);
-                        }else {
-                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
-                        }
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
+
                     }
                 });
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent();
-                        intent.putExtra("fieldName2", model.getFieldName());
-                        intent.putExtra("fieldAddress", model.getFieldAddress());
-                        intent.putExtra("fieldArea", model.getFieldArea());
-                        intent.putExtra("fieldType", model.getFieldType());
-                        intent.putExtra("fieldAccessType", model.getAccessType());
-                        intent.putExtra("goalCount", model.getGoalCount());
-                        intent.putExtra("fieldID", model.getFieldID());
-                        setResult(Activity.RESULT_OK, intent);
-                        finish();
-                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                        if (fromEvent) {
+                            Intent intent = new Intent();
+                            intent.putExtra("fieldName2", model.getFieldName());
+                            intent.putExtra("fieldAddress", model.getFieldAddress());
+                            intent.putExtra("fieldArea", model.getFieldArea());
+                            intent.putExtra("fieldType", model.getFieldType());
+                            intent.putExtra("fieldAccessType", model.getAccessType());
+                            intent.putExtra("goalCount", model.getGoalCount());
+                            intent.putExtra("fieldID", model.getFieldID());
+                            setResult(Activity.RESULT_OK, intent);
+                            finish();
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                        }else {
+                            Intent intent = new Intent(getApplicationContext(), DetailFieldActivity.class);
+                            intent.putExtra("fieldName", model.getFieldName());
+                            intent.putExtra("fieldAddress", model.getFieldAddress());
+                            intent.putExtra("fieldArea", model.getFieldArea());
+                            intent.putExtra("fieldType", model.getFieldType());
+                            intent.putExtra("fieldAccessType", model.getAccessType());
+                            intent.putExtra("goalCount", model.getGoalCount());
+                            intent.putExtra("fieldID", model.getFieldID());
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
+                        }
 
 
                     }

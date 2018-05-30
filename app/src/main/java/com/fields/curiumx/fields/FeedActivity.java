@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -80,6 +81,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
     ConstraintLayout emptyView;
     TextView friends_text;
     BillingProcessor bp;
+    FloatingActionButton startTrainingFab;
     protected String key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhP70LSlF/j2XxzB5EERbyj1J/" +
             "N8l6EJS8tCWLtbaB7a72Rr7uYWex6CgtQ2gGsRSpInGa1dOyjT9cV+JvKNVTv/WyhIEpcFQJiI2rlQcAkAW" +
             "NivaffsBxUfODq6Xp2urNdgQ/35CTp/wYm75oHxE9nnqpI4X0Jk1iUKKBew8DIo2JUh9ezjruk2b+txmFTyDi0Fdm6yLmLUL0eed0mU5KrQO0FO5OHI990bCfQPIoZGKA7FPbiWSS09rn36j3HinD4fc2L52LgIwvz4vcWyMRm" +
@@ -241,6 +243,17 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
         teamCardView = findViewById(R.id.teamCard);
         teamCardViewNoTeam = findViewById(R.id.teamCardNoTeam);
         yourTeamText = findViewById(R.id.your_team_text);
+        startTrainingFab = findViewById(R.id.start_training_fab);
+        startTrainingFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeedActivity.this, SearchFieldOnlyActivity.class);
+                intent.putExtra("fromEvent", false);
+                startActivity(intent);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+            }
+        });
         init();
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser()==null){
@@ -304,8 +317,8 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot documentSnapshot = task.getResult();
-
-                            holder.username.setText(model.getUserName());
+                            String username = documentSnapshot.get("username").toString();
+                            holder.username.setText(username);
                             userID = model.getUserID();
                                 userImageRef = FirebaseStorage.getInstance()
                                         .getReference().child("profilepics/"+userID+".jpg");

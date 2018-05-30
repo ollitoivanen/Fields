@@ -474,6 +474,15 @@ public class DetailFieldActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(@NonNull fieldEventHolder holder, int position, @NonNull final FieldEventMap model) {
 
+                if (model.getEventStartDateMillis() - System.currentTimeMillis() < 0) {
+
+                    db.collection("Teams").document(model.getTeamID())
+                            .collection("Team's Events")
+                            .document(model.getEventID()).delete();
+
+
+                }
+
 
                     eventArray = getResources().getStringArray(R.array.event_type_array);
                     eventTypeString = eventArray[model.getFieldEventType()];
