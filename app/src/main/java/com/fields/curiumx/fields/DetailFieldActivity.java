@@ -86,6 +86,7 @@ public class DetailFieldActivity extends AppCompatActivity {
     String eventTypeString;
     boolean favorite;
     NotificationHelper notificationHelper;
+    boolean fieldsPlus;
 
     String[] fieldTypeArray;
     String[] fieldAccessTypeArray;
@@ -374,38 +375,58 @@ public class DetailFieldActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;
             case R.id.favorite:
-                if (!favorite) {
-                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_star));
-                    menu.getItem(1).setEnabled(false);
+                db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot ds = task.getResult();
+                        fieldsPlus = ds.getBoolean("fieldsPlus");
+                        if (fieldsPlus){
+                            if (!favorite) {
 
-                    FavoriteMap favoriteMap = new FavoriteMap(fieldID, fieldName);
-                    db.collection("Users").document(uid).collection("favoriteFields")
-                            .document(fieldID).set(favoriteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            favorite = true;
-                            Snackbar.make(findViewById(R.id.detail_field_actvity),
-                                    getResources().getString(R.string.added_to_favorites),
-                                    Snackbar.LENGTH_SHORT).show();
-                            menu.getItem(1).setEnabled(true);
+
+
+                                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_star));
+                                menu.getItem(1).setEnabled(false);
+
+
+                                FieldMap fieldMap = new FieldMap(fieldName, null, fieldArea, null,
+                                        fieldAddress, fieldID, goalCount, fieldType, fieldAccessType);
+                                db.collection("Users").document(uid).collection("favoriteFields")
+                                        .document(fieldID).set(fieldMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        favorite = true;
+                                        Snackbar.make(findViewById(R.id.detail_field_actvity),
+                                                getResources().getString(R.string.added_to_favorites),
+                                                Snackbar.LENGTH_SHORT).show();
+                                        menu.getItem(1).setEnabled(true);
+
+                                    }
+                                });
+                            }else {
+                                menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_star_outline));
+                                menu.getItem(1).setEnabled(false);
+                                db.collection("Users").document(uid).collection("favoriteFields")
+                                        .document(fieldID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Snackbar.make(findViewById(R.id.detail_field_actvity),
+                                                getResources().getString(R.string.removed_from_favorites),
+                                                Snackbar.LENGTH_SHORT).show();
+                                        favorite = false;
+                                        menu.getItem(1).setEnabled(true);
+                                    }
+                                });
+                            }
+
+
+                        }else {
+                            startActivity(new Intent(DetailFieldActivity.this, FieldsPlusStartActivity.class));
+                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
                         }
-                    });
-                }else {
-                    menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_star_outline));
-                    menu.getItem(1).setEnabled(false);
-                    db.collection("Users").document(uid).collection("favoriteFields")
-                            .document(fieldID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Snackbar.make(findViewById(R.id.detail_field_actvity),
-                                    getResources().getString(R.string.removed_from_favorites),
-                                    Snackbar.LENGTH_SHORT).show();
-                            favorite = false;
-                            menu.getItem(1).setEnabled(true);
-                        }
-                    });
-                }
+                    }
+                });
 
         }
         return super.onOptionsItemSelected(item);

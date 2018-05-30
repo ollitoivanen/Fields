@@ -71,6 +71,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     ImageView badge_rep;
     Boolean fieldsPlus;
     BillingProcessor bp;
+    String teamID;
     protected String key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhP70LSlF/j2XxzB5EERbyj1J/N8l6EJS8tCWLtbaB7a72Rr7uYWex6CgtQ2gGsRSpInGa1dOyjT9cV+JvKNVTv/WyhIEpcFQJiI2rlQcAkAWNivaffsBxUfODq6Xp2urNdgQ/35CTp/wYm75oHxE9nnqpI4X0Jk1iUKKBew8DIo2JUh9ezjruk2b+txmFTyDi0Fdm6yLmLUL0eed0mU5KrQO0FO5OHI990bCfQPIoZGKA7FPbiWSS09rn36j3HinD4fc2L52LgIwvz4vcWyMRmCioWygxpMnyUs+TP0C3mXrdJiZkrmYig5T1zgtdy4wru5EOtW6qYwSYsj64WAS1wIDAQAB";
 
     private void loadUserInformation() {
@@ -107,6 +108,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 intent.putExtra("realName", realName);
                 intent.putExtra("userRole", userRole);
                 intent.putExtra("userPosition", userPosition);
+                intent.putExtra("teamID", teamID);
                 startActivity(intent);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
@@ -192,6 +194,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     userRole = documentSnapshot.getLong("userRole").intValue();
                     userPosition = documentSnapshot.getLong("position").intValue();
                     trainingCountText = documentSnapshot.getLong("trainingCount").intValue();
+                    teamID = documentSnapshot.get("usersTeamID").toString();
                     if (trainingCountText==1){
                         trainingCount.setText(getResources().getString(R.string.training, Long.toString(trainingCountText)));
 

@@ -63,6 +63,7 @@ public class EditProfileActivity extends AppCompatActivity {
     TextInputLayout usernameInput;
     TextInputLayout realNameInput;
     ImageView deleteImage;
+    String teamID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +106,11 @@ public class EditProfileActivity extends AppCompatActivity {
         realName = info.getString("realName");
         position = info.getInt("userPosition");
         role = info.getInt("userRole");
+        teamID = info.getString("teamID");
         usernameEdit.setText(username);
         realNameEdit.setText(realName);
         roleSpinner.setSelection(role);
+
         if (position!=-1){
             positionSpinner.setSelection(position);
         }
@@ -195,20 +198,29 @@ public class EditProfileActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
 
-                                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                            .setDisplayName(usernameString)
-                                            .build();
-                                    user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    db.collection("Teams").document(teamID).collection("TeamUsers")
+                                            .document(uid).update("usernameMember", usernameString)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            progressBar.setVisibility(View.GONE);
-                                            Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            startActivity(intent);
-                                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                                            finish();
+                                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                                                    .setDisplayName(usernameString)
+                                                    .build();
+                                            user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    progressBar.setVisibility(View.GONE);
+                                                    Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    startActivity(intent);
+                                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                                    finish();
+                                                }
+                                            });
                                         }
                                     });
+
+
                                 } else {
                                     Toast.makeText(getApplicationContext(), getResources()
                                             .getString(R.string.error_occurred_loading_document), Toast.LENGTH_SHORT).show();

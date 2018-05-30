@@ -27,6 +27,8 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,7 +44,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     TextView textView;
     SearchView search;
     String text;
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
@@ -62,6 +63,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     StorageReference userImageRef;
     Boolean listening;
     String teamID;
+
 
 
 
@@ -139,20 +141,22 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
                 teamImageRef = FirebaseStorage.getInstance()
                         .getReference().child("teampics/"+teamID+".jpg");
-                teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
+                    public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
-                                    .load(teamImageRef)
+                                    .load(uri)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(holder.profileImageSearch);
-                        }else {
-                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
-                        }
+
                     }
-                    });
+                    }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
+                    }
+                });
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -203,27 +207,24 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onBindViewHolder(final teamHolder holder, int position, final UserMap model) {
                 holder.textName.setText(model.getUsername());
-                holder.profileImageSearch.setImageDrawable(null);
-
-
-
 
                 userImageRef = FirebaseStorage.getInstance()
                         .getReference().child("profilepics/"+model.getUserID()+".jpg");
-                userImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-
-
+                    public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
-                                    .load(userImageRef)
+                                    .load(uri)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(holder.profileImageSearch);
-                        }else {
-                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
-                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
+
                     }
                 });
 
@@ -291,18 +292,21 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
                 fieldImageRef = FirebaseStorage.getInstance()
                         .getReference().child("fieldpics/"+model.getFieldID()+".jpg");
-                fieldImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                fieldImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
+                    public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
                                     .load(fieldImageRef)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(holder.profileImageSearch);
-                        }else {
-                            holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
-                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        holder.profileImageSearch.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
+
                     }
                 });
 

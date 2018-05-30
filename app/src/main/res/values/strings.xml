@@ -188,7 +188,8 @@
     <string name="removed_from_favorites">Removed from favorites</string>
     <string name="thank_you">Thank you for upgrading to Fields Plus. </string>
     <string name="appreciate">We appreciate dedicated players like you. Hope you enjoy your new features!</string>
-
+    <string name="favorite_fields">Favorite Fields</string>
+    <string name="you_havent_added_favorite_fields">You haven\'t added favorite fields. Do so by searching a field and pressing the star icon on the top bar!</string>
 
 
     <string name="next">NEXT</string>
@@ -203,7 +204,6 @@
     <string name="slide_5_title">Sounds awesome, right?</string>
     <string name="slide_4_title">Earn Reputation</string>
     <string name="slide_4_desc">Earn reputation by training and compete with your friends!</string>
-
 
 
     <string-array name="role_spinner">

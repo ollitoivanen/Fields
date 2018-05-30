@@ -2,6 +2,7 @@ package com.fields.curiumx.fields;
 
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,13 +27,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -78,7 +86,6 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
             "CioWygxpMnyUs+TP0C3mXrdJiZkrmYig5T1zgtdy4wru5EOtW6qYwSYsj64WAS1wIDAQAB";
     boolean fieldsPlus;
     String userID;
-    boolean imaged;
 
 
 
@@ -102,6 +109,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search, menu);
+        inflater.inflate(R.menu.favorite, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -112,6 +120,16 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                 startActivity(new Intent(FeedActivity.this, SearchActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;
+            case R.id.favorite:
+                if (!fieldsPlus){
+                    startActivity(new Intent(FeedActivity.this, FieldsPlusStartActivity.class));
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+                }else {
+                    startActivity(new Intent(FeedActivity.this, FavoriteFieldsActivity.class));
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -291,22 +309,21 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                             userID = model.getUserID();
                                 userImageRef = FirebaseStorage.getInstance()
                                         .getReference().child("profilepics/"+userID+".jpg");
-                            userImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
+                                    public void onSuccess(Uri uri) {
+                                        GlideApp.with(getApplicationContext())
+                                                .load(uri)
+                                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                                .skipMemoryCache(false)
+                                                .into(holder.userPhoto);
 
-                                            GlideApp.with(getApplicationContext())
-                                                    .load(userImageRef)
-                                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                                    .skipMemoryCache(true)
-                                                    .into(holder.userPhoto);
-                                        } else {
-                                            holder.userPhoto.setImageDrawable(getResources().
-                                                    getDrawable(R.drawable.profile_default));
-
-                                        }
                                     }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    holder.userPhoto.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
+                                }
                             });
 
                         String currentField = task.getResult().get("currentFieldName").toString();

@@ -17,6 +17,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -65,7 +67,6 @@ public class TeamPlayersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_players);
-        ButterKnife.bind(this);
         TextView empty = findViewById(R.id.emptytext);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -110,20 +111,21 @@ public class TeamPlayersActivity extends AppCompatActivity {
 
                 userImageRef = FirebaseStorage.getInstance()
                         .getReference().child("profilepics/"+model.getUidMember()+".jpg");
-                userImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
+                    public void onSuccess(@NonNull Uri uri) {
+
                             GlideApp.with(getApplicationContext())
-                                    .load(userImageRef)
+                                    .load(uri)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(holder.teamPlayerImage);
-                        } else {
-                            holder.teamPlayerImage.setImageDrawable(getResources().
-                                    getDrawable(R.drawable.team_default));
 
-                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        holder.teamPlayerImage.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
                     }
                 });
             }
