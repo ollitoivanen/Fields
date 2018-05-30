@@ -2,8 +2,10 @@ package com.fields.curiumx.fields;
 
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,6 +61,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     StorageReference fieldImageRef;
     StorageReference userImageRef;
     Boolean listening;
+    String teamID;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +100,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         searchRecycler.setEmptyView(textView);
         init();
 
+
+
     }
 
     public void init(){
@@ -124,7 +135,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onBindViewHolder(final teamHolder holder, int position, final TeamMap model) {
                 holder.textName.setText(model.getTeamUsernameText());
-                String teamID = model.getTeamID();
+                teamID = model.getTeamID();
+
                 teamImageRef = FirebaseStorage.getInstance()
                         .getReference().child("teampics/"+teamID+".jpg");
                 teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -164,6 +176,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 return new teamHolder(view);
             }
 
+
+
             @Override
             public void onError(FirebaseFirestoreException e) {
                 Log.e("error", e.getMessage());
@@ -189,13 +203,19 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onBindViewHolder(final teamHolder holder, int position, final UserMap model) {
                 holder.textName.setText(model.getUsername());
+                holder.profileImageSearch.setImageDrawable(null);
+
+
+
 
                 userImageRef = FirebaseStorage.getInstance()
-                        .getReference().child("userpics/"+model.getUserID()+".jpg");
+                        .getReference().child("profilepics/"+model.getUserID()+".jpg");
                 userImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
                         if (task.isSuccessful()) {
+
+
                             GlideApp.with(getApplicationContext())
                                     .load(userImageRef)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -206,6 +226,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                         }
                     }
                 });
+
+
 
 
                holder.itemView.setOnClickListener(new View.OnClickListener() {

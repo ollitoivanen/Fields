@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:elevation="5dp"
+        android:visibility=""
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,6 +45,7 @@
             android:id="@+id/profile_image_search"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:elevation="1dp"
             android:layout_gravity="center"
             android:src="@drawable/fields_logo_green"
             android:visibility="visible" />

@@ -100,7 +100,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/realname"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium"
             android:textSize="20sp"
             android:textStyle="bold"
             android:visibility="visible"
@@ -119,6 +118,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/real_name">
+
 
             <ImageView
                 android:contentDescription="@string/team"
@@ -237,7 +237,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:background="@drawable/rounded_view"
+        android:background="@drawable/rounded_view_blue"
         android:backgroundTint="@color/premium_blue"
         android:elevation="2dp"
         android:gravity="center"

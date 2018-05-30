@@ -35,10 +35,13 @@ public class TrainingActivity extends AppCompatActivity {
     String userReputation;
     Long userReputationNew;
     int time;
+    NotificationHelper notificationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        notificationHelper = new NotificationHelper(this);
+
         setContentView(R.layout.activity_training);
         currentField = findViewById(R.id.field_training);
         timeBox = findViewById(R.id.timeBox);
@@ -57,6 +60,8 @@ public class TrainingActivity extends AppCompatActivity {
                 db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                         notificationHelper.getManager().cancel(1);
+
                         DocumentSnapshot ds = task.getResult();
                         Map<String, Object> map = ds.getData();
                         Date checkTime = (Date) map.get("timestamp");
@@ -150,4 +155,6 @@ public class TrainingActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

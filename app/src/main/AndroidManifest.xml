@@ -110,6 +110,7 @@
         </activity>
         <activity
             android:name=".TrainingActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".TrainingSummaryActivity"

@@ -175,7 +175,7 @@ public class EditProfileActivity extends AppCompatActivity {
     public void saveChanges() {
         int playerPosition = positionSpinner.getSelectedItemPosition();
         int userRole = roleSpinner.getSelectedItemPosition();
-        final String usernameString = usernameEdit.getText().toString().trim();
+        final String usernameString = usernameEdit.getText().toString().trim().toLowerCase();
         final String realNameString = realNameEdit.getText().toString().trim();
 
 

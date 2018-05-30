@@ -3,6 +3,7 @@ package com.fields.curiumx.fields;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -17,7 +18,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.anjlab.android.iab.v3.BillingProcessor;
+import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +36,7 @@ import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener{
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, BillingProcessor.IBillingHandler{
 
     ImageButton profileButton;
     TextView testCurrentField;
@@ -66,6 +70,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     long reputationInt;
     ImageView badge_rep;
     Boolean fieldsPlus;
+    BillingProcessor bp;
+    protected String key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhP70LSlF/j2XxzB5EERbyj1J/N8l6EJS8tCWLtbaB7a72Rr7uYWex6CgtQ2gGsRSpInGa1dOyjT9cV+JvKNVTv/WyhIEpcFQJiI2rlQcAkAWNivaffsBxUfODq6Xp2urNdgQ/35CTp/wYm75oHxE9nnqpI4X0Jk1iUKKBew8DIo2JUh9ezjruk2b+txmFTyDi0Fdm6yLmLUL0eed0mU5KrQO0FO5OHI990bCfQPIoZGKA7FPbiWSS09rn36j3HinD4fc2L52LgIwvz4vcWyMRmCioWygxpMnyUs+TP0C3mXrdJiZkrmYig5T1zgtdy4wru5EOtW6qYwSYsj64WAS1wIDAQAB";
 
     private void loadUserInformation() {
 
@@ -130,6 +136,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        bp = new BillingProcessor(this, key, this);
+
+
+
         profileButton = findViewById(R.id.profile_button);
         profileButton.setImageDrawable(getResources().getDrawable(R.drawable.person_green));
         badge_rep = findViewById(R.id.badge_rep);
@@ -175,6 +185,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     progressBar.setVisibility(View.GONE);
 
 
+
+
                     final DocumentSnapshot documentSnapshot = task.getResult();
                     setTitle(user.getDisplayName());
                     userRole = documentSnapshot.getLong("userRole").intValue();
@@ -190,7 +202,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     fieldsPlus = documentSnapshot.getBoolean("fieldsPlus");
                     if (fieldsPlus){
-                        fields_plus.setVisibility(View.GONE);
+                        if (bp.loadOwnedPurchasesFromGoogle() && bp.isSubscribed("fields_plus")){
+                            fields_plus.setVisibility(View.GONE);
+                        }else {
+                            db.collection("Users").document(uid).update("fieldsPlus", false);
+                            fieldsPlus = false;
+                        }
                     }else{
                         fields_plus.setVisibility(View.VISIBLE);
                     }
@@ -378,5 +395,26 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    }
+
+    @Override
+    public void onProductPurchased(@NonNull String productId, @Nullable TransactionDetails details) {
+
+    }
+
+    @Override
+    public void onPurchaseHistoryRestored() {
+
+    }
+
+    @Override
+    public void onBillingError(int errorCode, @Nullable Throwable error) {
+
+    }
+
+    @Override
+    public void onBillingInitialized() {
+
+
     }
 }

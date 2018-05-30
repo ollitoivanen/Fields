@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
@@ -172,22 +173,46 @@ public class CreateNewFieldActivity extends AppCompatActivity {
         db.collection("Fields").document(fieldID).set(fieldMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+
+
                 if (task.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), getResources()
-                            .getString(R.string.field_created_successfully), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(CreateNewFieldActivity.this, DetailFieldActivity.class);
-                    intent.putExtra("fieldName", fieldMap.getFieldName());
-                    intent.putExtra("fieldAddress", fieldMap.getFieldAddress());
-                    intent.putExtra("fieldArea", fieldMap.getFieldArea());
-                    intent.putExtra("fieldType", fieldMap.getFieldType());
-                    intent.putExtra("fieldAccessType", fieldMap.getAccessType());
-                    intent.putExtra("goalCount", fieldMap.getGoalCount());
-                    intent.putExtra("fieldID", fieldMap.getFieldID());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                    finish();
+
+
+
+                    db.collection("Users").document(uid)
+                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot ds = task.getResult();
+                            String currentReputationString = ds.get("userReputation").toString();
+                            long currentReputation = Long.parseLong(currentReputationString);
+                            long newReputation = currentReputation + 60;
+                            String newReputationString = Long.toString(newReputation);
+                            db.collection("Users").document(uid).update("userReputation", newReputationString)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(getApplicationContext(), getResources()
+                                            .getString(R.string.field_created_successfully), Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(CreateNewFieldActivity.this, DetailFieldActivity.class);
+                                    intent.putExtra("fieldName", fieldMap.getFieldName());
+                                    intent.putExtra("fieldAddress", fieldMap.getFieldAddress());
+                                    intent.putExtra("fieldArea", fieldMap.getFieldArea());
+                                    intent.putExtra("fieldType", fieldMap.getFieldType());
+                                    intent.putExtra("fieldAccessType", fieldMap.getAccessType());
+                                    intent.putExtra("goalCount", fieldMap.getGoalCount());
+                                    intent.putExtra("fieldID", fieldMap.getFieldID());
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                    finish();
+                                }
+                            });
+
+                        }
+                    });
+
                 }else {
                     Snackbar.make(findViewById(R.id.scroll), getResources()
                                     .getString(R.string.error_occurred_creating_field),

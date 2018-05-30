@@ -1,6 +1,8 @@
 package com.fields.curiumx.fields;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -9,10 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.anjlab.android.iab.v3.BillingProcessor;
+import com.anjlab.android.iab.v3.PurchaseData;
+import com.anjlab.android.iab.v3.PurchaseInfo;
+import com.anjlab.android.iab.v3.PurchaseState;
 import com.anjlab.android.iab.v3.TransactionDetails;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -72,6 +80,7 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
                     if(isSubsUpdateSupported) {
                         bp.subscribe(FieldsPlusStartActivity.this, "fields_plus");
 
+
                     }
 
                 }
@@ -117,9 +126,33 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
 
-        db.collection("Users").document(uid).update("fieldsPlus", true);
-        finish();
-        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+        db.collection("Users").document(uid).update("fieldsPlus", true).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(FieldsPlusStartActivity.this );
+                View mView = getLayoutInflater().inflate(R.layout.fields_plus_thank_you_popup, null);
+                Button con = mView.findViewById(R.id.continue_button);
+                con.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    }
+                });
+
+
+                alertDialog.setView(mView);
+                final AlertDialog dialog = alertDialog.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+
+
+
+
+            }
+        });
+
 
 
         /*

@@ -112,7 +112,7 @@
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/fields_button_states"
+        android:backgroundTint="@color/colorPrimary"
         android:text="@string/fui_button_text_save"
         android:visibility="visible"
         android:textAllCaps="false"

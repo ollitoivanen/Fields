@@ -73,7 +73,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:background="@drawable/rounded_view"
+            android:background="@drawable/rounded_view_blue"
             android:backgroundTint="@color/premium_blue"
             android:clickable="true"
             android:elevation="5dp"

@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -84,6 +85,7 @@ public class DetailFieldActivity extends AppCompatActivity {
     String[] eventArray;
     String eventTypeString;
     boolean favorite;
+    NotificationHelper notificationHelper;
 
     String[] fieldTypeArray;
     String[] fieldAccessTypeArray;
@@ -166,6 +168,7 @@ public class DetailFieldActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_detail);
+        notificationHelper = new NotificationHelper(this);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         fieldEventRecycler = findViewById(R.id.field_event_recycler);
@@ -236,6 +239,8 @@ public class DetailFieldActivity extends AppCompatActivity {
         setTitle(fieldName);
         TextView fieldName = findViewById(R.id.fieldName);
         fieldName.setText(this.fieldName);
+
+
 
         imTrainingHereNoMore.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -311,18 +316,28 @@ public class DetailFieldActivity extends AppCompatActivity {
         imTrainingHereButton.setVisibility(View.GONE);
         imTrainingHereNoMore.setEnabled(false);
         imTrainingHereNoMore.setVisibility(View.VISIBLE);
-        db.collection("Users").document(uid).update("currentFieldID", fieldID);
-        db.collection("Users").document(uid).update("currentFieldName", fieldName);
-        db.collection("Users").document(uid).update("timestamp", FieldValue.serverTimestamp()).addOnCompleteListener(new OnCompleteListener<Void>() {
+        UserTrainingMap userTrainingMap = new UserTrainingMap(fieldName, user.getDisplayName(), uid);
+        db.collection("Users").document(uid).collection("currentTraining").document(uid)
+                .set(userTrainingMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                progressBar.setVisibility(View.GONE);
-                startActivity(intent);
-                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                imTrainingHereNoMore.setEnabled(true);
+                db.collection("Users").document(uid).update("currentFieldID", fieldID);
+                db.collection("Users").document(uid).update("currentFieldName", fieldName);
+                db.collection("Users").document(uid).update("timestamp", FieldValue.serverTimestamp())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                sendNotification("Current Training", fieldName);
+                                progressBar.setVisibility(View.GONE);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                imTrainingHereNoMore.setEnabled(true);
 
+                            }
+                        });
             }
         });
+
 
 
     }
@@ -487,5 +502,10 @@ public class DetailFieldActivity extends AppCompatActivity {
         super.onDestroy();
         adapter.stopListening();
         fieldEventRecycler.setAdapter(null);
+    }
+
+    public void sendNotification(String title, String message){
+        NotificationCompat.Builder nb = notificationHelper.getChannelNotification(title, message);
+        notificationHelper.getManager().notify(1, nb.build());
     }
 }
