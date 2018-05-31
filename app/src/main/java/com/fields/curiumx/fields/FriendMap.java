@@ -1,16 +1,20 @@
 package com.fields.curiumx.fields;
 
 public class FriendMap {
-    String userName;
-    String userID;
+    private String userName;
+    private String userID;
+    private String followerName;
 
     public FriendMap(){
 
     }
 
-    public FriendMap(String userName, String userID){
+    public FriendMap(String userName, String userID, String followerName){
         this.userName = userName;
         this.userID = userID;
+        this.userID = userID;
+        this.followerName = followerName;
+
     }
 
     public String getUserID() {
@@ -21,4 +25,7 @@ public class FriendMap {
         return userName;
     }
 
+    public String getFollowerName() {
+        return followerName;
+    }
 }

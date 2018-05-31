@@ -194,7 +194,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     userRole = documentSnapshot.getLong("userRole").intValue();
                     userPosition = documentSnapshot.getLong("position").intValue();
                     trainingCountText = documentSnapshot.getLong("trainingCount").intValue();
-                    teamID = documentSnapshot.get("usersTeamID").toString();
                     if (trainingCountText==1){
                         trainingCount.setText(getResources().getString(R.string.training, Long.toString(trainingCountText)));
 
@@ -290,6 +289,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     if (documentSnapshot.get("usersTeam") != null) {
                         UserTeam = documentSnapshot.get("usersTeam").toString();
+                        teamID = documentSnapshot.get("usersTeamID").toString();
+
                         usersTeam.setText(UserTeam);
                         usersTeam.setOnClickListener(new View.OnClickListener() {
                             @Override

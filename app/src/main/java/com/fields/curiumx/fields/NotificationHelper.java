@@ -28,7 +28,7 @@ public class NotificationHelper extends ContextWrapper {
     @TargetApi(Build.VERSION_CODES.O)
     public void createChannels(){
         NotificationChannel trainingChannel = new NotificationChannel(trainingChannelID,
-                trainingChannelName, NotificationManager.IMPORTANCE_DEFAULT);
+                trainingChannelName, NotificationManager.IMPORTANCE_HIGH);
         trainingChannel.enableLights(true);
         trainingChannel.enableVibration(true);
         trainingChannel.setLightColor(R.color.colorPrimary);
@@ -48,11 +48,13 @@ public class NotificationHelper extends ContextWrapper {
     public NotificationCompat.Builder getChannelNotification(String title, String message){
         Intent resultIntent = new Intent(this, TrainingActivity.class);
         resultIntent.putExtra("fieldName", message);
+        resultIntent.putExtra("fromNotification", true);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 1,resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(getApplicationContext(), trainingChannelID)
                 .setContentTitle(title)
                 .setContentText(message)
+                .setPriority(Notification.PRIORITY_HIGH)
                 .setSmallIcon(R.drawable.fields_logo_notification)
                 .setColor(getResources().getColor(R.color.colorPrimary))
                 .setColorized(true)

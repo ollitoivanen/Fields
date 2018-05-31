@@ -105,7 +105,7 @@ public class FavoriteFieldsActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         GlideApp.with(getApplicationContext())
-                                .load(fieldImageRef)
+                                .load(uri)
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .skipMemoryCache(true)
                                 .into(holder.profileImageSearch);

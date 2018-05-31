@@ -36,6 +36,7 @@ public class TrainingActivity extends AppCompatActivity {
     Long userReputationNew;
     int time;
     NotificationHelper notificationHelper;
+    boolean fromNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class TrainingActivity extends AppCompatActivity {
         endTrainingButton = findViewById(R.id.endTraining);
         final Bundle info = getIntent().getExtras();
         final String fieldName = info.getString("fieldName");
+        fromNotification = info.getBoolean("fromNotification");
         currentField.setText(fieldName);
         setTitle(getResources().getString(R.string.current_training));
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -92,6 +94,7 @@ public class TrainingActivity extends AppCompatActivity {
                                 "currentFieldName", "", "timestamp", null);
                         Intent intent = new Intent(TrainingActivity.this, TrainingSummaryActivity.class);
                         intent.putExtra("trainingRep", Long.toString(reputation));
+                        intent.putExtra("fromNotification", fromNotification);
                         startActivity(intent);
                         overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                         finish();

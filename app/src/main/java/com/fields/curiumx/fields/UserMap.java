@@ -17,6 +17,7 @@ public class UserMap {
     private int trainingCount;
     private Boolean fieldsPlus;
     private Date timestamp;
+    private String token;
 
 
     public  UserMap(){
@@ -24,7 +25,7 @@ public class UserMap {
     }
     public UserMap(String username, String userID, String currentFieldID, String currentFieldName,
                    String usersTeam, String realName, int userRole, String userReputation,
-                   int position, String usersTeamID, int trainingCount, Boolean fieldsPlus, Date timestamp){
+                   int position, String usersTeamID, int trainingCount, Boolean fieldsPlus, Date timestamp, String token){
         this.username = username;
         this.userID = userID;
         this.currentFieldID = currentFieldID;
@@ -38,6 +39,7 @@ public class UserMap {
         this.trainingCount = trainingCount;
         this.fieldsPlus = fieldsPlus;
         this.timestamp = timestamp;
+        this.token = token;
     }
 
     public String getUsername(){
@@ -91,5 +93,9 @@ public class UserMap {
 
     public Date getTimestamp() {
         return timestamp;
+    }
+
+    public String getToken() {
+        return token;
     }
 }

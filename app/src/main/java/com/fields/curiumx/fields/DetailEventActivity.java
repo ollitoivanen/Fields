@@ -24,6 +24,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -118,6 +120,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                 db.collection("Teams").document(teamID).collection("Team's Events")
                         .document(eventID).collection("Event Members").document(uid).set(map);
 
+
                         in.setBackground(getResources().getDrawable(R.drawable.rounded_view_green));
                         in.setTextColor(getResources().getColor(R.color.cardview_light_background));
 
@@ -132,7 +135,8 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
             case R.id.out_button:
                 Map<String, Object> map1 = new HashMap<>();
                 map1.put("member_status", event_member_status_out);
-                db.collection("Teams").document(teamID).collection("Team's Events").document(eventID).collection("Event Members").document(uid).set(map1);
+                db.collection("Teams").document(teamID).collection("Team's Events")
+                        .document(eventID).collection("Event Members").document(uid).set(map1);
 
                                 in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
                                 in.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -147,7 +151,8 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
             case R.id.half_button:
                 Map<String, Object> map2 = new HashMap<>();
                 map2.put("member_status", event_member_status_open);
-                db.collection("Teams").document(teamID).collection("Team's Events").document(eventID).collection("Event Members").document(uid).set(map2);
+                db.collection("Teams").document(teamID).collection("Team's Events")
+                        .document(eventID).collection("Event Members").document(uid).set(map2);
 
                                 in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
                                 in.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -220,81 +225,126 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                 if (model.getUidMember().equals(user.getUid())) {
                     holder.nameTaking.setText(getResources().getString(R.string.you));
 
+                    db.collection("Teams").document(teamID).collection("Team's Events")
+                            .document(eventID).collection("Event Members").document(model.uidMember)
+                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (!task.getResult().exists()) {
+                                Map<String, Object> mapOpen = new HashMap<>();
+                                mapOpen.put("member_status", event_member_status_open);
+                                db.collection("Teams").document(teamID).collection("Team's Events")
+                                        .document(eventID).collection("Event Members")
+                                        .document(model.uidMember).set(mapOpen)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                    }
+                                });
+                            } else {
+                                DocumentSnapshot ds = task.getResult();
+
+                                    if (ds.get("member_status").equals("1")) {
+                                        holder.nameTaking.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                        in.setBackground(getResources().getDrawable(R.drawable.rounded_view_green));
+                                        in.setTextColor(getResources().getColor(R.color.cardview_light_background));
+
+                                        out.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                        out.setTextColor(getResources().getColor(R.color.red_out));
+
+                                        open.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                        open.setTextColor(getResources().getColor(R.color.blacknot));
+                                    } else if (ds.get("member_status").equals("2")) {
+                                        holder.nameTaking.setTextColor(getResources().getColor(R.color.red_out));
+                                        in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                        in.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+                                        out.setBackground(getResources().getDrawable(R.drawable.rounded_view_red));
+                                        out.setTextColor(getResources().getColor(R.color.cardview_light_background));
+
+                                        open.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                        open.setTextColor(getResources().getColor(R.color.blacknot));
+                                    } else {
+                                        in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                        in.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+                                        out.setBackground(getResources().getDrawable(R.drawable.rounded_view));
+                                        out.setTextColor(getResources().getColor(R.color.red_out));
+
+                                        open.setBackground(getResources().getDrawable(R.drawable.rounded_view_gray));
+                                        open.setTextColor(getResources().getColor(R.color.cardview_light_background));
+                                    }
+
+                            }
+                        }
+                    });
+
+
                 } else{
                     holder.nameTaking.setText(model.getUsernameMember());
+
+                    db.collection("Teams").document(teamID).collection("Team's Events")
+                            .document(eventID).collection("Event Members").document(model.uidMember)
+                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (!task.getResult().exists()) {
+                                Map<String, Object> mapOpen = new HashMap<>();
+                                mapOpen.put("member_status", event_member_status_open);
+                                db.collection("Teams").document(teamID).collection("Team's Events")
+                                        .document(eventID).collection("Event Members")
+                                        .document(model.uidMember).set(mapOpen)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+
+                                            }
+                                        });
+                            } else {
+                                DocumentSnapshot ds = task.getResult();
+
+                                if (ds.get("member_status").equals("1")) {
+                                    holder.nameTaking.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+                                } else if (ds.get("member_status").equals("2")) {
+                                    holder.nameTaking.setTextColor(getResources().getColor(R.color.red_out));
+
+                                }
+
+                            }
+                        }
+                    });
+
+
             }
 
                 profileImageRef = FirebaseStorage.getInstance()
                         .getReference().child("profilepics/"+model.getUidMember()+".jpg");
-                profileImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                profileImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
+                    public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
-                                    .load(profileImageRef)
+                                    .load(uri)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(holder.profileImage);
-                        } else {
-                            holder.profileImage.setImageDrawable(getResources().
-                                    getDrawable(R.drawable.profile_default));
 
-                        }
+
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        holder.profileImage.setImageDrawable(getResources().
+                                getDrawable(R.drawable.profile_default));
                     }
                 });
 
 
 
-            db.collection("Teams").document(teamID).collection("Team's Events")
-                    .document(eventID).collection("Event Members").document(model.uidMember)
-                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (!task.getResult().exists()) {
-                        Map<String, Object> mapOpen = new HashMap<>();
-                        mapOpen.put("member_status", event_member_status_open);
-                        db.collection("Teams").document(teamID).collection("Team's Events")
-                                .document(eventID).collection("Event Members").document(model.uidMember).set(mapOpen).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
 
-                            }
-                        });
-                    } else {
-                        DocumentSnapshot ds = task.getResult();
-                        if (ds.get("member_status").equals("1")) {
-                            holder.nameTaking.setTextColor(getResources().getColor(R.color.colorPrimary));
-                            in.setBackground(getResources().getDrawable(R.drawable.rounded_view_green));
-                            in.setTextColor(getResources().getColor(R.color.cardview_light_background));
-
-                            out.setBackground(getResources().getDrawable(R.drawable.rounded_view));
-                            out.setTextColor(getResources().getColor(R.color.red_out));
-
-                            open.setBackground(getResources().getDrawable(R.drawable.rounded_view));
-                            open.setTextColor(getResources().getColor(R.color.blacknot));
-                        } else if (ds.get("member_status").equals("2")) {
-                            holder.nameTaking.setTextColor(getResources().getColor(R.color.red_out));
-                            in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
-                            in.setTextColor(getResources().getColor(R.color.colorPrimary));
-
-                            out.setBackground(getResources().getDrawable(R.drawable.rounded_view_red));
-                            out.setTextColor(getResources().getColor(R.color.cardview_light_background));
-
-                            open.setBackground(getResources().getDrawable(R.drawable.rounded_view));
-                            open.setTextColor(getResources().getColor(R.color.blacknot));
-                        }else {
-                            in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
-                            in.setTextColor(getResources().getColor(R.color.colorPrimary));
-
-                            out.setBackground(getResources().getDrawable(R.drawable.rounded_view));
-                            out.setTextColor(getResources().getColor(R.color.red_out));
-
-                            open.setBackground(getResources().getDrawable(R.drawable.rounded_view_gray));
-                            open.setTextColor(getResources().getColor(R.color.cardview_light_background));
-                        }
-                    }
-                }
-            });
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

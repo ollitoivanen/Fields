@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,6 +35,10 @@ import java.util.Date;
 public class DetailUserActivity extends AppCompatActivity {
 
     FloatingActionButton chatUser;
+
+
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -359,7 +365,7 @@ public class DetailUserActivity extends AppCompatActivity {
 
     public void addFriendClick(){
         progressBar.setVisibility(View.VISIBLE);
-        FriendMap friendMap = new FriendMap(username, userID);
+        FriendMap friendMap = new FriendMap(username, userID, user.getDisplayName());
         db.collection("Users").document(uid).collection("Friends")
                 .document(userID).set(friendMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -369,6 +375,10 @@ public class DetailUserActivity extends AppCompatActivity {
                 addFriend.setVisibility(View.GONE);
             }
         });
+
+
+
+
     }
 
     public void onFeedClick(View view) {

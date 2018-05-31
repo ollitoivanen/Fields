@@ -54,6 +54,10 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:3.3.0'
     implementation 'com.android.support:support-compat:27.1.1'
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
+    implementation 'com.google.firebase:firebase-database:15.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
+
+
 
 
 }

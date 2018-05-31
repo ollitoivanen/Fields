@@ -33,6 +33,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -173,9 +174,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     String uid = user.getUid();
+                                    String token = FirebaseInstanceId.getInstance().getToken();
+
 
                                     UserMap userMap = new UserMap(usernameString, uid, "",
-                                            "", null, realNameString, userRole, "0", -1, null, 0, false, null);
+                                            "", null, realNameString, userRole,
+                                            "0", -1, null, 0,
+                                            false, null, token);
                                     db.collection("Users").document(uid).set(userMap);
 
                                     UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()

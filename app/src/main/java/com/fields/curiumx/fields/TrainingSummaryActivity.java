@@ -1,5 +1,6 @@
 package com.fields.curiumx.fields;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,6 +16,7 @@ public class TrainingSummaryActivity extends AppCompatActivity {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    boolean fromNotification;
 
 
     @Override
@@ -25,6 +27,7 @@ public class TrainingSummaryActivity extends AppCompatActivity {
 
         Bundle info = getIntent().getExtras();
         String trainingRep = info.getString("trainingRep");
+        fromNotification = info.getBoolean("fromNotification");
 
         rept = findViewById(R.id.rept);
         rept.setText(getResources().getString(R.string.reputation_count, trainingRep));
@@ -32,8 +35,15 @@ public class TrainingSummaryActivity extends AppCompatActivity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
-                finish();
+                if (fromNotification){
+                    startActivity(new Intent(TrainingSummaryActivity.this, FeedActivity.class));
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    finish();
+                }else {
+                    onBackPressed();
+                    finish();
+                }
+
             }
         });
     }
