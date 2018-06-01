@@ -142,7 +142,7 @@ public class UserChatActivity extends AppCompatActivity {
         if (!messageText.equals("")) {
             Calendar c = Calendar.getInstance();
             c.getTime();
-            ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), uid, c.getTime());
+            ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), uid, c.getTime(), userID);
 
             if (thisUser) {
                 dr = db.collection("Users").document(uid).collection(UserMessages)

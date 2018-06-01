@@ -452,6 +452,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.add_event_image:
                 Intent intent2 = new Intent(TeamActivity.this, NewEventActivity.class);
                 intent2.putExtra("teamID", teamID1);
+                intent2.putExtra("teamName", teamName);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 break;

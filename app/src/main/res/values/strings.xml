@@ -111,7 +111,7 @@
     <string name="delete_event">Delete event</string>
     <string name="create_new_event">Create New Event</string>
     <string name="discover">Discover</string>
-    <string name="level_up2">Only one of your team\'s members need\'s to have Fields</string>
+    <string name="level_up2">Only one of your team\'s members need to have Fields</string>
     <string name="level_up3">in order to open the</string>
     <string name="team_chat_feature">team chat</string>
     <string name="conversation">Conversation</string>
@@ -206,6 +206,7 @@
     <string name="slide_5_title">Sounds awesome, right?</string>
     <string name="slide_4_title">Earn Reputation</string>
     <string name="slide_4_desc">Earn reputation by training and compete with your friends!</string>
+    <string name="open_team_chat">Open team chat by upgrading to Fields</string>
 
 
     <string-array name="role_spinner">

@@ -266,29 +266,24 @@ public class EditTeamActivity extends AppCompatActivity {
     public void updateData(){
         db.collection("Teams").document(teamID).update("teamUsernameText", teamUsernameText,
                 "teamFullNameText", teamFullNameText,
-                "teamCountryText", teamCountryText, "level", level.getSelectedItemPosition());
-
-
-        db.collection("Users").document(uid).update(
-                "usersTeam", teamUsernameText)
+                "teamCountryText", teamCountryText, "level", level.getSelectedItemPosition())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Intent intent = new Intent(EditTeamActivity.this, TeamActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                            finish();
-                        } else {
-                            String error = getResources().getString(R.string.error_occurred_loading_document);
-                            Snackbar.make(findViewById(R.id.editteam), error, Snackbar.LENGTH_LONG).show();
-                            saveButton.setEnabled(true);
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    }
-                });
-
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Intent intent = new Intent(EditTeamActivity.this, TeamActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    finish();
+                } else {
+                    String error = getResources().getString(R.string.error_occurred_loading_document);
+                    Snackbar.make(findViewById(R.id.editteam), error, Snackbar.LENGTH_LONG).show();
+                    saveButton.setEnabled(true);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private class MyTextWatcher implements TextWatcher {

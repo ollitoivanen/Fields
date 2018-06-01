@@ -226,7 +226,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                     holder.nameTaking.setText(getResources().getString(R.string.you));
 
                     db.collection("Teams").document(teamID).collection("Team's Events")
-                            .document(eventID).collection("Event Members").document(model.uidMember)
+                            .document(eventID).collection("Event Members").document(model.getUidMember())
                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -235,7 +235,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                                 mapOpen.put("member_status", event_member_status_open);
                                 db.collection("Teams").document(teamID).collection("Team's Events")
                                         .document(eventID).collection("Event Members")
-                                        .document(model.uidMember).set(mapOpen)
+                                        .document(model.getUidMember()).set(mapOpen)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -285,7 +285,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                     holder.nameTaking.setText(model.getUsernameMember());
 
                     db.collection("Teams").document(teamID).collection("Team's Events")
-                            .document(eventID).collection("Event Members").document(model.uidMember)
+                            .document(eventID).collection("Event Members").document(model.getUidMember())
                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -294,7 +294,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                                 mapOpen.put("member_status", event_member_status_open);
                                 db.collection("Teams").document(teamID).collection("Team's Events")
                                         .document(eventID).collection("Event Members")
-                                        .document(model.uidMember).set(mapOpen)
+                                        .document(model.getUidMember()).set(mapOpen)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {

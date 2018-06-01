@@ -49,6 +49,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -83,6 +84,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
     TextView friends_text;
     BillingProcessor bp;
     FloatingActionButton startTrainingFab;
+    TextView teamNameFeed;
     protected String key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhP70LSlF/j2XxzB5EERbyj1J/" +
             "N8l6EJS8tCWLtbaB7a72Rr7uYWex6CgtQ2gGsRSpInGa1dOyjT9cV+JvKNVTv/WyhIEpcFQJiI2rlQcAkAW" +
             "NivaffsBxUfODq6Xp2urNdgQ/35CTp/wYm75oHxE9nnqpI4X0Jk1iUKKBew8DIo2JUh9ezjruk2b+txmFTyDi0Fdm6yLmLUL0eed0mU5KrQO0FO5OHI990bCfQPIoZGKA7FPbiWSS09rn36j3HinD4fc2L52LgIwvz4vcWyMRm" +
@@ -137,17 +139,16 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
         return super.onOptionsItemSelected(item);
     }
 
-    public void loadData(){
+    public void loadData() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         uid = user.getUid();
         emptyView = findViewById(R.id.empty_friend_list_feed);
         friends_text = findViewById(R.id.actions_text);
 
         bp = new BillingProcessor(this, key, this);
-        if (bp.isPurchased("fields_plus")){
+        if (bp.isPurchased("fields_plus")) {
 
         }
-
 
 
         db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -155,82 +156,103 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                yourTeamText.setVisibility(View.VISIBLE);
-                friends_text.setVisibility(View.VISIBLE);
-                feedRecycler.setVisibility(View.VISIBLE);
-                feedRecycler.setEmptyView(emptyView);
+                    yourTeamText.setVisibility(View.VISIBLE);
+                    friends_text.setVisibility(View.VISIBLE);
+                    feedRecycler.setVisibility(View.VISIBLE);
+                    feedRecycler.setEmptyView(emptyView);
 
 
                     DocumentSnapshot ds = task.getResult();
 
                     fieldsPlus = ds.getBoolean("fieldsPlus");
-                    if (fieldsPlus){
-                        if (bp.loadOwnedPurchasesFromGoogle() && bp.isSubscribed("fields_plus")){
-                        }else {
+                    if (fieldsPlus) {
+                        if (bp.loadOwnedPurchasesFromGoogle() && bp.isSubscribed("fields_plus")) {
+                        } else {
                             db.collection("Users").document(uid).update("fieldsPlus", false);
                             fieldsPlus = false;
+                            String teamID = ds.get("userTeamID").toString();
+                            db.collection("Teams").document(teamID).collection("TeamUsers")
+                                    .document(uid).update("memberFieldsPlus", false);
+                        }
+                    }else {
+                        if (bp.loadOwnedPurchasesFromGoogle() && bp.isSubscribed("fields_plus")) {
+                            db.collection("Users").document(uid).update("fieldsPlus", true);
+                            fieldsPlus = true;
+                            String teamID = ds.get("userTeamID").toString();
+                            db.collection("Teams").document(teamID).collection("TeamUsers")
+                                    .document(uid).update("memberFieldsPlus", true);
                         }
                     }
-                        if (ds.get("usersTeam") == null) {
-                            ConstraintSet constraintSet = new ConstraintSet();
-                            base = findViewById(R.id.base_activity);
-                            constraintSet.clone(base);
-                            constraintSet.connect(R.id.actions_text, ConstraintSet.TOP, R.id.teamCardNoTeam, ConstraintSet.BOTTOM, 20);
-                            constraintSet.applyTo(base);
+                    if (ds.get("usersTeamID") == null) {
+                        ConstraintSet constraintSet = new ConstraintSet();
+                        base = findViewById(R.id.base_activity);
+                        constraintSet.clone(base);
+                        constraintSet.connect(R.id.actions_text, ConstraintSet.TOP, R.id.teamCardNoTeam, ConstraintSet.BOTTOM, 20);
+                        constraintSet.applyTo(base);
 
-                            teamCardViewNoTeam.setVisibility(View.VISIBLE);
-                            teamCardViewNoTeam.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    startActivity(new Intent(FeedActivity.this, NoTeamActivity.class));
-                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                                    finish();
+                        teamCardViewNoTeam.setVisibility(View.VISIBLE);
+                        teamCardViewNoTeam.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(FeedActivity.this, NoTeamActivity.class));
+                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                finish();
 
-                                }
-                            });
-                        } else {
+                            }
+                        });
+                    } else {
 
-                            teamCardView.setVisibility(View.VISIBLE);
-                            String teamName = ds.get("usersTeam").toString();
-                            String teamID = ds.get("usersTeamID").toString();
-                            final ImageView teamImageFeed = findViewById(R.id.team_image_feed);
+                        teamCardView.setVisibility(View.VISIBLE);
+                        final String teamID = ds.get("usersTeamID").toString();
 
-                            teamImageRef = FirebaseStorage.getInstance()
-                                    .getReference().child("teampics/" + teamID + ".jpg");
-                            teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        GlideApp.with(getApplicationContext())
-                                                .load(teamImageRef)
-                                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                                .skipMemoryCache(true)
-                                                .into(teamImageFeed);
-                                    } else {
-                                        teamImageFeed.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
+                        db.collection("Teams").whereEqualTo("teamID", teamID).get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        DocumentSnapshot ds = task.getResult().getDocuments().get(0);
+                                        String teamName = ds.get("teamUsernameText").toString();
+                                        teamNameFeed = findViewById(R.id.team_name_feed);
+                                        teamNameFeed.setText(teamName);
+
+
+                                        final ImageView teamImageFeed = findViewById(R.id.team_image_feed);
+
+                                        teamImageRef = FirebaseStorage.getInstance()
+                                                .getReference().child("teampics/" + teamID + ".jpg");
+                                        teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Uri> task) {
+                                                if (task.isSuccessful()) {
+                                                    GlideApp.with(getApplicationContext())
+                                                            .load(teamImageRef)
+                                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                                            .skipMemoryCache(true)
+                                                            .into(teamImageFeed);
+                                                } else {
+                                                    teamImageFeed.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
+
+                                                }
+                                            }
+                                        });
+
+                                        teamCardView.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                Intent intent = new Intent(FeedActivity.this, TeamActivity.class);
+
+                                                startActivity(intent);
+                                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                            }
+                                        });
 
                                     }
-                                }
-                            });
 
-                            TextView teamNameFeed = findViewById(R.id.team_name_feed);
-                            teamNameFeed.setText(teamName);
-                            teamCardView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(FeedActivity.this, TeamActivity.class);
-
-                                    startActivity(intent);
-                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                                }
-                            });
-
-                        }
-
+                                });
+                    }
                 }
+
             }
         });
-
     }
 
     @Override

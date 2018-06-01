@@ -20,17 +20,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     public static final String followerChannelID = "followerChannel";
     public static final String followerChannelName = "New Followers";
+    public static final String friendTrainingChannelID = "friendTrainingChannel";
+    public static final String friendTrainingChannelName = "Friend's training";
+    public static final String userMessageChannelID = "userMessageChannel";
+    public static final String userMessageChannelName = "Messages";
     NotificationManager nm;
 
     @TargetApi(Build.VERSION_CODES.O)
     public void setupChannels(){
-        NotificationChannel trainingChannel = new NotificationChannel(followerChannelID,
+        NotificationChannel followerChannel = new NotificationChannel(followerChannelID,
                 followerChannelName, NotificationManager.IMPORTANCE_HIGH);
-        trainingChannel.enableLights(true);
-        trainingChannel.enableVibration(true);
-        trainingChannel.setLightColor(R.color.colorPrimary);
-        trainingChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-        getManager().createNotificationChannel(trainingChannel);
+        followerChannel.enableLights(true);
+        followerChannel.enableVibration(true);
+        followerChannel.setLightColor(R.color.colorPrimary);
+        followerChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        getManager().createNotificationChannel(followerChannel);
+
+        NotificationChannel friendTrainingChannel = new NotificationChannel(friendTrainingChannelID,
+                friendTrainingChannelName, NotificationManager.IMPORTANCE_HIGH);
+        friendTrainingChannel.enableLights(true);
+        friendTrainingChannel.enableVibration(true);
+        friendTrainingChannel.setLightColor(R.color.colorPrimary);
+        friendTrainingChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        getManager().createNotificationChannel(friendTrainingChannel);
+
+        NotificationChannel userMessageChannel = new NotificationChannel(userMessageChannelID,
+                userMessageChannelName, NotificationManager.IMPORTANCE_HIGH);
+        userMessageChannel.enableLights(true);
+        userMessageChannel.enableVibration(true);
+        userMessageChannel.setLightColor(R.color.colorPrimary);
+        userMessageChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        getManager().createNotificationChannel(userMessageChannel);
+
 
     }
 
@@ -50,6 +71,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             setupChannels();
         }
+
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, followerChannelID)

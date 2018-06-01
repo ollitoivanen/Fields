@@ -26,11 +26,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 public class DetailUserActivity extends AppCompatActivity {
 
@@ -74,6 +76,7 @@ public class DetailUserActivity extends AppCompatActivity {
     TextView addFriend;
     TextView removeFriend;
     ConstraintLayout friendContainer;
+    ConstraintLayout teamTab;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,6 +101,7 @@ public class DetailUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_user);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        teamTab = findViewById(R.id.team_with_icon_detail);
 
         profileImage = findViewById(R.id.profilePhoto_detail);
         userRoleArray = getResources().getStringArray(R.array.role_spinner);
@@ -135,7 +139,6 @@ public class DetailUserActivity extends AppCompatActivity {
         userID = info.getString("userID");
         currentFieldID = info.getString("currentFieldID");
         currentFieldName = info.getString("currentFieldName");
-        usersTeam = info.getString("usersTeam");
         usersTeamID = info.getString("usersTeamID");
         userRole = info.getInt("userRole");
         userReputation = info.getString("userReputation");
@@ -247,9 +250,18 @@ public class DetailUserActivity extends AppCompatActivity {
             badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_14));
         }
 
-        if (usersTeam != null) {
-            usersTeamText.setText(usersTeam);
-            usersTeamText.setOnClickListener(new View.OnClickListener() {
+        if (usersTeamID != null) {
+            db.collection("Teams").whereEqualTo("teamID", usersTeamID).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    DocumentSnapshot ds = task.getResult().getDocuments().get(0);
+                    usersTeam = ds.get("teamUsernameText").toString();
+                    usersTeamText.setText(usersTeam);
+                }
+            });
+
+            teamTab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     db.collection("Teams").document(usersTeamID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -351,6 +363,15 @@ public class DetailUserActivity extends AppCompatActivity {
     }
 
     public void removeFriendClick(){
+
+        db.collection("Friends").whereEqualTo("adder", uid).whereEqualTo( "target", userID)
+        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                task.getResult().getDocuments().get(0).getReference().delete();
+            }
+        });
+
         progressBar.setVisibility(View.VISIBLE);
         db.collection("Users").document(uid).collection("Friends")
                 .document(userID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -364,6 +385,19 @@ public class DetailUserActivity extends AppCompatActivity {
     }
 
     public void addFriendClick(){
+        final String random = UUID.randomUUID().toString().substring(24);
+
+        db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot ds = task.getResult();
+                String token = ds.get("token").toString();
+                FriendMapTest friendMapTest = new FriendMapTest(uid, userID, token);
+                db.collection("Friends").document(random).set(friendMapTest);
+            }
+        });
+
+
         progressBar.setVisibility(View.VISIBLE);
         FriendMap friendMap = new FriendMap(username, userID, user.getDisplayName());
         db.collection("Users").document(uid).collection("Friends")

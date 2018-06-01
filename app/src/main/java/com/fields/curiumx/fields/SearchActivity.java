@@ -240,7 +240,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                         intent.putExtra("userID", model.getUserID());
                         intent.putExtra("currentFieldName", model.getCurrentFieldName());
                         intent.putExtra("currentFieldID", model.getCurrentFieldID());
-                        intent.putExtra("usersTeam", model.getUsersTeam());
                         intent.putExtra("usersTeamID", model.getUsersTeamID());
                         intent.putExtra("userRole", model.getUserRole());
                         intent.putExtra("userReputation", model.getUserReputation());
@@ -296,7 +295,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
-                                    .load(fieldImageRef)
+                                    .load(uri)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
                                     .into(holder.profileImageSearch);

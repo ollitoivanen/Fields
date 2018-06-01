@@ -92,6 +92,7 @@ public class TrainingActivity extends AppCompatActivity {
 
                         db.collection("Users").document(uid).update("currentFieldID", "",
                                 "currentFieldName", "", "timestamp", null);
+                        db.collection("Users").document(uid).collection("currentTraining").document(uid).delete();
                         Intent intent = new Intent(TrainingActivity.this, TrainingSummaryActivity.class);
                         intent.putExtra("trainingRep", Long.toString(reputation));
                         intent.putExtra("fromNotification", fromNotification);

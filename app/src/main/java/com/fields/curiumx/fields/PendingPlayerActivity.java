@@ -27,7 +27,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PendingPlayerActivity extends AppCompatActivity {
-    @BindView(R.id.pending_recycler)
     EmptyRecyclerView pendingRecycler;
     private FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
@@ -44,11 +43,8 @@ public class PendingPlayerActivity extends AppCompatActivity {
     public class pendingHolder extends EmptyRecyclerView.ViewHolder {
 
 
-        @BindView(R.id.pending_player_name)
         TextView pendingPlayerName;
-        @BindView(R.id.accept)
         ImageView accept;
-        @BindView(R.id.decline)
         ImageView decline;
 
 
@@ -56,7 +52,9 @@ public class PendingPlayerActivity extends AppCompatActivity {
 
         public pendingHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            pendingPlayerName = itemView.findViewById(R.id.pending_player_name);
+            accept = itemView.findViewById(R.id.accept);
+            decline = itemView.findViewById(R.id.decline);
         }
     }
 
@@ -99,7 +97,6 @@ public class PendingPlayerActivity extends AppCompatActivity {
                                     Bundle info = getIntent().getExtras();
                                     teamID = info.getString("teamID");
                                     teamName = info.getString("teamName");
-                                    db.collection("Users").document(model.getUserID()).update("usersTeam", teamName);
                                     db.collection("Users").document(model.getUserID()).update("usersTeamID", teamID);
 
                                     db.collection("Teams").document(teamID)

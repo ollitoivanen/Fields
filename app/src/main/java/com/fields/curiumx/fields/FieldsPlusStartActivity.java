@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String uid = user.getUid();
+    String teamID;
 
 
     String key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhP70LSlF/j2XxzB5EERbyj1J/N8l6EJS8tCWLtbaB7a72Rr7uYWex6CgtQ2gGsRSpInGa1dOyjT9cV+JvKNVTv/WyhIEpcFQJiI2rlQcAkAWNivaffsBxUfODq6Xp2urNdgQ/35CTp/wYm75oHxE9nnqpI4X0Jk1iUKKBew8DIo2JUh9ezjruk2b+txmFTyDi0Fdm6yLmLUL0eed0mU5KrQO0FO5OHI990bCfQPIoZGKA7FPbiWSS09rn36j3HinD4fc2L52LgIwvz4vcWyMRmCioWygxpMnyUs+TP0C3mXrdJiZkrmYig5T1zgtdy4wru5EOtW6qYwSYsj64WAS1wIDAQAB";
@@ -58,6 +60,30 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
         bp = new BillingProcessor(this, key, this);
         bp.initialize(); // binds
         fp = findViewById(R.id.fields_plus_art);
+        db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot ds = task.getResult();
+                teamID = ds.get("usersTeamID").toString();
+                buyButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean isAvailable = BillingProcessor.isIabServiceAvailable(getApplicationContext());
+                        if(isAvailable) {
+                            buyButton.setEnabled(false);
+                            boolean isSubsUpdateSupported = bp.isSubscriptionUpdateSupported();
+                            if(isSubsUpdateSupported) {
+                                bp.subscribe(FieldsPlusStartActivity.this, "fields_plus");
+
+
+                            }
+
+                        }
+
+                    }
+                });
+            }
+        });
 
 
 
@@ -71,22 +97,7 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
                         "<font COLOR=\'#3FACFF\'><b>" + getResources().getString(R.string.plus_comma) + "</b></font>";
         levelUp.setText(Html.fromHtml(text1))   ;
 
-        buyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isAvailable = BillingProcessor.isIabServiceAvailable(getApplicationContext());
-                if(isAvailable) {
-                    boolean isSubsUpdateSupported = bp.isSubscriptionUpdateSupported();
-                    if(isSubsUpdateSupported) {
-                        bp.subscribe(FieldsPlusStartActivity.this, "fields_plus");
 
-
-                    }
-
-                }
-
-            }
-        });
     }
 
     @Override
@@ -129,23 +140,33 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
         db.collection("Users").document(uid).update("fieldsPlus", true).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(FieldsPlusStartActivity.this );
-                View mView = getLayoutInflater().inflate(R.layout.fields_plus_thank_you_popup, null);
-                Button con = mView.findViewById(R.id.continue_button);
-                con.setOnClickListener(new View.OnClickListener() {
-
+                db.collection("Teams").document(teamID).collection("TeamUsers").document(uid)
+                        .update("memberFieldsPlus", true).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onClick(View v) {
-                        finish();
-                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    public void onComplete(@NonNull Task<Void> task) {
+                        buyButton.setEnabled(true);
+                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(FieldsPlusStartActivity.this );
+                        View mView = getLayoutInflater().inflate(R.layout.fields_plus_thank_you_popup, null);
+                        Button con = mView.findViewById(R.id.continue_button);
+                        con.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                finish();
+                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                            }
+                        });
+
+
+                        alertDialog.setView(mView);
+                        final AlertDialog dialog = alertDialog.create();
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.show();
                     }
                 });
 
 
-                alertDialog.setView(mView);
-                final AlertDialog dialog = alertDialog.create();
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.show();
+
 
 
 
@@ -162,6 +183,8 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
 
     @Override
     public void onBillingError(int errorCode, Throwable error) {
+        buyButton.setEnabled(true);
+
         /*
          * Called when some error occurred. See Constants class for more details
          *

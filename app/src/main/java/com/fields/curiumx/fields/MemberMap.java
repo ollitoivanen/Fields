@@ -1,9 +1,9 @@
 package com.fields.curiumx.fields;
 
 public class MemberMap {
-    String usernameMember;
-    String uidMember;
-    Boolean memberFieldsPlus;
+    private String usernameMember;
+    private String uidMember;
+    private Boolean memberFieldsPlus;
 
     public MemberMap(){
 

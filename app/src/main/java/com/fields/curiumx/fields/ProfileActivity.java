@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -72,6 +73,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     Boolean fieldsPlus;
     BillingProcessor bp;
     String teamID;
+    ConstraintLayout teamTab;
     protected String key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhP70LSlF/j2XxzB5EERbyj1J/N8l6EJS8tCWLtbaB7a72Rr7uYWex6CgtQ2gGsRSpInGa1dOyjT9cV+JvKNVTv/WyhIEpcFQJiI2rlQcAkAWNivaffsBxUfODq6Xp2urNdgQ/35CTp/wYm75oHxE9nnqpI4X0Jk1iUKKBew8DIo2JUh9ezjruk2b+txmFTyDi0Fdm6yLmLUL0eed0mU5KrQO0FO5OHI990bCfQPIoZGKA7FPbiWSS09rn36j3HinD4fc2L52LgIwvz4vcWyMRmCioWygxpMnyUs+TP0C3mXrdJiZkrmYig5T1zgtdy4wru5EOtW6qYwSYsj64WAS1wIDAQAB";
 
     private void loadUserInformation() {
@@ -139,6 +141,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
 
         bp = new BillingProcessor(this, key, this);
+        teamTab = findViewById(R.id.team_with_icon);
 
 
 
@@ -287,16 +290,25 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     } else {
                         testCurrentField.setText(getResources().getString(R.string.not_at_any_field));
                     }
-                    if (documentSnapshot.get("usersTeam") != null) {
-                        UserTeam = documentSnapshot.get("usersTeam").toString();
-                        teamID = documentSnapshot.get("usersTeamID").toString();
 
-                        usersTeam.setText(UserTeam);
-                        usersTeam.setOnClickListener(new View.OnClickListener() {
+                    if (documentSnapshot.get("usersTeamID") != null) {
+                        teamID = documentSnapshot.get("usersTeamID").toString();
+                        db.collection("Teams").whereEqualTo("teamID", teamID).get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
-                            public void onClick(View v) {
-                                startActivity(new Intent(ProfileActivity.this, TeamActivity.class));
-                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                DocumentSnapshot ds = task.getResult().getDocuments().get(0);
+                                UserTeam = ds.get("teamUsernameText").toString();
+                                usersTeam.setText(UserTeam);
+                                teamTab.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        startActivity(new Intent(ProfileActivity.this, TeamActivity.class));
+                                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                            }
+                        });
+
+
 
                             }
                         });

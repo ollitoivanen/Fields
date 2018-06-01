@@ -66,6 +66,7 @@ public class NewEventActivity extends AppCompatActivity {
     String fieldID;
     ImageView deleteEventField;
     String teamID;
+    String teamName;
 
 
 
@@ -124,6 +125,7 @@ public class NewEventActivity extends AppCompatActivity {
 
         Bundle info = getIntent().getExtras();
         teamID = info.getString("teamID");
+        teamName = info.getString("teamName");
 
 
         publishButton = findViewById(R.id.publish_button);
@@ -143,7 +145,6 @@ public class NewEventActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             DocumentSnapshot ds = task.getResult();
                             final String ref = ds.get("usersTeamID").toString();
-                            final String teamName = ds.get("usersTeam").toString();
                             final String eventID = Long.toString(c.getTimeInMillis());
                             eventTimeStart = trainingStartTime.getText().toString();
                             eventTimeEnd = trainingEndTime.getText().toString();

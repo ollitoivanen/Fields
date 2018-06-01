@@ -221,7 +221,12 @@ teamChatRecycler.smoothScrollToPosition(50);
 
 
         TextView levelUp2 = findViewById(R.id.level_up_text2);
-        String text2 = "<font COLOR=\'#FFFFFF\'><b>" + getResources().getString(R.string.level_up2) + "</b></font>" + " " +
+        String text2 =
+
+                "<font COLOR=\'#FFFFFF\'><b>" + getResources().getString(R.string.open_team_chat) + "</b></font>" + " " +
+                        "<font COLOR=\'#3FACFF\'><b>" + getResources().getString(R.string.plus_comma) + "</b></font>" + " " +
+
+                        "<font COLOR=\'#FFFFFF\'><b>" + getResources().getString(R.string.level_up2) + "</b></font>" + " " +
                 "<font COLOR=\'#3FACFF\'><b>" + getResources().getString(R.string.plus) + "</b></font>" + " " +
                 "<font COLOR=\'#FFFFFF\'><b>" + getResources().getString(R.string.level_up3) + "</b></font>" + " " +
                 "<font COLOR=\'#3bd774\'><b>" + getResources().getString(R.string.team_chat_feature) + "</b></font>";
@@ -248,7 +253,7 @@ teamChatRecycler.smoothScrollToPosition(50);
         if (!messageText.equals("")) {
             Calendar c = Calendar.getInstance();
             c.getTime();
-            ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), uid, c.getTime());
+            ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), uid, c.getTime(), null);//change
             db.collection("Teams").document(teamID).collection("teamMessages")
                     .document(Long.toString(System.currentTimeMillis())).set(chatMap);
             messageTextEdit.setText("");

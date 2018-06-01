@@ -480,6 +480,9 @@ public class DetailFieldActivity extends AppCompatActivity {
                             .collection("Team's Events")
                             .document(model.getEventID()).delete();
 
+                    db.collection("Fields").document(fieldID).collection("fieldEvents")
+                    .document(model.getEventID()).delete();
+
 
                 }
 

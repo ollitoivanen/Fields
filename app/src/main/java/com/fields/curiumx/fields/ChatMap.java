@@ -8,16 +8,18 @@ public class ChatMap {
     private String sender;
     private String senderUid;
     private Date time;
+    private String receiverUid;
 
     public ChatMap(){
 
     }
 
-    public ChatMap(String text, String sender, String senderUid, Date time){
+    public ChatMap(String text, String sender, String senderUid, Date time, String receiverUid){
         this.sender = sender;
         this.text = text;
         this.senderUid = senderUid;
         this.time = time;
+        this.receiverUid = receiverUid;
 
     }
 
@@ -35,5 +37,9 @@ public class ChatMap {
 
     public Date getTime() {
         return time;
+    }
+
+    public String getReceiverUid() {
+        return receiverUid;
     }
 }
