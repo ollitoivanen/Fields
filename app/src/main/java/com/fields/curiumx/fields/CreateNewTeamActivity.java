@@ -163,7 +163,7 @@ public class CreateNewTeamActivity extends AppCompatActivity {
                             DocumentSnapshot documentSnapshot = task.getResult();
 
                             //Check if user is already in a team
-                            if (documentSnapshot.get("usersTeam") == null) {
+                            if (documentSnapshot.get("usersTeamID") == null) {
                                 progressBar.setVisibility(View.VISIBLE);
                                 teamID = UUID.randomUUID().toString().substring(24);
                                 if (documentSnapshot.getBoolean("fieldsPlus")){

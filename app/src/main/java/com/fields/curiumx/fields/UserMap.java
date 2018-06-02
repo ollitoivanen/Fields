@@ -11,7 +11,7 @@ public class UserMap {
     private String currentFieldName;
     private String usersTeamID;
     private int userRole;
-    private String userReputation;
+    private long userReputation;
     private int position;
     private int trainingCount;
     private Boolean fieldsPlus;
@@ -23,7 +23,7 @@ public class UserMap {
 
     }
     public UserMap(String username, String userID, String currentFieldID, String currentFieldName,
-                   String realName, int userRole, String userReputation,
+                   String realName, int userRole, long userReputation,
                    int position, String usersTeamID, int trainingCount, Boolean fieldsPlus, Date timestamp, String token){
         this.username = username;
         this.userID = userID;
@@ -66,7 +66,7 @@ public class UserMap {
         return userRole;
     }
 
-    public String getUserReputation() {
+    public long getUserReputation() {
         return userReputation;
     }
 

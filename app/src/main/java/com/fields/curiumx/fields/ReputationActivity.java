@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ReputationActivity extends AppCompatActivity {
-    String reputation;
     TextView reputationText;
     long reputationInt;
     ImageView badgeImage;
@@ -31,9 +30,8 @@ public class ReputationActivity extends AppCompatActivity {
         untillBadgeText = findViewById(R.id.until_text);
 
         Bundle info = getIntent().getExtras();
-        reputation = info.getString("reputation");
-        reputationText.setText(getResources().getString(R.string.reputation, reputation));
-        reputationInt = Long.parseLong(reputation);
+        reputationInt = info.getLong("reputation");
+        reputationText.setText(getResources().getString(R.string.reputation, reputationInt));
 
         if (reputationInt < 500) {
             nextBadge = 500;

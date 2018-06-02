@@ -32,7 +32,7 @@ public class TrainingActivity extends AppCompatActivity {
     Button endTrainingButton;
     long diff;
     long reputation;
-    String userReputation;
+    long userReputation;
     Long userReputationNew;
     int time;
     NotificationHelper notificationHelper;
@@ -69,7 +69,7 @@ public class TrainingActivity extends AppCompatActivity {
                         Date checkTime = (Date) map.get("timestamp");
                         Date currentTime = Calendar.getInstance().getTime();
                         diff = currentTime.getTime() - checkTime.getTime();
-                        userReputation = ds.get("userReputation").toString();
+                        userReputation = ds.getLong("userReputation");
 
                         if (diff < 900000){
                             reputation = 0;
@@ -77,7 +77,7 @@ public class TrainingActivity extends AppCompatActivity {
                     reputation = 0;
                 } else {
                     reputation = diff / 60000;
-                     userReputationNew = reputation + Long.parseLong(userReputation);
+                     userReputationNew = reputation + userReputation;
                      db.collection("Users").document(uid).update("userReputation", userReputationNew,
                              "userReputation", userReputationNew,
                              "trainingCount", ds.getLong("trainingCount").intValue() + 1);

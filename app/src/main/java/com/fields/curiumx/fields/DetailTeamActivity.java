@@ -116,7 +116,7 @@ public class DetailTeamActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                final DocumentSnapshot documentSnapshot = task.getResult();
-               if (documentSnapshot.get("usersTeam") == null){
+               if (documentSnapshot.get("usersTeamID") == null){
                    joinTeam.setVisibility(View.VISIBLE);
                    joinTeam.setOnClickListener(new View.OnClickListener() {
                        @Override
@@ -127,7 +127,7 @@ public class DetailTeamActivity extends AppCompatActivity {
                                    Boolean fieldsPlus = documentSnapshot.getBoolean("fieldsPlus");
                                    PendingMap pendingMap = new PendingMap(user.getUid(), username, fieldsPlus);
                                    db.collection("Teams").document(teamID1).collection("Pending Members").document(user.getUid()).set(pendingMap);
-                                   db.collection("Users").document(uid).update("usersTeam", "Pending");
+                                   db.collection("Users").document(uid).update("usersTeamID", "");
                                    joinTeam.setVisibility(View.GONE);
                            Snackbar.make(findViewById(R.id.detaila), getResources().getString(R.string.request_sent), Snackbar.LENGTH_LONG).show();
 
@@ -135,7 +135,7 @@ public class DetailTeamActivity extends AppCompatActivity {
 
                        }
                    });
-               }else if (documentSnapshot.get("usersTeam").toString().equals("Pending")){
+               }else if (documentSnapshot.get("usersTeamID").toString().equals("")){
                    joinTeam.setVisibility(View.GONE);
                }
             }

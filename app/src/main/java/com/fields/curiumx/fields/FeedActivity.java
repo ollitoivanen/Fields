@@ -183,7 +183,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                                     .document(uid).update("memberFieldsPlus", true);
                         }
                     }
-                    if (ds.get("usersTeamID") == null) {
+                    if (ds.get("usersTeamID") == null || ds.get("usersTeamID").equals("")) {
                         ConstraintSet constraintSet = new ConstraintSet();
                         base = findViewById(R.id.base_activity);
                         constraintSet.clone(base);
@@ -407,12 +407,8 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                     @Override
                     public void onClick(View v) {
                         progressBar.setVisibility(View.VISIBLE);
-                        db.collection("Users").document(uid).collection("Friends")
-                                .document(model.getUserID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                final DocumentSnapshot ds = task.getResult();
-                                db.collection("Users").document(ds.get("userID").toString())
+
+                                db.collection("Users").document(model.getUserID())
                                         .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
@@ -423,8 +419,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                                         intent.putExtra("userID", ds1.get("userID").toString());
                                         intent.putExtra("currentFieldName", ds1.get("currentFieldName").toString());
                                         intent.putExtra("currentFieldID", ds1.get("currentFieldID").toString());
-                                        if (ds1.get("usersTeam")!=null) {
-                                            intent.putExtra("usersTeam", ds1.get("usersTeam").toString());
+                                        if (ds1.get("usersTeamID")!=null && !ds1.get("usersTeamID").toString().equals("")) {
                                             intent.putExtra("usersTeamID", ds1.get("usersTeamID").toString());
                                         }
                                         intent.putExtra("userRole", ds1.getLong("userRole").intValue());
@@ -439,8 +434,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
 
                                     }
                                 });
-                            }
-                        });
+
 
 
                     }

@@ -39,7 +39,6 @@ public class DetailUserActivity extends AppCompatActivity {
     FloatingActionButton chatUser;
 
 
-    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -54,7 +53,7 @@ public class DetailUserActivity extends AppCompatActivity {
     String usersTeam;
     String usersTeamID;
     int userRole;
-    String userReputation;
+    long reputationInt;
     int position;
     String userRoleText;
     String userPositionText;
@@ -141,7 +140,7 @@ public class DetailUserActivity extends AppCompatActivity {
         currentFieldName = info.getString("currentFieldName");
         usersTeamID = info.getString("usersTeamID");
         userRole = info.getInt("userRole");
-        userReputation = info.getString("userReputation");
+        reputationInt = info.getLong("userReputation");
         position = info.getInt("position");
         if (!currentFieldName.equals("")) {
             timestamp = (Date) info.getSerializable("timestamp");
@@ -204,7 +203,6 @@ public class DetailUserActivity extends AppCompatActivity {
             currentField.setText(getResources().getString(R.string.not_at_any_field));
         }
 
-        long reputationInt = Long.parseLong(userReputation);
 
 
         if (reputationInt < 500) {
@@ -250,7 +248,7 @@ public class DetailUserActivity extends AppCompatActivity {
             badge_reputation.setImageDrawable(getResources().getDrawable(R.drawable.badge_14));
         }
 
-        if (usersTeamID != null) {
+        if (usersTeamID != null && !usersTeamID.equals("")) {
             db.collection("Teams").whereEqualTo("teamID", usersTeamID).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -293,7 +291,7 @@ public class DetailUserActivity extends AppCompatActivity {
         setTitle(username);
 
         realNameText.setText(realName);
-        rept.setText(getResources().getString(R.string.reputation, userReputation));
+        rept.setText(getResources().getString(R.string.reputation, reputationInt));
 
         userRoleText = userRoleArray[userRole];
         if (position == -1) {

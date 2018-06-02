@@ -95,7 +95,7 @@
     <string name="error_team_full_name">Please enter Team\'s full name</string>
     <string name="error_team_username">Please enter Team\'s username</string>
     <string name="error_occurred_creating_team">An error occurred creating team. Please try again</string>
-    <string name="you_are_in_team">You are already in a team</string>
+    <string name="you_are_in_team">You are already in a team or you have a request pending</string>
     <string name="team_created_successfully">Team created successfully</string>
     <string name="create_new_team">Create New Team</string>
     <string name="create_team">Create Team</string>

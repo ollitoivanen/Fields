@@ -67,7 +67,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     int userRole;
     int userPosition;
     int trainingCountText;
-    String reputationString;
     long reputationInt;
     ImageView badge_rep;
     Boolean fieldsPlus;
@@ -291,33 +290,32 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         testCurrentField.setText(getResources().getString(R.string.not_at_any_field));
                     }
 
-                    if (documentSnapshot.get("usersTeamID") != null) {
-                        teamID = documentSnapshot.get("usersTeamID").toString();
-                        db.collection("Teams").whereEqualTo("teamID", teamID).get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                DocumentSnapshot ds = task.getResult().getDocuments().get(0);
-                                UserTeam = ds.get("teamUsernameText").toString();
-                                usersTeam.setText(UserTeam);
-                                teamTab.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        startActivity(new Intent(ProfileActivity.this, TeamActivity.class));
-                                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                            }
-                        });
+                    if (documentSnapshot.get("usersTeamID") != null && !documentSnapshot.get("usersTeamID").equals("")) {
+                            teamID = documentSnapshot.get("usersTeamID").toString();
+                            db.collection("Teams").whereEqualTo("teamID", teamID).get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            DocumentSnapshot ds = task.getResult().getDocuments().get(0);
+                                            UserTeam = ds.get("teamUsernameText").toString();
+                                            usersTeam.setText(UserTeam);
+                                            teamTab.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    startActivity(new Intent(ProfileActivity.this, TeamActivity.class));
+                                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                                }
+                                            });
 
 
+                                        }
+                                    });
 
-                            }
-                        });
                     } else {
                         usersTeam.setText(getResources().getString(R.string.not_at_team));
                     }
-                    reputationString = documentSnapshot.get("userReputation").toString();
-                    reputationText.setText(getResources().getString(R.string.reputation, reputationString));
-                    reputationInt = Long.parseLong(reputationString);
+                    reputationInt = documentSnapshot.getLong("userReputation");
+                    reputationText.setText(getResources().getString(R.string.reputation, reputationInt));
 
 
                     if (reputationInt < 500) {
@@ -384,7 +382,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()){
             case R.id.rep:
                 Intent intent = new Intent(ProfileActivity.this, ReputationActivity.class);
-                intent.putExtra("reputation", reputationString);
+                intent.putExtra("reputation", reputationInt);
                 startActivity(intent);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 

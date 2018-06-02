@@ -179,7 +179,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
                                     UserMap userMap = new UserMap(usernameString, uid, "",
                                             "", realNameString, userRole,
-                                            "0", -1, null, 0,
+                                            0, -1, null, 0,
                                             false, null, token);
                                     db.collection("Users").document(uid).set(userMap);
 

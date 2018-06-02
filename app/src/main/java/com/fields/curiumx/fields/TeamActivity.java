@@ -373,9 +373,8 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                 leaveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        db.collection("Users").document(uid).update("usersTeamID", null);
                         db.collection("Teams").document(teamID1).collection("TeamUsers").document(uid).delete();
-                        db.collection("Users").document(uid).update("usersTeam", null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        db.collection("Users").document(uid).update("usersTeamID", null).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Intent intent = new Intent(TeamActivity.this, NoTeamActivity.class);

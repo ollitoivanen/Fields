@@ -115,6 +115,7 @@ public class PendingPlayerActivity extends AppCompatActivity {
                     holder.decline.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            db.collection("Users").document(model.getUserID()).update("usersTeamID", null);
                             db.collection("Teams").document(teamID).
                                     collection("Pending Members").document(model.getUserID())
                                     .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
