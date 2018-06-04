@@ -1,11 +1,9 @@
 package com.fields.curiumx.fields;
 
-import android.app.Activity;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,7 +29,7 @@ public class ReputationActivity extends AppCompatActivity {
 
         Bundle info = getIntent().getExtras();
         reputationInt = info.getLong("reputation");
-        reputationText.setText(getResources().getString(R.string.reputation, reputationInt));
+        reputationText.setText(getResources().getString(R.string.reputation, Long.toString(reputationInt)));
 
         if (reputationInt < 500) {
             nextBadge = 500;

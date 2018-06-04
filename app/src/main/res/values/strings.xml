@@ -192,6 +192,9 @@
     <string name="you_havent_added_favorite_fields">You haven\'t added favorite fields. Do so by searching a field and pressing the star icon on the top bar!</string>
     <string name="start_training_by">Start training by searching the desired field!</string>
     <string name="new_followers">New Followers</string>
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_by">Delete account by entering your user data</string>
+    <string name="account_deleted">Account deleted</string>
 
 
     <string name="next">NEXT</string>

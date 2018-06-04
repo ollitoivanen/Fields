@@ -20,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fields.curiumx.fields.notifications.MyFirebaseMessagingService;
+
 public class WelcomeActivity extends AppCompatActivity {
 
 
@@ -35,13 +37,19 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.FieldsThemeAppCompatWelcome);
+
+
         super.onCreate(savedInstanceState);
+
 
         // Checking for first time launch - before calling setContentView()
         prefManager = new PreferenceManager(this);
         if (!prefManager.isFirstTimeLaunch()) {
             launchHomeScreen();
             finish();
+        }else {
+
+
         }
 
         // Making notification bar transparent

@@ -31,6 +31,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,8 +50,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class TeamActivity extends AppCompatActivity implements View.OnClickListener{
@@ -240,11 +240,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.getResult().size()==0){
-                                    teamFieldsPlus = false;
-                                }else {
-                                    teamFieldsPlus = true;
-                                }
+                                teamFieldsPlus = task.getResult().size() != 0;
 
                                 teamLevelArray = getResources().getStringArray(R.array.level_array);
                                 teamLevelString = teamLevelArray[level];
@@ -264,19 +260,22 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
 
                                 teamImageRef = FirebaseStorage.getInstance()
                                             .getReference().child("teampics/"+teamID1+".jpg");
-                                    teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            if (task.isSuccessful()) {
+                                        public void onSuccess(Uri uri) {
                                                 GlideApp.with(getApplicationContext())
-                                                        .load(teamImageRef)
-                                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                                        .skipMemoryCache(true)
-                                                        .into(teamImage);
-                                            } else {
-                                                teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
+                                                        .load(uri)
 
-                                            }
+                                                        .into(teamImage);
+
+
+
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
+
                                         }
                                     });
 

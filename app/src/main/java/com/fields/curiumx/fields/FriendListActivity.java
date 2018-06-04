@@ -3,7 +3,7 @@ package com.fields.curiumx.fields;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NavUtils;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -25,8 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class FriendListActivity extends AppCompatActivity {
     LinearLayoutManager linearLayoutManager;
@@ -34,7 +32,6 @@ public class FriendListActivity extends AppCompatActivity {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String uid = user.getUid();
     FirestoreRecyclerAdapter adapter;
-    @BindView(R.id.friendRecycler)
     EmptyRecyclerView friendRecycler;
     ProgressBar progressBar;
 
@@ -42,7 +39,7 @@ public class FriendListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_list);
-        ButterKnife.bind(this);
+        friendRecycler = findViewById(R.id.friendRecycler);
         progressBar = findViewById(R.id.progress_bar_friends_list);
         init();
         setTitle(getResources().getString(R.string.friends));
@@ -64,13 +61,12 @@ public class FriendListActivity extends AppCompatActivity {
     }
 
     public class teamHolder extends EmptyRecyclerView.ViewHolder {
-        @BindView(R.id.teamPlayerName)
         TextView name;
 
 
         public teamHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            name = itemView.findViewById(R.id.teamPlayerName);
         }
     }
 

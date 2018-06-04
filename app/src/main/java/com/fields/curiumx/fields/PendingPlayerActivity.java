@@ -23,8 +23,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class PendingPlayerActivity extends AppCompatActivity {
     EmptyRecyclerView pendingRecycler;

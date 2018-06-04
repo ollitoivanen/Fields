@@ -146,8 +146,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
                                     .load(uri)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(true)
+
                                     .into(holder.profileImageSearch);
 
                     }
@@ -215,8 +214,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
                                     .load(uri)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(true)
+
                                     .into(holder.profileImageSearch);
 
                     }
@@ -296,8 +294,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
                                     .load(uri)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(true)
                                     .into(holder.profileImageSearch);
 
                     }

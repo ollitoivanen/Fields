@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -83,10 +84,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                                     getResources().getString(R.string.error_occurred_loading_document), Snackbar.LENGTH_LONG);
                                     snackbar_fail.show();
                                 } else {
-                                    Snackbar snackbar_su = Snackbar
-                                            .make(findViewById(R.id.root_change_password), getResources()
-                                                    .getString(R.string.password_changed), Snackbar.LENGTH_LONG);
-                                    snackbar_su.show();
+                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.password_changed),
+                                            Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(ChangePasswordActivity.this, SettingsActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);

@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -151,21 +152,21 @@ public class EditFieldActivity extends AppCompatActivity {
 
 
         final StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
-        storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()){
+            public void onSuccess(Uri uri) {
                     GlideApp.with(getApplicationContext())
-                            .load(storageRef)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
+                            .load(uri)
                             .into(fieldImage11);
                     deleteImage.setVisibility(View.VISIBLE);
                     deleteImage();
-                }else {
-                    fieldImage11.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
-                }
 
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                fieldImage11.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
             }
         });
 

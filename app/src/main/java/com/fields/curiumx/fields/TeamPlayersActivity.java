@@ -28,8 +28,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class TeamPlayersActivity extends AppCompatActivity {
 
@@ -117,8 +116,6 @@ public class TeamPlayersActivity extends AppCompatActivity {
 
                             GlideApp.with(getApplicationContext())
                                     .load(uri)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(true)
                                     .into(holder.teamPlayerImage);
 
                     }

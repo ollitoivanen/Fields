@@ -17,13 +17,10 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,8 +29,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class SearchFieldOnlyActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -156,8 +152,6 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
                     public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
                                     .load(uri)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(true)
                                     .into(holder.profileImageSearch);
 
 

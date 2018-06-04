@@ -81,8 +81,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             if (user.getPhotoUrl() != null) {
                 GlideApp.with(this)
                         .load(user.getPhotoUrl().toString())
-                       // .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        //.skipMemoryCache(true)
                         .into(profileImage);
             }else{
                 profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
@@ -110,6 +108,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 intent.putExtra("userRole", userRole);
                 intent.putExtra("userPosition", userPosition);
                 intent.putExtra("teamID", teamID);
+
                 startActivity(intent);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
@@ -314,8 +313,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     } else {
                         usersTeam.setText(getResources().getString(R.string.not_at_team));
                     }
-                    reputationInt = documentSnapshot.getLong("userReputation");
-                    reputationText.setText(getResources().getString(R.string.reputation, reputationInt));
+                    reputationInt = documentSnapshot.getLong("userReputation").intValue();
+                    reputationText.setText(getResources().getString(R.string.reputation, Long.toString(reputationInt)));
 
 
                     if (reputationInt < 500) {

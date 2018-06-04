@@ -158,11 +158,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         } else {
 
 
-            //Checks if user with same username already already exists
-            db.collection("Users").whereEqualTo("username", usernameString).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.getResult().isEmpty()) {
+
                         progressBar.setVisibility(View.VISIBLE);
                         mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -204,12 +200,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                 }
                             }
                         });
-                    } else {
-                        username.setError("This username is taken");
-                        username.requestFocus();
-                    }
-                }
-            });
+
         }
     }
     public void animateLogo(){

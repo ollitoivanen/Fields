@@ -11,6 +11,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -197,34 +198,34 @@ public class EditProfileActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
+                                    if (teamID != null) {
+                                        db.collection("Teams").document(teamID).collection("TeamUsers")
+                                                .document(uid).update("usernameMember", usernameString);
+                                    }
 
-                                    db.collection("Teams").document(teamID).collection("TeamUsers")
-                                            .document(uid).update("usernameMember", usernameString)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                                    .setDisplayName(usernameString)
-                                                    .build();
-                                            user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    progressBar.setVisibility(View.GONE);
-                                                    Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
-                                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    startActivity(intent);
-                                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                                                    finish();
-                                                }
-                                            });
-                                        }
-                                    });
+                                                        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
+                                                                .setDisplayName(usernameString)
+                                                                .build();
+                                                        user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                progressBar.setVisibility(View.GONE);
+                                                                Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
+                                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                                startActivity(intent);
+                                                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                                                finish();
+                                                            }
+                                                        });
 
 
-                                } else {
-                                    Toast.makeText(getApplicationContext(), getResources()
-                                            .getString(R.string.error_occurred_loading_document), Toast.LENGTH_SHORT).show();
-                                }
+
+
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), getResources()
+                                                .getString(R.string.error_occurred_loading_document), Toast.LENGTH_SHORT).show();
+                                    }
+
                             }
                         });
 

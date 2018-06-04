@@ -2,11 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fields.curiumx.fields">
 
-
-
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
 
     <application
         android:allowBackup="true"
@@ -15,9 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_fields_round"
         android:supportsRtl="true"
         android:theme="@style/FieldsThemeAppCompat">
-
-
-
         <service
             android:name=".notifications.MyFirebaseMessagingService"
             android:permission="com.google.android.c2dm.permission.SEND">
@@ -34,19 +28,16 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA_hHmSEbDgLAD4aWne7_4pklPV7XsXQDg"
-
-
-            />
-
+            android:value="AIzaSyA_hHmSEbDgLAD4aWne7_4pklPV7XsXQDg" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/fields_logo_notification" />
-        <meta-data android:name="com.google.firebase.messaging.default_notification_color"
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel"
-            android:value="@string/new_followers"/>
+            android:value="@string/new_followers" />
 
         <activity
             android:name=".WelcomeActivity"
@@ -112,10 +103,11 @@
         <activity
             android:name=".DetailUserActivity"
             android:screenOrientation="portrait">
-        <intent-filter>
-            <action android:name="OPEN_FOLLOWER_NOTIFICATION" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
+            <intent-filter>
+                <action android:name="OPEN_FOLLOWER_NOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".FriendListActivity"
@@ -216,8 +208,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".FieldsPlusStartActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FavoriteFieldsActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".FavoriteFieldsActivity"></activity>
+        <activity android:name=".DeleteUserActivity"
+            android:screenOrientation="portrait"
+            ></activity>
     </application>
 
 </manifest>

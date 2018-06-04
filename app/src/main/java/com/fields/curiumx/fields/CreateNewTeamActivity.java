@@ -166,11 +166,7 @@ public class CreateNewTeamActivity extends AppCompatActivity {
                             if (documentSnapshot.get("usersTeamID") == null) {
                                 progressBar.setVisibility(View.VISIBLE);
                                 teamID = UUID.randomUUID().toString().substring(24);
-                                if (documentSnapshot.getBoolean("fieldsPlus")){
-                                    memberFieldsPlus = true;
-                                }else {
-                                    memberFieldsPlus = false;
-                                }
+                                memberFieldsPlus = documentSnapshot.getBoolean("fieldsPlus");
                                 if (uriFieldImage != null){
                                     uploadImageToFirebaseStorage();
                                 }else {
@@ -231,7 +227,6 @@ public class CreateNewTeamActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressBar.setVisibility(View.GONE);
-                        saveTeamButton.setEnabled(true);
                         updateData();
                     }
                 });

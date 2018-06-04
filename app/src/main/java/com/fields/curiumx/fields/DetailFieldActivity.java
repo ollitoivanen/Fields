@@ -32,6 +32,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,8 +52,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 import static java.lang.String.valueOf;
 
@@ -292,18 +293,19 @@ public class DetailFieldActivity extends AppCompatActivity {
 
     public void loadFieldInfo(){
         final StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
-        storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()){
+            public void onSuccess(Uri uri) {
                     GlideApp.with(getApplicationContext())
-                            .load(storageRef)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
+                            .load(uri)
                             .into(fieldPhoto);
-                }else {
-                    fieldPhoto.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
-                }
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                fieldPhoto.setImageDrawable(getResources().getDrawable(R.drawable.field_default));
 
             }
         });

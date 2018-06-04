@@ -32,6 +32,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @TargetApi(Build.VERSION_CODES.O)
     public void setupChannels(){
+         nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
 
         NotificationChannel inAppChannel = new NotificationChannel(inAppChannelID,
                 inAppChannelName, NotificationManager.IMPORTANCE_HIGH);
@@ -68,6 +70,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationChannel teamMessageChannel = new NotificationChannel(teamMessageChannelID,
                 teamMessageChannelName, NotificationManager.IMPORTANCE_HIGH);
         teamMessageChannel.enableLights(true);
+
         teamMessageChannel.enableVibration(true);
         teamMessageChannel.setLightColor(R.color.colorPrimary);
         teamMessageChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);

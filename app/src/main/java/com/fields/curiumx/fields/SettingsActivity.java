@@ -20,6 +20,7 @@ public class SettingsActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
     TextView changePasswordTab;
+    TextView deleteAccountTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,14 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         };
-
+        deleteAccountTab = findViewById(R.id.delete_user_tab);
+        deleteAccountTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SettingsActivity.this, DeleteUserActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+            }
+        });
 
 
         changePasswordTab = findViewById(R.id.change_password_tab);

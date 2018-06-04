@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -291,7 +293,7 @@ public class DetailUserActivity extends AppCompatActivity {
         setTitle(username);
 
         realNameText.setText(realName);
-        rept.setText(getResources().getString(R.string.reputation, reputationInt));
+        rept.setText(getResources().getString(R.string.reputation, Long.toString(reputationInt)));
 
         userRoleText = userRoleArray[userRole];
         if (position == -1) {
@@ -302,10 +304,9 @@ public class DetailUserActivity extends AppCompatActivity {
         }
 
         final StorageReference storageRef = storage.getReference().child("profilepics/" + userID + ".jpg");
-        storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
+            public void onSuccess(Uri uri) {
                     currentField.setVisibility(View.VISIBLE);
                     gradient.setVisibility(View.VISIBLE);
                     reputation.setVisibility(View.VISIBLE);
@@ -313,21 +314,24 @@ public class DetailUserActivity extends AppCompatActivity {
                     chatUser.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     GlideApp.with(getApplicationContext())
-                            .load(storageRef)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
+                            .load(uri)
                             .into(profileImage);
-                } else {
-                    profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
-                    currentField.setVisibility(View.VISIBLE);
-                    gradient.setVisibility(View.VISIBLE);
-                    reputation.setVisibility(View.VISIBLE);
-                    rept.setVisibility(View.VISIBLE);
-                    friendContainer.setVisibility(View.VISIBLE);
-                    chatUser.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                }
 
+
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
+                currentField.setVisibility(View.VISIBLE);
+                gradient.setVisibility(View.VISIBLE);
+                reputation.setVisibility(View.VISIBLE);
+                rept.setVisibility(View.VISIBLE);
+                friendContainer.setVisibility(View.VISIBLE);
+                chatUser.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
         });
 

@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -163,21 +164,23 @@ public class EditTeamActivity extends AppCompatActivity {
         });
 
         teamImageRef = FirebaseStorage.getInstance().getReference().child("teampics/" +teamID+".jpg");
-        teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+        teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onComplete(@NonNull Task<Uri> task) {
+            public void onSuccess(Uri uri) {
                 progressBar.setVisibility(View.GONE);
-                if (task.isSuccessful()){
-                    GlideApp.with(EditTeamActivity.this)
-                            .load(teamImageRef)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
+                    GlideApp.with(getApplicationContext())
+                            .load(uri)
                             .into(teamPhotoEdit);
                     deleteImage.setVisibility(View.VISIBLE);
                     deleteImage();
-                }else {
-                    teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
-                }
+
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
 
             }
         });

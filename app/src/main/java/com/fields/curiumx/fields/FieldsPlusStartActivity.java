@@ -60,11 +60,7 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
         bp = new BillingProcessor(this, key, this);
         bp.initialize(); // binds
         fp = findViewById(R.id.fields_plus_art);
-        db.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot ds = task.getResult();
-                teamID = ds.get("usersTeamID").toString();
+
                 buyButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -82,8 +78,7 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
 
                     }
                 });
-            }
-        });
+
 
 
 
@@ -137,42 +132,49 @@ public class FieldsPlusStartActivity extends AppCompatActivity implements Billin
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
 
+        db.collection("Users").document(uid).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+        @Override
+    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+        DocumentSnapshot ds = task.getResult();
+        teamID = ds.get("usersTeamID").toString();
+
         db.collection("Users").document(uid).update("fieldsPlus", true).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                db.collection("Teams").document(teamID).collection("TeamUsers").document(uid)
-                        .update("memberFieldsPlus", true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        buyButton.setEnabled(true);
-                        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(FieldsPlusStartActivity.this );
-                        View mView = getLayoutInflater().inflate(R.layout.fields_plus_thank_you_popup, null);
-                        Button con = mView.findViewById(R.id.continue_button);
-                        con.setOnClickListener(new View.OnClickListener() {
+                if (teamID != null) {
+                    db.collection("Teams").document(teamID).collection("TeamUsers").document(uid)
+                            .update("memberFieldsPlus", true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            buyButton.setEnabled(true);
+                            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(FieldsPlusStartActivity.this);
+                            View mView = getLayoutInflater().inflate(R.layout.fields_plus_thank_you_popup, null);
+                            Button con = mView.findViewById(R.id.continue_button);
+                            con.setOnClickListener(new View.OnClickListener() {
 
-                            @Override
-                            public void onClick(View v) {
-                                finish();
-                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                            }
-                        });
-
-
-                        alertDialog.setView(mView);
-                        final AlertDialog dialog = alertDialog.create();
-                        dialog.setCanceledOnTouchOutside(false);
-                        dialog.show();
-                    }
-                });
+                                @Override
+                                public void onClick(View v) {
+                                    finish();
+                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                }
+                            });
 
 
+                            alertDialog.setView(mView);
+                            final AlertDialog dialog = alertDialog.create();
+                            dialog.setCanceledOnTouchOutside(false);
+                            dialog.show();
+                        }
+                    });
 
 
-
-
-
+                }
             }
         });
+    }
+});
 
 
 

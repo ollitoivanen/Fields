@@ -2,7 +2,6 @@ package com.fields.curiumx.fields;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,11 +31,7 @@ import android.widget.Toast;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.Request;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
+import com.fields.curiumx.fields.notifications.MyFirebaseMessagingService;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,7 +45,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -75,7 +69,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
     ConstraintLayout base;
     EmptyRecyclerView feedRecycler;
     LinearLayoutManager linearLayoutManager;
-    FirestoreRecyclerAdapter adapter;
+    FirestoreRecyclerAdapter<FriendMap, feedHolder> adapter;
     String uid;
     long placeHolder;
     String placeHolder2;
@@ -155,11 +149,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    yourTeamText.setVisibility(View.VISIBLE);
-                    friends_text.setVisibility(View.VISIBLE);
-                    feedRecycler.setVisibility(View.VISIBLE);
-                    feedRecycler.setEmptyView(emptyView);
+
 
 
                     DocumentSnapshot ds = task.getResult();
@@ -170,7 +160,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                         } else {
                             db.collection("Users").document(uid).update("fieldsPlus", false);
                             fieldsPlus = false;
-                            String teamID = ds.get("userTeamID").toString();
+                            String teamID = ds.get("usersTeamID").toString();
                             db.collection("Teams").document(teamID).collection("TeamUsers")
                                     .document(uid).update("memberFieldsPlus", false);
                         }
@@ -178,9 +168,11 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                         if (bp.loadOwnedPurchasesFromGoogle() && bp.isSubscribed("fields_plus")) {
                             db.collection("Users").document(uid).update("fieldsPlus", true);
                             fieldsPlus = true;
-                            String teamID = ds.get("userTeamID").toString();
-                            db.collection("Teams").document(teamID).collection("TeamUsers")
-                                    .document(uid).update("memberFieldsPlus", true);
+                            if (ds.get("usersTeamID")!=null) {
+                                String teamID = ds.get("usersTeamID").toString();
+                                db.collection("Teams").document(teamID).collection("TeamUsers")
+                                        .document(uid).update("memberFieldsPlus", true);
+                            }
                         }
                     }
                     if (ds.get("usersTeamID") == null || ds.get("usersTeamID").equals("")) {
@@ -189,6 +181,12 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                         constraintSet.clone(base);
                         constraintSet.connect(R.id.actions_text, ConstraintSet.TOP, R.id.teamCardNoTeam, ConstraintSet.BOTTOM, 20);
                         constraintSet.applyTo(base);
+
+                        progressBar.setVisibility(View.GONE);
+                        yourTeamText.setVisibility(View.VISIBLE);
+                        friends_text.setVisibility(View.VISIBLE);
+                        feedRecycler.setVisibility(View.VISIBLE);
+                        feedRecycler.setEmptyView(emptyView);
 
                         teamCardViewNoTeam.setVisibility(View.VISIBLE);
                         teamCardViewNoTeam.setOnClickListener(new View.OnClickListener() {
@@ -202,7 +200,6 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                         });
                     } else {
 
-                        teamCardView.setVisibility(View.VISIBLE);
                         final String teamID = ds.get("usersTeamID").toString();
 
                         db.collection("Teams").whereEqualTo("teamID", teamID).get()
@@ -219,19 +216,37 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
 
                                         teamImageRef = FirebaseStorage.getInstance()
                                                 .getReference().child("teampics/" + teamID + ".jpg");
-                                        teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                        teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
-                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                if (task.isSuccessful()) {
+                                            public void onSuccess(Uri uri) {
                                                     GlideApp.with(getApplicationContext())
-                                                            .load(teamImageRef)
-                                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                                            .skipMemoryCache(true)
+                                                            .load(uri)
                                                             .into(teamImageFeed);
-                                                } else {
-                                                    teamImageFeed.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
+                                                progressBar.setVisibility(View.GONE);
+                                                teamCardView.setVisibility(View.VISIBLE);
 
-                                                }
+                                                yourTeamText.setVisibility(View.VISIBLE);
+                                                friends_text.setVisibility(View.VISIBLE);
+                                                feedRecycler.setVisibility(View.VISIBLE);
+                                                feedRecycler.setEmptyView(emptyView);
+
+
+
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                teamImageFeed.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
+                                                teamCardView.setVisibility(View.VISIBLE);
+
+                                                progressBar.setVisibility(View.GONE);
+
+                                                yourTeamText.setVisibility(View.VISIBLE);
+                                                friends_text.setVisibility(View.VISIBLE);
+                                                feedRecycler.setVisibility(View.VISIBLE);
+                                                feedRecycler.setEmptyView(emptyView);
+
+
                                             }
                                         });
 
@@ -260,6 +275,11 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
         setTheme(R.style.FieldsThemeAppCompat);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
+
+
+
+
+
         setTitle(getResources().getString(R.string.feed));
         feedRecycler = findViewById(R.id.actions_recycler);
         progressBar = findViewById(R.id.progress_bar_feed);
@@ -279,7 +299,9 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
         });
         init();
         mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser()==null){
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user==null){
+
             startActivity(new Intent(FeedActivity.this, SignUpActivity.class));
             finish();
         }else {
@@ -301,7 +323,8 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
             startActivity(new Intent(FeedActivity.this, SignUpActivity.class));
             finish();
         }else {
-            loadData();
+            //loadData();
+            progressBar.setVisibility(View.GONE);
             feedRecycler.setAdapter(adapter);
             adapter.startListening();
         }
@@ -350,8 +373,6 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                                     public void onSuccess(Uri uri) {
                                         GlideApp.with(getApplicationContext())
                                                 .load(uri)
-                                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                                .skipMemoryCache(false)
                                                 .into(holder.userPhoto);
 
                                     }
@@ -359,6 +380,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     holder.userPhoto.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
+
                                 }
                             });
 
@@ -452,6 +474,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
             public void onError(FirebaseFirestoreException e) {
                 Log.e("error", e.getMessage());
             }
+
 
 
         };

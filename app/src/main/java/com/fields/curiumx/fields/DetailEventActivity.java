@@ -37,14 +37,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class DetailEventActivity extends AppCompatActivity implements View.OnClickListener{
     TextView detailType;
@@ -326,8 +323,6 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                     public void onSuccess(Uri uri) {
                             GlideApp.with(getApplicationContext())
                                     .load(uri)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(true)
                                     .into(holder.profileImage);
 
 

@@ -184,11 +184,9 @@ public class CreateNewFieldActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             DocumentSnapshot ds = task.getResult();
-                            String currentReputationString = ds.get("userReputation").toString();
-                            long currentReputation = Long.parseLong(currentReputationString);
+                            long currentReputation = ds.getLong("userReputation").intValue();
                             long newReputation = currentReputation + 60;
-                            String newReputationString = Long.toString(newReputation);
-                            db.collection("Users").document(uid).update("userReputation", newReputationString)
+                            db.collection("Users").document(uid).update("userReputation", newReputation)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -296,7 +294,6 @@ public class CreateNewFieldActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressBar.setVisibility(View.GONE);
-                        save_button.setEnabled(true);
                         updateData();
                         }
                 });

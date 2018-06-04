@@ -30,7 +30,7 @@ public class NotificationHelper extends ContextWrapper {
         NotificationChannel trainingChannel = new NotificationChannel(trainingChannelID,
                 trainingChannelName, NotificationManager.IMPORTANCE_HIGH);
         trainingChannel.enableLights(true);
-        trainingChannel.enableVibration(true);
+        trainingChannel.enableVibration(false);
         trainingChannel.setLightColor(R.color.colorPrimary);
         trainingChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
         getManager().createNotificationChannel(trainingChannel);
@@ -54,6 +54,7 @@ public class NotificationHelper extends ContextWrapper {
         return new NotificationCompat.Builder(getApplicationContext(), trainingChannelID)
                 .setContentTitle(title)
                 .setContentText(message)
+
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setSmallIcon(R.drawable.fields_logo_notification)
                 .setColor(getResources().getColor(R.color.colorPrimary))
