@@ -29,6 +29,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class DeleteUserActivity extends AppCompatActivity {
     TextInputLayout email;
@@ -145,7 +147,13 @@ public class DeleteUserActivity extends AppCompatActivity {
                                     }
                                 });
 
-                                db.collection("Users").document(uid).collection("UserMessages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                if (user.getPhotoUrl() != null) {
+                                    StorageReference profileImageRef =
+                                            FirebaseStorage.getInstance().getReference("profilepics/" + uid + ".jpg");
+                                    profileImageRef.delete();
+                                }
+
+                               /* db.collection("Users").document(uid).collection("UserMessages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull final Task<QuerySnapshot> task) {
                                         int size = task.getResult().size();
@@ -167,7 +175,7 @@ public class DeleteUserActivity extends AppCompatActivity {
                                             i++;
                                         }
                                     }
-                                });
+                                });*/
 
 
 

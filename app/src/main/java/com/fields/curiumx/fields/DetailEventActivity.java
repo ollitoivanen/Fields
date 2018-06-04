@@ -85,7 +85,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                         DocumentSnapshot ds = task.getResult();
                         String teamID = ds.get("usersTeamID").toString();
 
-                        db.collection("Teams").document(teamID).collection("Team's Events")
+                        db.collection("Teams").document(teamID).collection("teamEvents")
                                 .document(eventID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -114,8 +114,8 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
             case R.id.in_button:
                 Map<String, Object> map = new HashMap<>();
                 map.put("member_status", event_member_status_in);
-                db.collection("Teams").document(teamID).collection("Team's Events")
-                        .document(eventID).collection("Event Members").document(uid).set(map);
+                db.collection("Teams").document(teamID).collection("teamEvents")
+                        .document(eventID).collection("eventMembers").document(uid).set(map);
 
 
                         in.setBackground(getResources().getDrawable(R.drawable.rounded_view_green));
@@ -132,8 +132,8 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
             case R.id.out_button:
                 Map<String, Object> map1 = new HashMap<>();
                 map1.put("member_status", event_member_status_out);
-                db.collection("Teams").document(teamID).collection("Team's Events")
-                        .document(eventID).collection("Event Members").document(uid).set(map1);
+                db.collection("Teams").document(teamID).collection("teamEvents")
+                        .document(eventID).collection("eventMembers").document(uid).set(map1);
 
                                 in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
                                 in.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -148,8 +148,8 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
             case R.id.half_button:
                 Map<String, Object> map2 = new HashMap<>();
                 map2.put("member_status", event_member_status_open);
-                db.collection("Teams").document(teamID).collection("Team's Events")
-                        .document(eventID).collection("Event Members").document(uid).set(map2);
+                db.collection("Teams").document(teamID).collection("teamEvents")
+                        .document(eventID).collection("eventMembers").document(uid).set(map2);
 
                                 in.setBackground(getResources().getDrawable(R.drawable.rounded_view));
                                 in.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -222,16 +222,16 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                 if (model.getUidMember().equals(user.getUid())) {
                     holder.nameTaking.setText(getResources().getString(R.string.you));
 
-                    db.collection("Teams").document(teamID).collection("Team's Events")
-                            .document(eventID).collection("Event Members").document(model.getUidMember())
+                    db.collection("Teams").document(teamID).collection("teamEvents")
+                            .document(eventID).collection("eventMembers").document(model.getUidMember())
                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (!task.getResult().exists()) {
                                 Map<String, Object> mapOpen = new HashMap<>();
                                 mapOpen.put("member_status", event_member_status_open);
-                                db.collection("Teams").document(teamID).collection("Team's Events")
-                                        .document(eventID).collection("Event Members")
+                                db.collection("Teams").document(teamID).collection("teamEvents")
+                                        .document(eventID).collection("eventMembers")
                                         .document(model.getUidMember()).set(mapOpen)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -281,16 +281,16 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
                 } else{
                     holder.nameTaking.setText(model.getUsernameMember());
 
-                    db.collection("Teams").document(teamID).collection("Team's Events")
-                            .document(eventID).collection("Event Members").document(model.getUidMember())
+                    db.collection("Teams").document(teamID).collection("teamEvents")
+                            .document(eventID).collection("eventMembers").document(model.getUidMember())
                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (!task.getResult().exists()) {
                                 Map<String, Object> mapOpen = new HashMap<>();
                                 mapOpen.put("member_status", event_member_status_open);
-                                db.collection("Teams").document(teamID).collection("Team's Events")
-                                        .document(eventID).collection("Event Members")
+                                db.collection("Teams").document(teamID).collection("teamEvents")
+                                        .document(eventID).collection("eventMembers")
                                         .document(model.getUidMember()).set(mapOpen)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override

@@ -285,15 +285,14 @@ public class CreateNewTeamActivity extends AppCompatActivity {
 
     public void updateData(){
         TeamMap data1 = new TeamMap(teamUsernameText, teamFullNameText, teamCountryText,
-                teamID , level.getSelectedItemPosition());
+                teamID , level.getSelectedItemPosition(), false);
         db.collection("Teams").document(teamID).set(data1);
 
         MemberMap memberMap = new MemberMap(username, user.getUid(), memberFieldsPlus);
 
         db.collection("Teams").document(teamID).collection("TeamUsers").document(uid).set(memberMap);
 
-        db.collection("Users").document(uid).update("usersTeamID", teamID,
-                "usersTeam", teamUsernameText)
+        db.collection("Users").document(uid).update("usersTeamID", teamID)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

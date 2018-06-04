@@ -76,7 +76,7 @@ public class EditTeamActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         deleteImage.setVisibility(View.GONE);
-                        teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
+                        teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
 
 
                     }
@@ -180,6 +180,7 @@ public class EditTeamActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                progressBar.setVisibility(View.GONE);
                 teamPhotoEdit.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
 
             }

@@ -101,8 +101,9 @@ public class FriendListActivity extends AppCompatActivity {
                                         intent.putExtra("userID", ds1.get("userID").toString());
                                         intent.putExtra("currentFieldName", ds1.get("currentFieldName").toString());
                                         intent.putExtra("currentFieldID", ds1.get("currentFieldID").toString());
-                                        intent.putExtra("usersTeam", ds1.get("usersTeam").toString());
-                                        intent.putExtra("usersTeamID", ds1.get("usersTeamID").toString());
+                                        if (ds1.get("usersTeamID")!=null) {
+                                            intent.putExtra("usersTeamID", ds1.get("usersTeamID").toString());
+                                        }
                                         intent.putExtra("userRole", ds1.getLong("userRole").intValue());
                                         intent.putExtra("userReputation", ds1.get("userReputation").toString());
                                         intent.putExtra("position", ds1.getLong("position"));

@@ -165,7 +165,7 @@ public class NewEventActivity extends AppCompatActivity {
                                     typeSpinner.getSelectedItemPosition(),
                                     eventTimeStart, eventTimeEnd, chosenFieldNameIntent, fieldID,
                                     c.getTime(), c.getTimeInMillis());
-                            db.collection("Teams").document(ref).collection("Team's Events")
+                            db.collection("Teams").document(ref).collection("teamEvents")
                                     .document(Long.toString(c.getTimeInMillis()))
                                     .set(eventMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

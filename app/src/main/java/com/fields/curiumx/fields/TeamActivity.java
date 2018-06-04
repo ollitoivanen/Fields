@@ -84,7 +84,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
     String teamCountryString;
     FloatingActionButton chatFloat;
     StorageReference teamImageRef;
-    Boolean teamFieldsPlus;
+    boolean teamFieldsPlus;
     boolean adapterSet = false;
 
 
@@ -152,12 +152,16 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                 if (task.isSuccessful()){
                 DocumentSnapshot documentSnapshot = task.getResult();
 
-                teamID1 = documentSnapshot.get("usersTeamID").toString();
-                db.collection("Teams").document(teamID1).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+
+
+                    teamID1 = documentSnapshot.get("usersTeamID").toString();
+
+                    db.collection("Teams").document(teamID1).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                        Query query = db.collection("Teams").document(teamID1).collection("Team's Events");
+                        Query query = db.collection("Teams").document(teamID1).collection("teamEvents");
 
                         final FirestoreRecyclerOptions<EventMap> response = new FirestoreRecyclerOptions.Builder<EventMap>()
                                 .setQuery(query, EventMap.class)
@@ -170,7 +174,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                               if (model.getEventStartDateInMillis() - System.currentTimeMillis() < 0) {
 
                                     db.collection("Teams").document(teamID1)
-                                            .collection("Team's Events")
+                                            .collection("teamEvents")
                                             .document(model.getEventID()).delete();
                                     if (!model.getEventField().equals("")){
                                         db.collection("Fields").document(model.getEventID())
@@ -231,6 +235,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                         adapterSet = true;
 
                         DocumentSnapshot documentSnapshot1 = task.getResult();
+                        teamFieldsPlus = documentSnapshot1.getBoolean("teamFieldsPlus");
                         teamName = documentSnapshot1.get("teamUsernameText").toString();
                         teamCountry = documentSnapshot1.getLong("teamCountryText").intValue();
                         teamFullName = documentSnapshot1.get("teamFullNameText").toString();
@@ -240,7 +245,15 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                teamFieldsPlus = task.getResult().size() != 0;
+                                if (!teamFieldsPlus && task.getResult().size()!=0){
+                                    db.collection("Teams").document(teamID1).update("teamFieldsPlus", true);
+                                    teamFieldsPlus = true;
+                                }
+                                else if (task.getResult().size()==0 && teamFieldsPlus){
+                                    db.collection("Teams").document(teamID1).update("teamFieldsPlus", false);
+                                    teamFieldsPlus = false;
+                                }
+
 
                                 teamLevelArray = getResources().getStringArray(R.array.level_array);
                                 teamLevelString = teamLevelArray[level];
@@ -265,7 +278,6 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                         public void onSuccess(Uri uri) {
                                                 GlideApp.with(getApplicationContext())
                                                         .load(uri)
-
                                                         .into(teamImage);
 
 
@@ -330,21 +342,22 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
         teamImageRef =
                 FirebaseStorage.getInstance()
                         .getReference().child("teampics/" + teamID1 + ".jpg");
-        teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+        teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onComplete(@NonNull Task<Uri> task) {
+            public void onSuccess(Uri uri) {
 
 
                 progressBar.setVisibility(View.GONE);
-                if (task.isSuccessful()) {
                     GlideApp.with(getApplicationContext())
-                            .load(teamImageRef)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
+                            .load(uri)
                             .into(teamImage);
-                } else {
-                    teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
-                }
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                teamImage.setImageDrawable(getResources().getDrawable(R.drawable.team_default));
 
             }
         });

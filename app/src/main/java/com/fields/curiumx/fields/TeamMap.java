@@ -8,17 +8,19 @@ public class TeamMap {
     private int teamCountryText;
     private String teamID;
     private int level;
+    private Boolean teamFieldsPlus;
 
     public TeamMap() {
 
     }
 
-    public TeamMap(String teamUsernameText, String teamFullNameText, int teamCountryText, String teamID, int level){
+    public TeamMap(String teamUsernameText, String teamFullNameText, int teamCountryText, String teamID, int level, Boolean teamFieldsPlus){
         this.teamUsernameText = teamUsernameText;
         this.teamCountryText = teamCountryText;
         this.teamID = teamID;
         this.teamFullNameText = teamFullNameText;
         this.level = level;
+        this.teamFieldsPlus = teamFieldsPlus;
     }
 
     public String getTeamUsernameText() {
@@ -33,6 +35,7 @@ public class TeamMap {
         return level;
     }
 
+
     public String getTeamID() {
         return teamID;
     }
@@ -41,5 +44,7 @@ public class TeamMap {
         return teamFullNameText;
     }
 
-
+    public Boolean getTeamFieldsPlus() {
+        return teamFieldsPlus;
+    }
 }

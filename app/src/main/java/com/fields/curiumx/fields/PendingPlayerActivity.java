@@ -71,7 +71,7 @@ public class PendingPlayerActivity extends AppCompatActivity {
         teamName = info.getString("teamName");
         pendingRecycler.setEmptyView(findViewById(R.id.empty));
 
-        Query query = db.collection("Teams").document(teamID).collection("Pending Members");
+        Query query = db.collection("Teams").document(teamID).collection("pendingMembers");
 
         FirestoreRecyclerOptions<PendingMap> response = new FirestoreRecyclerOptions.Builder<PendingMap>()
                 .setQuery(query, PendingMap.class)
@@ -85,7 +85,7 @@ public class PendingPlayerActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             db.collection("Teams").document(teamID).
-                                    collection("Pending Members").document(model.getUserID())
+                                    collection("pendingMembers").document(model.getUserID())
                                     .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -115,7 +115,7 @@ public class PendingPlayerActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             db.collection("Users").document(model.getUserID()).update("usersTeamID", null);
                             db.collection("Teams").document(teamID).
-                                    collection("Pending Members").document(model.getUserID())
+                                    collection("pendingMembers").document(model.getUserID())
                                     .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
