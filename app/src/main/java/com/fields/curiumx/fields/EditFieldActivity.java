@@ -88,7 +88,7 @@ public class EditFieldActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 StorageReference fieldImageRef =
-                        FirebaseStorage.getInstance().getReference("fieldpics/" + fieldID + ".jpg");
+                        FirebaseStorage.getInstance().getReference("fieldpics/" + fieldID + "/" + fieldID + ".jpg");
                 fieldImageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -151,7 +151,7 @@ public class EditFieldActivity extends AppCompatActivity {
 
 
 
-        final StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
+        final StorageReference storageRef = storage.getReference().child("fieldpics/"+ fieldID + "/" + fieldID+".jpg");
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -286,8 +286,11 @@ public class EditFieldActivity extends AppCompatActivity {
             uriFieldImage = data.getData();
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
-                fieldImage11.setImageBitmap(bitmap);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriFieldImage);
+                GlideApp.with(getApplication())
+                        .load(b)
+                        .into(fieldImage11);
                 uploadImageToFirebaseStorage();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -298,15 +301,16 @@ public class EditFieldActivity extends AppCompatActivity {
     private void uploadImageToFirebaseStorage() {
 
         StorageReference fieldImageRef =
-                FirebaseStorage.getInstance().getReference("fieldpics/" + fieldID + ".jpg");
+                FirebaseStorage.getInstance().getReference("fieldpics/" + fieldID + "/" + fieldID + ".jpg");
 
 
         if (uriFieldImage != null) {
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriFieldImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveButton1.setEnabled(false);

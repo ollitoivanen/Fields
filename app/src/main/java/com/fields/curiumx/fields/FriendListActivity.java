@@ -1,6 +1,7 @@
 package com.fields.curiumx.fields;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -11,12 +12,15 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +28,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 public class FriendListActivity extends AppCompatActivity {
@@ -61,12 +67,15 @@ public class FriendListActivity extends AppCompatActivity {
     }
 
     public class teamHolder extends EmptyRecyclerView.ViewHolder {
-        TextView name;
+        TextView username;
+        ImageView userImage;
 
 
         public teamHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.teamPlayerName);
+            username = itemView.findViewById(R.id.nameTaking);
+            userImage = itemView.findViewById(R.id.profile_image_list);
+
         }
     }
 
@@ -80,8 +89,26 @@ public class FriendListActivity extends AppCompatActivity {
                 .build();
         adapter = new FirestoreRecyclerAdapter<FriendMap, teamHolder>(response) {
             @Override
-            public void onBindViewHolder(teamHolder holder, int position, final FriendMap model) {
-                holder.name.setText(model.getUserName());
+            public void onBindViewHolder(final teamHolder holder, int position, final FriendMap model) {
+                holder.username.setText(model.getUserName());
+
+                StorageReference userImageRef = FirebaseStorage.getInstance()
+                        .getReference().child("profilepics/" + model.getUserID() + "/" + model.getUserID()+".jpg");
+                userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(@NonNull Uri uri) {
+
+                        GlideApp.with(getApplicationContext())
+                                .load(uri)
+                                .into(holder.userImage);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        holder.userImage.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
+                    }
+                });
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -127,7 +154,7 @@ public class FriendListActivity extends AppCompatActivity {
             @Override
             public teamHolder onCreateViewHolder(ViewGroup group, int i) {
                 View view = LayoutInflater.from(group.getContext())
-                        .inflate(R.layout.team_player_list, group, false);
+                        .inflate(R.layout.user_default_list, group, false);
                 return new teamHolder(view);
             }
 

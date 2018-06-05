@@ -1,6 +1,7 @@
 package com.fields.curiumx.fields;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +33,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -73,18 +78,30 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     BillingProcessor bp;
     String teamID;
     ConstraintLayout teamTab;
+    StorageReference profileImageRef;
     protected String key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhP70LSlF/j2XxzB5EERbyj1J/N8l6EJS8tCWLtbaB7a72Rr7uYWex6CgtQ2gGsRSpInGa1dOyjT9cV+JvKNVTv/WyhIEpcFQJiI2rlQcAkAWNivaffsBxUfODq6Xp2urNdgQ/35CTp/wYm75oHxE9nnqpI4X0Jk1iUKKBew8DIo2JUh9ezjruk2b+txmFTyDi0Fdm6yLmLUL0eed0mU5KrQO0FO5OHI990bCfQPIoZGKA7FPbiWSS09rn36j3HinD4fc2L52LgIwvz4vcWyMRmCioWygxpMnyUs+TP0C3mXrdJiZkrmYig5T1zgtdy4wru5EOtW6qYwSYsj64WAS1wIDAQAB";
 
     private void loadUserInformation() {
 
         if (user != null) {
-            if (user.getPhotoUrl() != null) {
-                GlideApp.with(this)
-                        .load(user.getPhotoUrl().toString())
-                        .into(profileImage);
-            }else{
-                profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
-            }
+
+            profileImageRef = FirebaseStorage.getInstance().getReference().child("profilepics/" + uid + "/" +uid+".jpg");
+            profileImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    GlideApp.with(getApplicationContext())
+                            .load(uri)
+                            .into(profileImage);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    profileImage.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
+
+                }
+            });
+
+
         }else{
             startActivity(new Intent(ProfileActivity.this, SignUpActivity.class));
         }

@@ -215,7 +215,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                                         final ImageView teamImageFeed = findViewById(R.id.team_image_feed);
 
                                         teamImageRef = FirebaseStorage.getInstance()
-                                                .getReference().child("teampics/" + teamID + ".jpg");
+                                                .getReference().child("teampics/" + teamID + "/" + teamID + ".jpg");
                                         teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
@@ -367,7 +367,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                             holder.username.setText(username);
                             userID = model.getUserID();
                                 userImageRef = FirebaseStorage.getInstance()
-                                        .getReference().child("profilepics/"+userID+".jpg");
+                                        .getReference().child("profilepics/" + userID + "/" + userID + ".jpg");
                             userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {

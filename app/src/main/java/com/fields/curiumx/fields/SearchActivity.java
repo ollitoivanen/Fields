@@ -61,7 +61,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     StorageReference teamImageRef;
     StorageReference fieldImageRef;
     StorageReference userImageRef;
-    Boolean listening;
+    boolean listening;
     String teamID;
 
 
@@ -140,7 +140,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 teamID = model.getTeamID();
 
                 teamImageRef = FirebaseStorage.getInstance()
-                        .getReference().child("teampics/"+teamID+".jpg");
+                        .getReference().child("teampics/" + teamID+ "/" +teamID+".jpg");
                 teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -208,7 +208,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 holder.textName.setText(model.getUsername());
 
                 userImageRef = FirebaseStorage.getInstance()
-                        .getReference().child("profilepics/"+model.getUserID()+".jpg");
+                        .getReference().child("profilepics/" + model.getUserID() + "/" +model.getUserID()+".jpg");
                 userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -288,7 +288,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 holder.textName.setText(model.getFieldName());
 
                 fieldImageRef = FirebaseStorage.getInstance()
-                        .getReference().child("fieldpics/"+model.getFieldID()+".jpg");
+                        .getReference().child("fieldpics/"+ model.getFieldID() + "/" + model.getFieldID()+".jpg");
                 fieldImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {

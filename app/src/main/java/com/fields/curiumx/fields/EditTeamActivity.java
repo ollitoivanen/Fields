@@ -71,7 +71,7 @@ public class EditTeamActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 StorageReference teamImageRef =
-                        FirebaseStorage.getInstance().getReference("teampics/" + teamID + ".jpg");
+                        FirebaseStorage.getInstance().getReference("teampics/" + teamID + "/" + teamID + ".jpg");
                 teamImageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -163,7 +163,7 @@ public class EditTeamActivity extends AppCompatActivity {
             }
         });
 
-        teamImageRef = FirebaseStorage.getInstance().getReference().child("teampics/" +teamID+".jpg");
+        teamImageRef = FirebaseStorage.getInstance().getReference().child("teampics/" + teamID + "/" +teamID+".jpg");
         teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -224,8 +224,11 @@ public class EditTeamActivity extends AppCompatActivity {
             uriTeamImage = data.getData();
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriTeamImage);
-                teamPhotoEdit.setImageBitmap(bitmap);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriTeamImage);
+                GlideApp.with(getApplication())
+                        .load(b)
+                        .into(teamPhotoEdit);
                 uploadImageToFirebaseStorage();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -235,7 +238,7 @@ public class EditTeamActivity extends AppCompatActivity {
 
     private void uploadImageToFirebaseStorage() {
 
-        teamImageRef = FirebaseStorage.getInstance().getReference().child("teampics/"+teamID+".jpg");
+        teamImageRef = FirebaseStorage.getInstance().getReference().child("teampics/"+ teamID + "/" + teamID + ".jpg");
 
 
         if (uriTeamImage != null) {
@@ -243,9 +246,10 @@ public class EditTeamActivity extends AppCompatActivity {
                 teamImageRef.delete();
             }
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriTeamImage);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriTeamImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveButton.setEnabled(false);

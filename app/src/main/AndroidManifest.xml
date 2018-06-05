@@ -211,10 +211,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".FavoriteFieldsActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".DeleteUserActivity"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DeleteUserActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".PrivacyPolicyActivity"></activity>
     </application>
 
 </manifest>

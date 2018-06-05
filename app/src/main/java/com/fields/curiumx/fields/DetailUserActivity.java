@@ -303,7 +303,7 @@ public class DetailUserActivity extends AppCompatActivity {
             roleText.setText(getResources().getString(R.string.player_position_role_given, userRoleText, userPositionText));
         }
 
-        final StorageReference storageRef = storage.getReference().child("profilepics/" + userID + ".jpg");
+        final StorageReference storageRef = storage.getReference().child("profilepics/"+ userID +"/" + userID + ".jpg");
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {

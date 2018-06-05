@@ -272,7 +272,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
                                 chatFloat.setVisibility(View.VISIBLE);
 
                                 teamImageRef = FirebaseStorage.getInstance()
-                                            .getReference().child("teampics/"+teamID1+".jpg");
+                                            .getReference().child("teampics/"+ teamID1 + "/" + teamID1+".jpg");
                                     teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {
@@ -341,7 +341,7 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
         eventRecycler.setAdapter(adapter);
         teamImageRef =
                 FirebaseStorage.getInstance()
-                        .getReference().child("teampics/" + teamID1 + ".jpg");
+                        .getReference().child("teampics/" + teamID1 + "/" + teamID1 + ".jpg");
         teamImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -381,25 +381,77 @@ public class TeamActivity extends AppCompatActivity implements View.OnClickListe
 
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(TeamActivity.this );
                 View mView = getLayoutInflater().inflate(R.layout.leave_team_popup, null);
-                Button leaveButton = mView.findViewById(R.id.leave);
+                final Button leaveButton = mView.findViewById(R.id.leave);
                 leaveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        db.collection("Teams").document(teamID1).collection("TeamUsers").document(uid).delete();
-                        db.collection("Users").document(uid).update("usersTeamID", null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        progressBar.setVisibility(View.VISIBLE);
+                        leaveButton.setEnabled(false);
+
+                        db.collection("Teams").document(teamID1).collection("TeamUsers").document(uid).delete()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Intent intent = new Intent(TeamActivity.this, NoTeamActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                Toast.makeText(getApplicationContext(), "Left team", Toast.LENGTH_LONG).show();
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                                finish();
+                                db.collection("Teams").document(teamID1).collection("TeamUsers")
+                                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.getResult().isEmpty()){
+
+                                            teamImageRef = FirebaseStorage.getInstance()
+                                                    .getReference().child("teampics/"+ teamID1 + "/" + teamID1+".jpg");
+                                            teamImageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Uri> task) {
+                                                    if (task.isSuccessful()){
+                                                        teamImageRef.delete();
+                                                    }
+                                                }
+                                            });
+                                            db.collection("Teams").document(teamID1).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    db.collection("Users").document(uid).update("usersTeamID", null)
+                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            Intent intent = new Intent(TeamActivity.this, NoTeamActivity.class);
+                                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                            Toast.makeText(getApplicationContext(), "Left team", Toast.LENGTH_LONG).show();
+                                                            startActivity(intent);
+                                                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                                            finish();
+                                                            progressBar.setVisibility(View.GONE);
+                                                        }
+
+
+
+                                                    });
+                                                }
+                                            });
+                                        }else {
+                                            db.collection("Users").document(uid).update("usersTeamID", null)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            Intent intent = new Intent(TeamActivity.this, NoTeamActivity.class);
+                                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                            Toast.makeText(getApplicationContext(), "Left team", Toast.LENGTH_LONG).show();
+                                                            startActivity(intent);
+                                                            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                                            finish();
+                                                            progressBar.setVisibility(View.GONE);
+                                                        }
+
+
+
+                                                    });
+                                        }
+                                    }
+                                });
                             }
-
-
-
                         });
+
                     }
                 });
 

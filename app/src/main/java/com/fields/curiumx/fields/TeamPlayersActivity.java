@@ -1,5 +1,6 @@
 package com.fields.curiumx.fields;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -42,6 +44,8 @@ public class TeamPlayersActivity extends AppCompatActivity {
     String teamID;
     int i;
     StorageReference userImageRef;
+    ProgressBar progressBar;
+    boolean adapterSet = false;
 
 
 
@@ -75,6 +79,7 @@ public class TeamPlayersActivity extends AppCompatActivity {
         teamPlayersRecycler = findViewById(R.id.team_players_recycler);
         teamPlayersRecycler.setEmptyView(empty);
         setTitle(getResources().getString(R.string.players));
+        progressBar = findViewById(R.id.team_players_progress_bar);
         init();
 
 
@@ -99,7 +104,7 @@ public class TeamPlayersActivity extends AppCompatActivity {
             @Override
             public teamPlayerHolder onCreateViewHolder (ViewGroup group, int i){
                 View view = LayoutInflater.from(group.getContext())
-                        .inflate(R.layout.taking_part_list, group, false);
+                        .inflate(R.layout.user_default_list, group, false);
 
                 return new teamPlayerHolder(view);
             }
@@ -108,8 +113,42 @@ public class TeamPlayersActivity extends AppCompatActivity {
             public void onBindViewHolder (final teamPlayerHolder holder, int position, final MemberMap model){
                 holder.teamPlayerName.setText(model.getUsernameMember());
 
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        db.collection("Users").document(model.getUidMember()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
+                                DocumentSnapshot ds1 = task1.getResult();
+                                Intent intent = new Intent(getApplicationContext(), DetailUserActivity.class);
+                                intent.putExtra("realName",ds1.get("realName").toString());
+                                intent.putExtra("username", ds1.get("username").toString());
+                                intent.putExtra("userID", ds1.get("userID").toString());
+                                intent.putExtra("currentFieldName", ds1.get("currentFieldName").toString());
+                                intent.putExtra("currentFieldID", ds1.get("currentFieldID").toString());
+                                if (ds1.get("usersTeamID")!=null) {
+                                    intent.putExtra("usersTeamID", ds1.get("usersTeamID").toString());
+                                }
+                                intent.putExtra("userRole", ds1.getLong("userRole").intValue());
+                                intent.putExtra("userReputation", ds1.get("userReputation").toString());
+                                intent.putExtra("position", ds1.getLong("position"));
+                                if (!ds1.get("currentFieldID").equals("")){
+                                    intent.putExtra("timestamp", ds1.getDate("timestamp"));
+                                }
+                                progressBar.setVisibility(View.GONE);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    }
+                });
+
+
+
+                    }
+                });
+
                 userImageRef = FirebaseStorage.getInstance()
-                        .getReference().child("profilepics/"+model.getUidMember()+".jpg");
+                        .getReference().child("profilepics/" + model.getUidMember() + "/" + model.getUidMember()+".jpg");
                 userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(@NonNull Uri uri) {
@@ -134,6 +173,7 @@ public class TeamPlayersActivity extends AppCompatActivity {
         };
 
 
+        adapterSet = true;
         adapter.notifyDataSetChanged();
         teamPlayersRecycler.setAdapter(adapter);
         adapter.startListening();
@@ -143,15 +183,19 @@ public class TeamPlayersActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        adapter.stopListening();
-        teamPlayersRecycler.setAdapter(null);
+        if (adapterSet) {
+            adapter.stopListening();
+            teamPlayersRecycler.setAdapter(null);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        adapter.stopListening();
-        teamPlayersRecycler.setAdapter(null);
+        if (adapterSet) {
+            adapter.stopListening();
+            teamPlayersRecycler.setAdapter(null);
+        }
     }
 
     @Override

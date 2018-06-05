@@ -172,7 +172,7 @@ public class DetailTeamActivity extends AppCompatActivity {
 
 
 
-        Query query = db.collection("Teams").document(teamID1).collection("Team's Events");
+        Query query = db.collection("Teams").document(teamID1).collection("teamEvents");
 
         FirestoreRecyclerOptions<EventMap> response = new FirestoreRecyclerOptions.Builder<EventMap>()
                 .setQuery(query, EventMap.class)
@@ -229,13 +229,12 @@ public class DetailTeamActivity extends AppCompatActivity {
             }
         });
 
-        final StorageReference storageRef = storage.getReference().child("teampics/"+teamID1+".jpg");
+        final StorageReference storageRef = storage.getReference().child("teampics/" + teamID1 + "/" +teamID1+".jpg");
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                     GlideApp.with(getApplicationContext())
                             .load(uri)
-
                             .into(teamImage);
 
 

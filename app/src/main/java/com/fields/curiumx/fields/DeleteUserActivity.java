@@ -32,6 +32,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import javax.xml.transform.Result;
+
 public class DeleteUserActivity extends AppCompatActivity {
     TextInputLayout email;
     TextInputLayout password;
@@ -102,10 +104,11 @@ public class DeleteUserActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot ds = task.getResult();
-                                if (ds.get("usersTeamID")!=null){
+                                if (ds.get("usersTeamID")!=null && !ds.get("usersTeamID").equals("")){
                                     teamID = ds.get("usersTeamID").toString();
                                     db.collection("Teams").document(teamID).collection("TeamUsers").document(uid)
                                             .delete();
+
                                 }
 
                                 db.collection("Friends").whereEqualTo("adder", uid).get()
@@ -147,9 +150,27 @@ public class DeleteUserActivity extends AppCompatActivity {
                                     }
                                 });
 
-                                if (user.getPhotoUrl() != null) {
-                                    StorageReference profileImageRef =
-                                            FirebaseStorage.getInstance().getReference("profilepics/" + uid + ".jpg");
+
+                                db.collection("Users").document(uid).collection("favoriteFields")
+                                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                                        int size = queryDocumentSnapshots.size();
+                                        for (int i = 0;i<size;) {
+                                            queryDocumentSnapshots.getDocuments().get(i).getReference().delete();
+                                            i++;
+
+                                        }
+                                    }
+                                });
+
+
+
+                                StorageReference profileImageRef =
+                                        FirebaseStorage.getInstance().getReference("profilepics/" + uid + "/" + uid + ".jpg");
+                                if (profileImageRef.getDownloadUrl().isSuccessful()) {
+
                                     profileImageRef.delete();
                                 }
 

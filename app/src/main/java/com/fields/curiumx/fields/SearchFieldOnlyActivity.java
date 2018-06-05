@@ -146,7 +146,7 @@ public class SearchFieldOnlyActivity extends AppCompatActivity implements View.O
                 holder.textName.setText(model.getFieldName());
 
                 fieldImageRef = FirebaseStorage.getInstance()
-                        .getReference().child("fieldpics/"+model.getFieldID()+".jpg");
+                        .getReference().child("fieldpics/"+ model.getFieldID() + "/" + model.getFieldID()+".jpg");
                 fieldImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {

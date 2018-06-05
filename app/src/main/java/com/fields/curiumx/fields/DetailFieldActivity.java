@@ -307,7 +307,7 @@ public class DetailFieldActivity extends AppCompatActivity {
     }
 
     public void loadFieldInfo(){
-        final StorageReference storageRef = storage.getReference().child("fieldpics/"+fieldID+".jpg");
+        final StorageReference storageRef = storage.getReference().child("fieldpics/"+ fieldID + "/" +fieldID+".jpg");
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {

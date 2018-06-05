@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -20,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -61,6 +59,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
     String event_member_status_out = "2";
     String event_member_status_open = "0";
     StorageReference profileImageRef;
+    boolean adapterSet = false;
 
 
     Button in;
@@ -280,6 +279,37 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
 
                 } else{
                     holder.nameTaking.setText(model.getUsernameMember());
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            progressBar.setVisibility(View.VISIBLE);
+                            db.collection("Users").document(model.getUidMember()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
+                                    DocumentSnapshot ds1 = task1.getResult();
+                                    Intent intent = new Intent(getApplicationContext(), DetailUserActivity.class);
+                                    intent.putExtra("realName",ds1.get("realName").toString());
+                                    intent.putExtra("username", ds1.get("username").toString());
+                                    intent.putExtra("userID", ds1.get("userID").toString());
+                                    intent.putExtra("currentFieldName", ds1.get("currentFieldName").toString());
+                                    intent.putExtra("currentFieldID", ds1.get("currentFieldID").toString());
+                                    if (ds1.get("usersTeamID")!=null) {
+                                        intent.putExtra("usersTeamID", ds1.get("usersTeamID").toString());
+                                    }
+                                    intent.putExtra("userRole", ds1.getLong("userRole").intValue());
+                                    intent.putExtra("userReputation", ds1.get("userReputation").toString());
+                                    intent.putExtra("position", ds1.getLong("position"));
+                                    if (!ds1.get("currentFieldID").equals("")){
+                                        intent.putExtra("timestamp", ds1.getDate("timestamp"));
+                                    }
+                                    progressBar.setVisibility(View.GONE);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+                                }
+                            });
+                        }
+                    });
 
                     db.collection("Teams").document(teamID).collection("teamEvents")
                             .document(eventID).collection("eventMembers").document(model.getUidMember())
@@ -317,7 +347,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
             }
 
                 profileImageRef = FirebaseStorage.getInstance()
-                        .getReference().child("profilepics/"+model.getUidMember()+".jpg");
+                        .getReference().child("profilepics/" + model.getUidMember() + "/" + model.getUidMember()+".jpg");
                 profileImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -341,19 +371,13 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
 
 
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-
-                    }
-                });
             }
 
             @Override
             public partHolder onCreateViewHolder(ViewGroup group, int i) {
                 View view = LayoutInflater.from(group.getContext())
-                        .inflate(R.layout.taking_part_list, group, false);
+                        .inflate(R.layout.user_default_list, group, false);
                 return new partHolder(view);
             }
 
@@ -363,6 +387,7 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
             }
         };
 
+        adapterSet = true;
         adapter.notifyDataSetChanged();
         takingPartRecycler.setAdapter(adapter);
         adapter.startListening();
@@ -404,16 +429,20 @@ public class DetailEventActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     protected void onStop() {
-        adapter.stopListening();
-        takingPartRecycler.setAdapter(null);
         super.onStop();
+        if (adapterSet) {
+            adapter.stopListening();
+            takingPartRecycler.setAdapter(null);
+        }
     }
 
     @Override
     protected void onDestroy() {
-        adapter.stopListening();
-        takingPartRecycler.setAdapter(null);
         super.onDestroy();
+        if (adapterSet) {
+            adapter.stopListening();
+            takingPartRecycler.setAdapter(null);
+        }
     }
 
 

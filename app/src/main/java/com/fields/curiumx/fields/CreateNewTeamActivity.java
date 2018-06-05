@@ -1,16 +1,13 @@
 package com.fields.curiumx.fields;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -33,22 +30,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class CreateNewTeamActivity extends AppCompatActivity {
     ImageView teamImage;
-    Uri uriFieldImage;
+    Uri uriTeamImage;
     ProgressBar progressBar;
     String teamImageUrl;
     EditText teamUsername;
@@ -167,11 +160,7 @@ public class CreateNewTeamActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.VISIBLE);
                                 teamID = UUID.randomUUID().toString().substring(24);
                                 memberFieldsPlus = documentSnapshot.getBoolean("fieldsPlus");
-                                if (uriFieldImage != null){
-                                    uploadImageToFirebaseStorage();
-                                }else {
-                                    updateData();
-                                    }
+                                updateData();
                             } else {
                                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.you_are_in_team), Toast.LENGTH_LONG).show();
                                 startActivity(new Intent(CreateNewTeamActivity.this, FeedActivity.class));
@@ -196,11 +185,14 @@ public class CreateNewTeamActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CHOOSE_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            uriFieldImage = data.getData();
+            uriTeamImage = data.getData();
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
-                teamImage.setImageBitmap(bitmap);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriTeamImage);
+                GlideApp.with(getApplication())
+                        .load(b)
+                        .into(teamImage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -210,14 +202,15 @@ public class CreateNewTeamActivity extends AppCompatActivity {
     private void uploadImageToFirebaseStorage() {
 
         final StorageReference fieldImageRef =
-                FirebaseStorage.getInstance().getReference("teampics/" + teamID + ".jpg");
+                FirebaseStorage.getInstance().getReference("teampics/" + teamID + "/" + teamID + ".jpg");
 
 
-        if (uriFieldImage != null) {
+        if (uriTeamImage != null) {
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriTeamImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveTeamButton.setEnabled(false);
@@ -297,6 +290,10 @@ public class CreateNewTeamActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            if (uriTeamImage != null){
+                                uploadImageToFirebaseStorage();
+                            }
+
                             Intent intent = new Intent(CreateNewTeamActivity.this, TeamActivity.class);
                             startActivity(intent);
                             overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);

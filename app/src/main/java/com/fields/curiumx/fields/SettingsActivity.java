@@ -21,6 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
     FirebaseAuth.AuthStateListener mAuthListener;
     TextView changePasswordTab;
     TextView deleteAccountTab;
+    TextView privacyPolicyTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,16 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this, ChangePasswordActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+            }
+        });
+
+        privacyPolicyTab = findViewById(R.id.privacy_policy_tab);
+        privacyPolicyTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
             }

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,6 +66,7 @@ public class EditProfileActivity extends AppCompatActivity {
     TextInputLayout realNameInput;
     ImageView deleteImage;
     String teamID;
+    StorageReference profileImageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,12 +143,8 @@ public class EditProfileActivity extends AppCompatActivity {
         deleteImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                        .setPhotoUri(null)
-                        .build();
-                user.updateProfile(profileChangeRequest);
                 StorageReference profileImageRef =
-                        FirebaseStorage.getInstance().getReference("profilepics/" + uid + ".jpg");
+                        FirebaseStorage.getInstance().getReference("profilepics/" + uid + "/" + uid + ".jpg");
                 profileImageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -163,16 +161,23 @@ public class EditProfileActivity extends AppCompatActivity {
     private void loadUserInformation() {
 
         if (user != null) {
-            if (user.getPhotoUrl() != null) {
-                GlideApp.with(this)
-                        .load(user.getPhotoUrl().toString())
-                        .into(imageView);
-                deleteImage.setVisibility(View.VISIBLE);
-                deleteImage();
-            }else {
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
+            profileImageRef = FirebaseStorage.getInstance().getReference().child("profilepics/" + uid + "/" +uid+".jpg");
+            profileImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    GlideApp.with(getApplicationContext())
+                            .load(uri)
+                            .into(imageView);
+                    deleteImage.setVisibility(View.VISIBLE);
+                    deleteImage();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.profile_default));
 
-            }
+                }
+            });
         }
     }
 
@@ -248,8 +253,13 @@ public class EditProfileActivity extends AppCompatActivity {
             uriProfileImage = data.getData();
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
-                imageView.setImageBitmap(bitmap);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriProfileImage);
+                GlideApp.with(getApplicationContext())
+                        .load(b)
+                        .circleCrop()
+                        .into(imageView);
                 uploadImageToFirebaseStorage();
 
 
@@ -261,18 +271,23 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void uploadImageToFirebaseStorage() {
 
-        StorageReference profileImageRef =
-                FirebaseStorage.getInstance().getReference("profilepics/" + uid + ".jpg");
 
-        if (user.getPhotoUrl() != null) {
+
+        StorageReference profileImageRef =
+                FirebaseStorage.getInstance().getReference("profilepics/" + uid + "/" + uid + ".jpg");
+
+        if (profileImageRef.getDownloadUrl().isSuccessful()) {
             profileImageRef.delete();
 
         }
+
         if (uriProfileImage != null) {
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriProfileImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data1 = baos.toByteArray();
 
                 saveUserButton.setEnabled(false);
@@ -283,11 +298,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         progressBar.setVisibility(View.GONE);
                         saveUserButton.setEnabled(true);
-                        profileImageUrl = taskSnapshot.getDownloadUrl().toString();
-                        UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(Uri.parse(profileImageUrl))
-                                .build();
-                        user.updateProfile(profileChangeRequest);
                         deleteImage.setVisibility(View.VISIBLE);
                         deleteImage();
 

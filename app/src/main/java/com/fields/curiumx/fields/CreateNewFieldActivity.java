@@ -266,8 +266,11 @@ public class CreateNewFieldActivity extends AppCompatActivity {
             uriFieldImage = data.getData();
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
-                fieldImage.setImageBitmap(bitmap);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriFieldImage);
+                GlideApp.with(getApplication())
+                        .load(b)
+                        .into(fieldImage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -277,14 +280,15 @@ public class CreateNewFieldActivity extends AppCompatActivity {
     private void uploadImageToFirebaseStorage() {
 
         StorageReference fieldImageRef =
-                FirebaseStorage.getInstance().getReference("fieldpics/" + fieldID + ".jpg");
+                FirebaseStorage.getInstance().getReference("fieldpics/" + fieldID + "/" + fieldID + ".jpg");
 
 
         if (uriFieldImage != null) {
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriFieldImage);
+                RotateBitmap rotateBitmap = new RotateBitmap();
+                Bitmap b = rotateBitmap.HandleSamplingAndRotationBitmap(getApplicationContext(), uriFieldImage);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                b.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data1 = baos.toByteArray();
 
                 save_button.setEnabled(false);

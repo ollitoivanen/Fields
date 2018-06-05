@@ -52,6 +52,7 @@ public class UserChatActivity extends AppCompatActivity {
     String time;
     EditText messageTextEdit;
     Button sendMessageButton;
+    boolean adapterSet = false;
 
     public void init() {
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -217,6 +218,7 @@ public class UserChatActivity extends AppCompatActivity {
     }
     };
 
+    adapterSet = true;
     adapter.notifyDataSetChanged();
     chatRecycler.setAdapter(adapter);
     adapter.startListening();
@@ -227,22 +229,26 @@ public class UserChatActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-chatRecycler.smoothScrollToPosition(20);    }
+        chatRecycler.smoothScrollToPosition(0);
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        if (adapterSet) {
             adapter.stopListening();
             chatRecycler.setAdapter(null);
+        }
 
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        if (adapterSet) {
             adapter.stopListening();
             chatRecycler.setAdapter(null);
+        }
         }
 
     @Override
