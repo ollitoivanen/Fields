@@ -88,6 +88,7 @@ public class DetailFieldActivity extends AppCompatActivity {
     boolean favorite;
     NotificationHelper notificationHelper;
     boolean fieldsPlus;
+    ImageView expandedFieldImage;
 
     String[] fieldTypeArray;
     String[] fieldAccessTypeArray;
@@ -185,6 +186,7 @@ public class DetailFieldActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_detail);
+        expandedFieldImage = findViewById(R.id.expanded_field_image);
         notificationHelper = new NotificationHelper(this);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -201,6 +203,7 @@ public class DetailFieldActivity extends AppCompatActivity {
         fieldTypeView = findViewById(R.id.fieldType);
         dropImage = findViewById(R.id.dropdown);
         container = findViewById(R.id.gradient2);
+
 
 
         Bundle info = getIntent().getExtras();
@@ -310,10 +313,26 @@ public class DetailFieldActivity extends AppCompatActivity {
         final StorageReference storageRef = storage.getReference().child("fieldpics/"+ fieldID + "/" +fieldID+".jpg");
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(Uri uri) {
+            public void onSuccess(final Uri uri) {
                     GlideApp.with(getApplicationContext())
                             .load(uri)
                             .into(fieldPhoto);
+
+                fieldPhoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        expandedFieldImage.setVisibility(View.VISIBLE);
+                        GlideApp.with(getApplicationContext())
+                                .load(uri)
+                                .into(expandedFieldImage);
+                    expandedFieldImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            expandedFieldImage.setVisibility(View.GONE);
+                        }
+                    });
+                    }
+                });
 
 
             }

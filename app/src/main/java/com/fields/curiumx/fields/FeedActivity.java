@@ -363,19 +363,20 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot documentSnapshot = task.getResult();
-                            String username = documentSnapshot.get("username").toString();
+                            if (documentSnapshot.get("username") != null) {
+                                String username = documentSnapshot.get("username").toString();
                             holder.username.setText(username);
                             userID = model.getUserID();
-                                userImageRef = FirebaseStorage.getInstance()
-                                        .getReference().child("profilepics/" + userID + "/" + userID + ".jpg");
+                            userImageRef = FirebaseStorage.getInstance()
+                                    .getReference().child("profilepics/" + userID + "/" + userID + ".jpg");
                             userImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        GlideApp.with(getApplicationContext())
-                                                .load(uri)
-                                                .into(holder.userPhoto);
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    GlideApp.with(getApplicationContext())
+                                            .load(uri)
+                                            .into(holder.userPhoto);
 
-                                    }
+                                }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
@@ -384,38 +385,41 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                                 }
                             });
 
-                        String currentField = task.getResult().get("currentFieldName").toString();
-                        if (!currentField.equals("")) {
+                            String currentField = task.getResult().get("currentFieldName").toString();
+                            if (!currentField.equals("")) {
 
 
-                            timestamp = (Date) documentSnapshot.get("timestamp");
-                            Date currentTime = Calendar.getInstance().getTime();
-                            long diff = currentTime.getTime() - timestamp.getTime();
-                            long seconds = diff / 1000;
-                            long minutes = seconds / 60;
-                            long hours = minutes / 60;
-                            long days = hours / 24;
+                                timestamp = (Date) documentSnapshot.get("timestamp");
+                                Date currentTime = Calendar.getInstance().getTime();
+                                long diff = currentTime.getTime() - timestamp.getTime();
+                                long seconds = diff / 1000;
+                                long minutes = seconds / 60;
+                                long hours = minutes / 60;
+                                long days = hours / 24;
 
-                            if (hours < 1) {
-                                placeHolder = minutes;
-                                placeHolder2 = placeHolder + " " + "minutes";
-                            }else if (hours<2){
-                                placeHolder = hours;
-                                placeHolder2 = placeHolder + " " + getResources().getString(R.string.hour);
-                            } else if (days < 1) {
-                                placeHolder = hours;
-                                placeHolder2 = placeHolder + " " + getResources().getString(R.string.hours);
-                            }else if (days<2){
-                                placeHolder = days;
-                                placeHolder2 = placeHolder + " " + getResources().getString(R.string.day);
+                                if (hours < 1) {
+                                    placeHolder = minutes;
+                                    placeHolder2 = placeHolder + " " + "minutes";
+                                } else if (hours < 2) {
+                                    placeHolder = hours;
+                                    placeHolder2 = placeHolder + " " + getResources().getString(R.string.hour);
+                                } else if (days < 1) {
+                                    placeHolder = hours;
+                                    placeHolder2 = placeHolder + " " + getResources().getString(R.string.hours);
+                                } else if (days < 2) {
+                                    placeHolder = days;
+                                    placeHolder2 = placeHolder + " " + getResources().getString(R.string.day);
                                 } else {
-                                placeHolder = days;
-                                placeHolder2 = placeHolder2 + " " + getResources().getString(R.string.days);
+                                    placeHolder = days;
+                                    placeHolder2 = placeHolder2 + " " + getResources().getString(R.string.days);
+                                }
+                                holder.currentField.setText(getResources().getString(R.string.at_ago, currentField, placeHolder2));
+                            } else {
+                                holder.currentField.setText(getResources().getString(R.string.not_at_any_field));
                             }
-                            holder.currentField.setText(getResources().getString(R.string.at_ago, currentField, placeHolder2));
                         }else {
-                            holder.currentField.setText(getResources().getString(R.string.not_at_any_field));
-                        }
+                                db.collection("Users").document(uid).collection("Friends").document(model.getUserID()).delete();
+                            }
                         }else {
                             Snackbar.make(findViewById(R.id.team_activity),
                                     getResources()
