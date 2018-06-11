@@ -411,7 +411,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                                     placeHolder2 = placeHolder + " " + getResources().getString(R.string.day);
                                 } else {
                                     placeHolder = days;
-                                    placeHolder2 = placeHolder2 + " " + getResources().getString(R.string.days);
+                                    placeHolder2 = placeHolder + " " + getResources().getString(R.string.days);
                                 }
                                 holder.currentField.setText(getResources().getString(R.string.at_ago, currentField, placeHolder2));
                             } else {
@@ -449,7 +449,7 @@ public class FeedActivity extends AppCompatActivity implements BillingProcessor.
                                             intent.putExtra("usersTeamID", ds1.get("usersTeamID").toString());
                                         }
                                         intent.putExtra("userRole", ds1.getLong("userRole").intValue());
-                                        intent.putExtra("userReputation", ds1.get("userReputation").toString());
+                                        intent.putExtra("userReputation", ds1.getLong("userReputation"));
                                         intent.putExtra("position", ds1.getLong("position"));
                                         if (!ds1.get("currentFieldID").equals("")){
                                             intent.putExtra("timestamp", ds1.getDate("timestamp"));

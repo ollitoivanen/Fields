@@ -268,7 +268,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             placeHolder2 = placeHolder + " " + getResources().getString(R.string.day);
                         } else {
                             placeHolder = days;
-                            placeHolder2 = placeHolder2 + " " + getResources().getString(R.string.days);
+                            placeHolder2 = placeHolder + " " + getResources().getString(R.string.days);
                         }
                         currentField = documentSnapshot.get("currentFieldName").toString();
                         testCurrentField.setText(getResources().getString(R.string.last_seen_at, currentField, placeHolder2));

@@ -167,7 +167,7 @@ public class DetailUserActivity extends AppCompatActivity {
                 placeHolder2 = placeHolder + " " + getResources().getString(R.string.day);
             } else {
                 placeHolder = days;
-                placeHolder2 = placeHolder2 + " " + getResources().getString(R.string.days);
+                placeHolder2 = placeHolder + " " + getResources().getString(R.string.days);
             }
             currentField.setText(getResources().getString(R.string.last_seen_at, currentFieldName, placeHolder2));
 
@@ -206,6 +206,7 @@ public class DetailUserActivity extends AppCompatActivity {
         }
 
 
+        rept.setText(getResources().getString(R.string.reputation, Long.toString(reputationInt)));
 
         if (reputationInt < 500) {
 

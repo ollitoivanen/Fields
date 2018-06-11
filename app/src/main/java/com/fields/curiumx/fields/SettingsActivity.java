@@ -1,6 +1,7 @@
 package com.fields.curiumx.fields;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -65,8 +66,8 @@ public class SettingsActivity extends AppCompatActivity {
         privacyPolicyTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
-                startActivity(intent);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://fields.one/privacy-policy/"));
+                startActivity(browserIntent);
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
             }
         });
