@@ -215,6 +215,7 @@
         <activity
             android:name=".DeleteUserActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".DataCollectionActivity"></activity>
     </application>
 
 </manifest>

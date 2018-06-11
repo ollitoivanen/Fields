@@ -1,5 +1,6 @@
 package com.fields.curiumx.fields;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
     TextView changePasswordTab;
     TextView deleteAccountTab;
     TextView privacyPolicyTab;
+    TextView dataCollection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,16 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
+
+            }
+        });
+
+        dataCollection = findViewById(R.id.data_collection_tab);
+        dataCollection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SettingsActivity.this, DataCollectionActivity.class));
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 
             }
         });

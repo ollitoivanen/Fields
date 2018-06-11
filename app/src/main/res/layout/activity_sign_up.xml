@@ -10,8 +10,7 @@
     >
 
     <android.support.constraint.ConstraintLayout
-
-
+        android:id="@+id/main_cont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -27,6 +26,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,59 +42,33 @@
             android:scaleType="centerCrop"
             android:src="@drawable/fields_logo_full_green"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@id/cont"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/cont"
+            android:id="@+id/cont_2"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/logo">
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/logo"
+            android:visibility="gone"
+            >
 
 
-            <TextView
+        <TextView
                 android:id="@+id/welcome"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginStart="32dp"
-                android:text="@string/welcome"
-                android:textAlignment="center"
+            android:textAlignment="center"
                 android:textSize="18sp"
+            android:text="@string/d"
                 android:textStyle="bold"
                 android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@id/im"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/im"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/imtext"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/welcome" />
-
-            <Spinner
-                android:id="@+id/role"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:layout_marginStart="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/im" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/real_name_input"
@@ -103,17 +77,16 @@
                 android:layout_marginEnd="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
-                app:layout_constraintBottom_toTopOf="@id/username_input"
+                app:layout_constraintTop_toBottomOf="@id/welcome"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/role">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <EditText
                     android:id="@+id/real_name_edit_signup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    android:hint="@string/realname"
+                    android:hint="@string/name"
                     android:inputType="textPersonName"
                     android:visibility="visible" />
 
@@ -125,7 +98,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
                 android:layout_marginStart="32dp"
-                app:layout_constraintBottom_toTopOf="@id/email_address_input"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/real_name_input"
@@ -142,52 +114,60 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/email_address_input"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/linearLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:layout_marginStart="32dp"
-                app:layout_constraintBottom_toTopOf="@id/password_input"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp"
                 app:layout_constraintTop_toBottomOf="@id/username_input"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
 
                 >
 
-                <EditText
-                    android:id="@+id/email_edit_signup"
-                    android:layout_width="match_parent"
+                <CheckBox
+                    android:id="@+id/tc_check"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/email"
-                    android:inputType="textEmailAddress"
-                    android:visibility="visible" />
 
-            </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/password_input"
+                    />
+
+                <TextView
+                    android:id="@+id/tac_text"
+                    android:layout_width="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/tc_check"
+                    android:text="@string/read_tac"
+                    android:clickable="true"
+                    android:textColorLink="@color/premium_blue"
+
+                    />
+
+            </android.support.constraint.ConstraintLayout>
+
+
+
+            <CheckBox
+                android:id="@+id/analytic_check"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:layout_marginStart="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/help_data"
+                android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/email_address_input">
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
 
-                <EditText
-                    android:id="@+id/password_edit_signup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:hint="@string/password"
-                    android:inputType="textPassword"
-                    android:visibility="visible" />
-
-            </android.support.design.widget.TextInputLayout>
+                android:checked="true"
+                app:layout_constraintTop_toBottomOf="@id/linearLayout1"
+                />
 
             <Button
-                android:id="@+id/signUpButton"
+                android:id="@+id/signUpButton_2"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginEnd="32dp"
@@ -198,28 +178,128 @@
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/password_input" />
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/analytic_check" />
 
-
-            <TextView
-                android:id="@+id/signInTextView"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/arrow_back"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="@string/alread_have_an_account"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_arrow_back"
+                app:layout_constraintTop_toBottomOf="@id/signUpButton_2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signUpButton" />
-
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="64dp"
+                />
 
         </android.support.constraint.ConstraintLayout>
 
 
+
+
+
+<android.support.constraint.ConstraintLayout
+    android:id="@+id/cont_1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_constraintTop_toBottomOf="@id/logo"
+    android:visibility="invisible"
+    >
+        <TextView
+            android:id="@+id/welcome_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:text="@string/welcome"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/email_address_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toTopOf="@id/password_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/welcome_2"
+
+            >
+
+            <EditText
+                android:id="@+id/email_edit_signup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:visibility="visible" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/email_address_input">
+
+            <EditText
+                android:id="@+id/password_edit_signup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:visibility="visible" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/signUpButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/sign_up"
+            android:textAllCaps="false"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/password_input" />
+
+
+        <TextView
+            android:id="@+id/signInTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/alread_have_an_account"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/signUpButton" />
+</android.support.constraint.ConstraintLayout>
     </android.support.constraint.ConstraintLayout>
+
+
+
+
+
 </ScrollView>
 
 

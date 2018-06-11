@@ -14,10 +14,12 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -38,18 +41,21 @@ import com.google.firebase.iid.FirebaseInstanceId;
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
 
     EditText emailSignUp, passwordSignUp, username, realName;
-    Spinner roleSpinner;
     TextView signInTextView;
     TextView welcome;
-    Button signUpButton;
+    Button signUpButton, signUpButton2;
     FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ConstraintLayout container1;
+    ConstraintLayout cont1, cont2;
     ProgressBar progressBar;
     TextInputLayout usernameInput;
     TextInputLayout realNameInput;
     TextInputLayout emailInput;
     TextInputLayout passwordInput;
+    ImageView back;
+    CheckBox tc, analytics;
+    TextView tac;
 
 
     @Override
@@ -68,14 +74,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         realNameInput = findViewById(R.id.real_name_input);
         emailInput = findViewById(R.id.email_address_input);
         passwordInput = findViewById(R.id.password_input);
+        signUpButton2 = findViewById(R.id.signUpButton_2);
+        cont1 = findViewById(R.id.cont_1);
+        cont2 = findViewById(R.id.cont_2);
+        back = findViewById(R.id.arrow_back);
+        back.setOnClickListener(this);
+        tc = findViewById(R.id.tc_check);
+        analytics = findViewById(R.id.analytic_check);
+        tac = findViewById(R.id.tac_text);
+        tac.setMovementMethod(LinkMovementMethod.getInstance());
 
 
 
 
-        roleSpinner = findViewById(R.id.role);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.role_spinner, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        roleSpinner.setAdapter(adapter);
+
+
         welcome = findViewById(R.id.welcome);
         realName = findViewById(R.id.real_name_edit_signup);
         username = findViewById(R.id.username_edit_signup);
@@ -84,18 +97,29 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         passwordSignUp = findViewById(R.id.password_edit_signup);
         signUpButton = findViewById(R.id.signUpButton);
         signInTextView = findViewById(R.id.signInTextView);
-        container1 = findViewById(R.id.cont);
+        container1 = findViewById(R.id.main_cont);
         progressBar = findViewById(R.id.progress);
 
         username.addTextChangedListener(new MyTextWatcher(username));
         realName.addTextChangedListener(new MyTextWatcher(realName));
         emailSignUp.addTextChangedListener(new MyTextWatcher(emailSignUp));
         passwordSignUp.addTextChangedListener(new MyTextWatcher(passwordSignUp));
+        tc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tc.isChecked()){
+                    signUpButton2.setEnabled(true);
+                }else {
+                    signUpButton2.setEnabled(false);
+                }
+            }
+        });
 
 
 
 
         signUpButton.setOnClickListener(this);
+        signUpButton2.setOnClickListener(this);
         signInTextView.setOnClickListener(this);
 
         //Filters spaces from username
@@ -125,19 +149,51 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
-    public void registerUser() {
+    public void registerUser1(){
+        final String emailString = emailSignUp.getText().toString().trim();
+        final String passwordString = passwordSignUp.getText().toString().trim();
+        if (emailString.isEmpty()) {
+            emailInput.setError(getResources().getString(R.string.please_enter_valid_email));
+            emailSignUp.requestFocus();
+            signUpButton.setEnabled(true);
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()) {
+            emailInput.setError(getResources().getString(R.string.please_enter_valid_email));
+            emailSignUp.requestFocus();
+            signUpButton.setEnabled(true);
+        } else if (passwordString.isEmpty()) {
+            passwordInput.setError(getResources().getString(R.string.please_enter_valid_password));
+            passwordSignUp.requestFocus();
+            signUpButton.setEnabled(true);
+        } else if (passwordString.length() < 6) {
+            passwordInput.setError(getResources().getString(R.string.error_password_length));
+            passwordSignUp.requestFocus();
+        }else {
+            signUpButton2.setEnabled(false);
+            cont1.animate().alpha(0.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    cont1.setVisibility(View.GONE);
+                    cont2.setVisibility(View.VISIBLE);
+                    cont2.setAlpha(1.0f);
+
+                }
+            });
+        }
+    }
+
+    public void registerUser2() {
         final String emailString = emailSignUp.getText().toString().trim();
         final String passwordString = passwordSignUp.getText().toString().trim();
         final String usernameString = username.getText().toString().trim().toLowerCase();
         final String realNameString = realName.getText().toString().trim();
-        final int userRole = roleSpinner.getSelectedItemPosition();
         signUpButton.setEnabled(false);
 
         if (realNameString.isEmpty()) {
             realNameInput.setError(getResources().getString(R.string.please_enter_real_name));
             realName.requestFocus();
             signUpButton.setEnabled(true);
-        } else if (emailString.isEmpty()) {
+        }else if (emailString.isEmpty()) {
             emailInput.setError(getResources().getString(R.string.please_enter_valid_email));
             emailSignUp.requestFocus();
             signUpButton.setEnabled(true);
@@ -157,24 +213,25 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             username.requestFocus();
         } else {
 
+            if (!analytics.isChecked()){
 
+                FirebaseAnalytics f = FirebaseAnalytics.getInstance(this);
+                f.setAnalyticsCollectionEnabled(false);
 
-                        progressBar.setVisibility(View.VISIBLE);
-                        mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            }
+            progressBar.setVisibility(View.VISIBLE);
+            mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT)
-                                            .show();
-
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    String uid = user.getUid();
-                                    String token = FirebaseInstanceId.getInstance().getToken();
-
+                            public void onComplete(@NonNull Task<AuthResult> task) { progressBar.setVisibility(View.GONE);
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT)
+                                        .show();
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String uid = user.getUid();
+                                String token = FirebaseInstanceId.getInstance().getToken();
 
                                     UserMap userMap = new UserMap(usernameString, uid, "",
-                                            "", realNameString, userRole,
+                                            "", realNameString, 0,
                                             0, -1, null, 0,
                                             false, null, token);
                                     db.collection("Users").document(uid).set(userMap);
@@ -230,9 +287,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void run() {
                         logo.setLayerType(View.LAYER_TYPE_NONE, null);
-                        container1.setVisibility(View.VISIBLE);
-                        container1.setAlpha(0.0f);
-                        container1.animate().alpha(1.0f).setDuration(1000).setListener(new AnimatorListenerAdapter() {
+                        cont1.setVisibility(View.VISIBLE);
+                        cont1.setAlpha(0.0f);
+                        cont1.animate().alpha(1.0f).setDuration(1000).setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
@@ -249,12 +306,33 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.signUpButton:
-                registerUser();
+                registerUser1();
+
+
+                break;
+
+            case R.id.signUpButton_2:
+                registerUser2();
+                break;
+
+            case R.id.arrow_back:
+                cont2.animate().alpha(0.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        cont2.setVisibility(View.GONE);
+                        cont1.setVisibility(View.VISIBLE);
+                        cont1.setAlpha(1.0f);
+                        /*cont1.setAlpha(0.0f);
+                        cont1.animate().alpha(1.0f).setDuration(250);*/
+                    }
+                });
                 break;
 
             case R.id.signInTextView:
                 startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
                 overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                break;
 
         }
     }

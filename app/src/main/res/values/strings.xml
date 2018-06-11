@@ -195,6 +195,14 @@
     <string name="delete_account">Delete account</string>
     <string name="delete_account_by">Delete account by entering your user data</string>
     <string name="account_deleted">Account deleted</string>
+    <string name="d">Just one more step</string>
+    <string name="name">Name</string>
+    <string name="read_tac"><a href="https://fields.one/privacy-policy/">I have read Fields Terms and Conditions</a></string>
+    <string name="data_collection">Data collection</string>
+    <string name="data_collection_explanation">Enable analytical data collection to help us improve our services. Thanks for your push to help the community!</string>
+
+
+    <string name="help_data">Improve Fields by letting us collect analytical data</string>
 
 
     <string name="terms_and_conditions">Terms and Conditions</string>
