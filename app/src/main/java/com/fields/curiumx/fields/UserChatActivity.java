@@ -29,12 +29,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 public class UserChatActivity extends AppCompatActivity {
 
@@ -47,8 +49,6 @@ public class UserChatActivity extends AppCompatActivity {
     String userID;
     Query query;
     Boolean thisUser;
-    String UserMessages = "UserMessages";
-    String TheseMessages = "TheseMessages";
     String time;
     EditText messageTextEdit;
     Button sendMessageButton;
@@ -95,46 +95,41 @@ public class UserChatActivity extends AppCompatActivity {
         Bundle info = getIntent().getExtras();
         userID = info.getString("userID");
 
-        db.collection("Users").document(uid).collection(UserMessages).document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+
+        db.collection("Messages").document(uid.concat(userID)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot ds = task.getResult();
-                if (ds.get("3")==null) {
-                    Bundle info = getIntent().getExtras();
-                    userID = info.getString("userID");
-
-                    db.collection("Users").document(userID).collection(UserMessages).document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        //
+                if (!task.getResult().exists()){
+                    db.collection("Messages").document(userID.concat(uid)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            DocumentSnapshot ds1 = task.getResult();
-                            if (ds1.get("3")==null) {
-
-
-                                Map<String, Object> map = new HashMap<>();
-                                map.put("3", "1");
-                                db.collection("Users").document(uid)
-                                        .collection(UserMessages).document(userID)
-                                        .set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            if (!task.getResult().exists()){
+                                MessageMap messageMap = new MessageMap(uid, userID);
+                                db.collection("Messages").document(uid.concat(userID)).set(messageMap)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         thisUser = true;
                                         setRecycler();
                                     }
                                 });
-                            } else {
+                            }else {
                                 thisUser = false;
                                 setRecycler();
                             }
                         }
                     });
 
-                    }else {
+                }else{
                     thisUser = true;
                     setRecycler();
                 }
             }
         });
+
+
+
     }
 
     public void sendMessage() {
@@ -146,11 +141,11 @@ public class UserChatActivity extends AppCompatActivity {
             ChatMap chatMap = new ChatMap(messageText, user.getDisplayName(), uid, c.getTime(), userID);
 
             if (thisUser) {
-                dr = db.collection("Users").document(uid).collection(UserMessages)
-                        .document(userID).collection(TheseMessages).document(Long.toString(System.currentTimeMillis()));
+                dr = db.collection("Messages").document(uid.concat(userID)).collection("TheseMessages")
+                        .document(Long.toString(System.currentTimeMillis()));
             } else {
-                dr = db.collection("Users").document(userID).collection(UserMessages)
-                        .document(uid).collection(TheseMessages).document(Long.toString(System.currentTimeMillis()));
+                dr = db.collection("Messages").document(userID.concat(uid)).collection("TheseMessages")
+                        .document(Long.toString(System.currentTimeMillis()));
             }
             dr.set(chatMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -164,13 +159,13 @@ public class UserChatActivity extends AppCompatActivity {
     }
 
     public void setRecycler(){
-        if (thisUser) {
-            query = db.collection("Users").document(uid).collection(UserMessages).document(userID).collection(TheseMessages)
+        if (thisUser){
+            query = db.collection("Messages").document(uid.concat(userID)).collection("TheseMessages")
                     .orderBy("time", Query.Direction.DESCENDING).limit(50);
         }else {
-            query = db.collection("Users").document(userID).collection(UserMessages).document(uid).collection(TheseMessages)
+            query = db.collection("Messages").document(userID.concat(uid)).collection("TheseMessages")
                     .orderBy("time", Query.Direction.DESCENDING).limit(50);
-        }
+            }
     FirestoreRecyclerOptions<ChatMap> response = new FirestoreRecyclerOptions.Builder<ChatMap>()
             .setQuery(query, ChatMap.class)
             .build();

@@ -25,10 +25,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -174,37 +176,72 @@ public class DeleteUserActivity extends AppCompatActivity {
                                     profileImageRef.delete();
                                 }
 
-                               /* db.collection("Users").document(uid).collection("UserMessages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull final Task<QuerySnapshot> task) {
-                                        int size = task.getResult().size();
-                                        for (int i = 0;i<size;){
-                                            task.getResult().getDocuments().get(i).getReference().delete();
-
-                                            DocumentReference dr = task.getResult().getDocuments().get(i).getReference();
-                                            dr.collection("TheseMessages").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task2) {
-                                                    int size2 = task2.getResult().size();
-                                                    for (int j = 0; j<size2;){
-                                                        task2.getResult().getDocuments().get(j).getReference().delete();
-                                                        j++;
-
-                                                    }
-                                                }
-                                            });
-                                            i++;
-                                        }
-                                    }
-                                });*/
-
-
-
                                 if (!ds.get("currentFieldName").equals("")) {
                                     db.collection("Users").document(uid).collection("currentTraining").document(uid).delete();
                                 }
 
+                                db.collection("Messages").whereEqualTo("user1", uid).get()
+                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess( QuerySnapshot queryDocumentSnapshots) {
 
+                                        final int size = queryDocumentSnapshots.size();
+                                        for (int i = 0; i<size;){
+
+                                            CollectionReference dr =  queryDocumentSnapshots.getDocuments().get(i).getReference().collection("TheseMessages");
+                                            Log.d("err", dr.toString());
+                                           dr.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                               @Override
+                                               public void onSuccess(QuerySnapshot queryDocumentSnapshots1) {
+                                                   int size2 = queryDocumentSnapshots1.size();
+                                                   for (int j = 0; j<size2;){
+                                                       Log.d("errr", Integer.toString(j));
+                                                       queryDocumentSnapshots1.getDocuments().get(j).getReference().delete();
+                                                       j++;
+                                                   }
+
+                                               }
+                                           });
+                                            //queryDocumentSnapshots.getDocuments().get(i).getReference().delete();
+
+                                           i++;
+                                        }
+
+
+                                    }
+                                });
+
+                                db.collection("Messages").whereEqualTo("user2", uid).get()
+                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess( QuerySnapshot queryDocumentSnapshots) {
+                                                final int size = queryDocumentSnapshots.size();
+                                                for (int i = 0; i<size;){
+                                                    CollectionReference dr =  queryDocumentSnapshots.getDocuments().get(i)
+                                                            .getReference().collection("TheseMessages");
+                                                    Log.d("err", dr.toString());
+                                                    dr.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                        @Override
+                                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots1) {
+
+
+                                                            int size2 = queryDocumentSnapshots1.size();
+                                                            for (int j = 0; j<size2;){
+                                                                Log.d("errr", Integer.toString(j));
+                                                                queryDocumentSnapshots1.getDocuments().get(j).getReference().delete();
+                                                                j++;
+                                                            }
+                                                            
+
+                                                        }
+                                                    });
+                                                    //queryDocumentSnapshots.getDocuments().get(i).getReference().delete();
+
+                                                    i++;
+
+                                                }
+                                            }
+                                        });
 
 
 
