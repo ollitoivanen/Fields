@@ -2,19 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        config {
-            keyAlias 'Fields'
-            keyPassword 'Erkki112'
-            storeFile file('/Users/ollitoivanen/Desktop/key')
-            storePassword 'Erkki112'
-        }
     }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.fields.curiumx.fields"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 4
+        versionCode 5
         versionName "1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -54,8 +48,6 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
     //ExifInterface support
-    implementation "com.android.support:exifinterface:27.1.1"
-
-
+    implementation 'com.android.support:exifinterface:27.1.1'
 }
 apply plugin: 'com.google.gms.google-services'
