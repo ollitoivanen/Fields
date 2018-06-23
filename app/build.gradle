@@ -2,13 +2,19 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
+        config {
+            keyAlias 'Fields'
+            keyPassword 'Erkki112'
+            storeFile file('/Users/ollitoivanen/Desktop/key')
+            storePassword 'Erkki112'
+        }
     }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.fields.curiumx.fields"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 5
+        versionCode 6
         versionName "1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
